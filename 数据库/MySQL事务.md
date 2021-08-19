@@ -36,10 +36,12 @@
 快照读通过mvcc实现
 当前读：
 当前读，会在搜索的时候加锁
+```
 select * from .... where  ... for update
 select * from .... where  ... lock in share mode
 update .... set .. where ...
 delete from. . where ..
+```
 当前读通过 next key lock 避免幻读
 如果事务中都使用快照读，那么就不会产生幻读现象，但是快照读和当前读混用就会产生幻读。
 
