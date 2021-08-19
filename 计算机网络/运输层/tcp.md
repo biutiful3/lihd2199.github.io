@@ -16,7 +16,7 @@
 
 <center>tcp面向字节流</center>
 
-6、**TCP连接的端点叫做套接字(socket)或插口，端口号拼接到(contatenated with) IP地址即构成了套接字，同一个IP地址可以有多个不同的TCP连接，而同一个端口号也可以出现在多个不同的TCP连接中**。
+6、***TCP连接的端点叫做套接字(socket)或插口，端口号拼接到(contatenated with) IP地址即构成了套接字，同一个IP地址可以有多个不同的TCP连接，而同一个端口号也可以出现在多个不同的TCP连接中。***
 
 ### 二、TCP报文格式
 
