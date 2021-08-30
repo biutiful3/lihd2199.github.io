@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>网络层 - 新的一天</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="lihongda" />
+  <meta name="description" content="一、网络层的设计 因特网采用的设计思路是这样的：网络层向上只提供简单灵活的、无连接的、尽最大努力交付的数据报服务。网络在发送分组时不需要先建立" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.87.0" />
+
+
+<link rel="canonical" href="https://lihd2199.github.io/post/network/network-layer/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.fa4b2b9f31b5c6d0b683db81157a9226e17b06e61911791ab547242a4a0556f2.css" integrity="sha256-&#43;ksrnzG1xtC2g9uBFXqSJuF7BuYZEXkatUckKkoFVvI=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="网络层" />
+<meta property="og:description" content="一、网络层的设计 因特网采用的设计思路是这样的：网络层向上只提供简单灵活的、无连接的、尽最大努力交付的数据报服务。网络在发送分组时不需要先建立" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://lihd2199.github.io/post/network/network-layer/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-08-30T20:27:54+08:00" />
+<meta property="article:modified_time" content="2021-08-30T20:27:54+08:00" />
+
+<meta itemprop="name" content="网络层">
+<meta itemprop="description" content="一、网络层的设计 因特网采用的设计思路是这样的：网络层向上只提供简单灵活的、无连接的、尽最大努力交付的数据报服务。网络在发送分组时不需要先建立"><meta itemprop="datePublished" content="2021-08-30T20:27:54+08:00" />
+<meta itemprop="dateModified" content="2021-08-30T20:27:54+08:00" />
+<meta itemprop="wordCount" content="4608">
+<meta itemprop="keywords" content="网络层,ip," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="网络层"/>
+<meta name="twitter:description" content="一、网络层的设计 因特网采用的设计思路是这样的：网络层向上只提供简单灵活的、无连接的、尽最大努力交付的数据报服务。网络在发送分组时不需要先建立"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">莫听穿林打叶声，何妨吟啸且徐行</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/post/">全部</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/categories/">分类</a>
+          
+        
+      </li>
+    
+
+    
+  </ul>
+</nav>
+
+
+  
+    
+
+
+
+
+
+
+  <link rel="stylesheet" href="/lib/photoswipe/photoswipe.min.css" />
+  <link rel="stylesheet" href="/lib/photoswipe/default-skin/default-skin.min.css" />
+
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+  
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      莫听穿林打叶声，何妨吟啸且徐行
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/post/">全部</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">网络层</h1>
+      
+      <div class="post-meta">
+        <time datetime="2021-08-30" class="post-time">
+          2021-08-30
+        </time>
+        <div class="post-category">
+            <a href="https://lihd2199.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"> 计算机网络 </a>
+            
+          </div>
+        
+
+        
+        
+
+        
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#一网络层的设计">一、网络层的设计</a></li>
+        <li><a href="#二ip地址与硬件地址">二、IP地址与硬件地址</a></li>
+        <li><a href="#三地址解析协议arp">三、地址解析协议ARP</a></li>
+        <li><a href="#四ip数据报格式">四、ip数据报格式</a></li>
+        <li><a href="#五ipv4地址">五、IPv4地址</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      <h3 id="一网络层的设计">一、网络层的设计</h3>
+<p>因特网采用的设计思路是这样的：<strong>网络层向上只提供简单灵活的、无连接的、尽最大努力交付的数据报服务</strong>。网络在发送分组时不需要先建立连接。每一个分组（也就是IP数据报）独立发送，与其前后的分组无关（不进行编号）。<strong>网络层不提供服务质量的承诺</strong>。也就是说，所传送的分组可能出错、丢失、重复和失序（即不按序到达终点），当然也不保证分组交付的时限。由于传输网络不提供端到端的可靠传输服务，这就使网络中的路由器可以做得比较简单，而且价格低廉。<strong>如果主机中的进程之间的通信需要是可靠的，那么就由网络的主机中的运输层负责（包括差错处理、流量控制等）。</strong></p>
+<h3 id="二ip地址与硬件地址">二、IP地址与硬件地址</h3>
+<p>从层次的角度看，<strong>物理地址是数据链路层和物理层使用的地址，而IP地址是网络层和以上各层使用的地址，是一种逻辑地址</strong>。</p>
+<p>在发送数据时，数据从高层下到低层，然后才到通信链路上传输。使用IP地址的IP数据报一旦交给了数据链路层，就被封装成MAC帧了。MAC帧在传送时使用的源地址和目的地址都是硬件地址，这两个硬件地址都写在MAC帧的首部中。</p>
+<p>连接在通信链路上的设备（主机或路由器）在接收MAC帧时，其根据是MAC帧首部中的硬件地址。在数据链路层看不见隐藏在MAC帧的数据中的IP地址。只有在剥去MAC帧的首部和尾部后把MAC层的数据上交给网络层后，网络层才能在IP数据报的首部中找到源IP地址和目的IP地址。</p>
+<p><strong>总之，IP 地址放在 IP 数据报的首部，而硬件地址则放在 MAC 帧的首部。在网络层和网络层以上使用的是 IP 地址，而数据链路层及以下使用的是硬件地址。</strong></p>
+<h3 id="三地址解析协议arp">三、地址解析协议ARP</h3>
+<p><strong>ARP协议的用途是为了从网络层使用的IP地址解析出在数据链路层使用的硬件地址。</strong></p>
+<p>网络层使用的是IP地址，但在实际网络的链路上传送数据帧时，最终还是必须使用该网络的硬件地址。但IP地址和下面的网络的硬件地址之间由于格式不同而不存在简单的映射关系。地址解析协议ARP解决这个问题的方法是<strong>在主机ARP高速缓存中应存放一个从IP地址到硬件地址的映射表，并且这个映射表还经常动态更新</strong>。</p>
+<p>当主机A要向本局域网上的某个主机B发送IP数据报时，就先在其ARP高速缓存中查看有无主机B的IP地址。如有，就在ARP高速缓存中查出其对应的硬件地址，再把这个硬件地址写入MAC帧，然后通过局域网把该MAC帧发往此硬件地址。也有可能查不到主机B的IP地址的项目。这可能是主机B才入网，也可能是主机A刚刚加电，其高速缓存还是空的。在这种情况下，主机A就自动运行ARP, 找出主机B的硬件地址。</p>
+<p><strong>ARP是解决同一个局域网上的主机或路由器的IP地址和硬件地址的映射问题。</strong></p>
+<p><img src="/img/arp%E5%85%B8%E5%9E%8B%E6%83%85%E5%86%B5.png" alt=""></p>
+<p>下面我们归纳出使用ARP的四种典型情况</p>
+<ol>
+<li>发送方是主机（如H1），要把IP数据报发送到同一个网络上的另一个主机（如H2）。这时H1发送ARP请求分组（在网1上广播），找到目的主机H2的硬件地址。(2)发送方是主机（如H1），要把IP数据报发送到另一个网络上的一个主机（如H3或H4）。这时H1发送ARP请求分组（在网1上广播），找到网1上的一个路由器R1的硬件地址。剩下的工作由路由器R1来完成。</li>
+<li>发送方是主机（如H1），要把IP数据报发送到另一个网络上的一个主机（如H3或H4）。这时H1发送ARP请求分组（在网1上广播），找到网1上的一个路由器R1的硬件地址。剩下的工作由路由器R1来完成。</li>
+<li>发送方是路由器（如R1），要把IP数据报转发到与R1连接在同一个网络（网2）上的主机（如H3）。这时R1发送ARP请求分组（在网2上广播），找到目的主机H3的硬件地址。</li>
+<li>发送方是路由器（如R1），要把IP数据报转发到网3上的一个主机（如H4）。H4与R1不是连接在同一个网络上。这时R1发送ARP请求分组（在网2上广播），找到连接在网2上的一个路由器R2的硬件地址。剩下的工作由这个路由器R2来完成。</li>
+</ol>
+<h3 id="四ip数据报格式">四、ip数据报格式</h3>
+<p><img src="/img/ip%E6%95%B0%E6%8D%AE%E6%8A%A5%E6%A0%BC%E5%BC%8F.png" alt=""></p>
+<p>(1) 版本 占4位，指IP协议的版本。通信双方使用的IP协议的版本必须一致。目前广泛使用的IP协议版本号为4 (即IPv4);</p>
+<p>(2) 首部长度  占4位 ;</p>
+<p>(3) 区分服务 占8位，用来获得更好的服务，但实际上一直没有被使用过;</p>
+<p>(4) 总长度 总长度指首部和数据之和的长度，单位为字节。总长度字段为16位，因此数据报的最大长度为 65 535字节。 然而实际上传送这样长的数据报在现实中是极少遇到的;</p>
+<p>(5) 标识 占16位。IP软件在存储器中维持一个计数器，每产生一个数据报，计数器就加1，并将此值赋给标识字段。但这个“标识”并不是序号，因为IP是无连接服务，数据报不存在按序接收的问题。当数据报由于长度超过网络的MTU而必须分片时，这个标识字段的值就被复制到所有的数据报片的标识字段中。相同的标识字段的值使分片后的各数据报片最后能正确地重装成为原来的数据报。</p>
+<p>(6) 标志(fag) 占3位，但目前只有两位有意义。</p>
+<p>● 标志字段中的最低位记为MF (MoreFragment)。MF = 1即表示后面还有分片的数据报。MF = 0表示这已是若干数据报片中的最后一个。</p>
+<p>● 标志字段中间的一位记为DF (Don&rsquo;tFragment)，意思是不能分片。只有当DF = 0时才允许分片;</p>
+<p>(7) 片偏移 占13位。片偏移指出：较长的分组在分片后，某片在原分组中的相对位置；</p>
+<p>(8) 生存时间 占8位，生存时间字段常用的英文缩写是TTL (Time To Live)，表明是数据报在网络中的寿命。由发出数据报的源点设置这个字段。其目的是防止无法交付的数据报无限制地在因特网中兜圈子；</p>
+<p>(9) 协议 占8位，表示该分组携带的数据使用何种协议，以便使目的主机的IP层知道应将数据部分上交给哪个处理过程（如TCP、UDP、ICMP等）。常用的一些协议和相应的协议字段值（写在协议后面的括号中）是：UDP（17）、TCP（6）、ICMP（1）、GGP（3）、EGP（8）、IGP（9）、OSPE（89）</p>
+<h3 id="五ipv4地址">五、IPv4地址</h3>
+<p>一个IPv4地址是32位地址，它唯一地并通用地定义了一个连接到Internet上的主机或者路由器。IP地址是连接的地址，不是主机或者路由器的地址，因为如果设备移动到另一个网络，IP地址可能会改变。把IP地址分为A、B、C、D、E共5类，s其中A类、B类和C类是单播地址。</p>
+<p><img src="/img/ip%E5%88%86%E7%B1%BB.png" alt=""></p>
+<p>(1)A类地址第1个字节用作网络号，且最高位为0，这样就只有7可以表示网络号，能够表示的网络号有27=128个，因为全0（即00000000）和全1（即01111111，127）在地址中有特殊用途，<strong>网络号字段为全0的IP地址是个保留地址，意思是“本网络”</strong>*；*<strong>网络号字段为127保留作为本地软件环回测试本主机之用</strong>。所以去掉有特殊用途的全0和全1的网络地址，这样，就只能表示126个网络号，范围是1～126。后3个字节用作主机号，有24位可表示主机号，能够表示的主机号有224-2=16777214，约为1600万台主机。这里减2的原因是主机号为全0和全1两种，主机号字段全0表示该IP地址是“本主机”所连接到的单个网络地址，主机号字段全1表示该网络上的所有主机（即广播地址）。IP地址空间共有2^32（4294967296）个地址，整个A类地址空间共有2^31个地址，占有整个IP地址空间的50%。A类IP地址常用于大型的网络。</p>
+<p>(2)B类地址前2个字节用作网络号（即高16位），后2个字节用作主机号。网络号字段中最高位为10，剩下14位可以进行分配。实际上B类网络地址128.0.0.0是不能指派的，而可以指派的B类最小网络地址是128.1.0.0。因此，B类地址的可用网络数为(2^14)-1，即16383。B类地址的每一个网络号上最大主机数是2^16-2，即65 534台主机，这里减2是去掉全0和全1的主机号。整个B类地址空间共约有2^30个地址，占整个IP空间的25%。B类地址通常用于中等规模的网络。</p>
+<p>(3)C类地址前3个字节用作网络号（即高24位），最后1个字节用作主机号，网络号字段中最高位为110，还有21位可以进行分配。但C类网络地址192.0.0.0也是不能指派的，可以指派的C类最小网络地址是192.0.1.0，因此，C类地址的可用网络总数是2^21-1，即2097151。在每一个C类网络地址上最大主机数是2^8-2，即254台主机。整个C类地址空间共有2^29个地址，占整个IP地址的12.5%。C类IP地址通常用于小型的网络。</p>
+<p>(4)D类地址最高位为1110，因此，D类地址的第一个字节为224～239。是多播地址，不识别互联网内的单个接口，但识别接口组。主要是留给因特网体系结构委员会（IAB，Internet Architecture Board）使用的。</p>
+<p>(5)E类地址最高位为11110，因此，E类地址第一个字节为240～255，保留用于科学研究。</p>
+<table>
+<thead>
+<tr>
+<th>网络类别</th>
+<th>最大可指派网络数</th>
+<th>第一个可指派网络号</th>
+<th>最后可指派网络号</th>
+<th>每个网络最大主机数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>(2^7)-1</td>
+<td>1</td>
+<td>126</td>
+<td>(2^24)-2</td>
+</tr>
+<tr>
+<td>B</td>
+<td>(2^14)-1</td>
+<td>128.1</td>
+<td>191.255</td>
+<td>(2^16)-2</td>
+</tr>
+<tr>
+<td>C</td>
+<td>(2^31)-1</td>
+<td>192.0.1</td>
+<td>223.255.255</td>
+<td>(2^8)-2</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>网络号</th>
+<th>主机号</th>
+<th>源地址使用</th>
+<th>目的地址使用</th>
+<th>代表的意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>可以</td>
+<td>不可以</td>
+<td>本网络上的本主机</td>
+</tr>
+<tr>
+<td>0</td>
+<td>主机号</td>
+<td>可以</td>
+<td>不可以</td>
+<td>在本网络上的某个主机</td>
+</tr>
+<tr>
+<td>全1</td>
+<td>全1</td>
+<td>不可以</td>
+<td>可以</td>
+<td>只在本网络上广播</td>
+</tr>
+<tr>
+<td>网络号</td>
+<td>全1</td>
+<td>不可以</td>
+<td>可以</td>
+<td>改网络号上的所有主机广播</td>
+</tr>
+<tr>
+<td>127</td>
+<td>非全0/全1</td>
+<td>可以</td>
+<td>可以</td>
+<td>用作本地软件环回测试</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Pv4地址分为A、B、C、D、E五类，出去特殊作用的D、E两类，剩下的A、B、C三类地址是我们常见的IP地址段。A类地址的容量最大，可以容纳16777214个主机，B类地址可以容纳65534个主机，C类地址可以容纳254个主机。</strong>
+<strong>在这三类地址中，绝大多数的IP地址都是公有地址，需要向国际互联网信息中心申请注册。但是在IPv4地址协议中预留了3个IP地址段，作为私有地址，供组织机构内部使用。</strong>
+<strong>这三个地址段分别位于A、B、C三类地址内：</strong></p>
+<ul>
+<li><strong>A类地址：10.0.0.0&ndash;10.255.255.255</strong></li>
+<li><strong>B类地址：172.16.0.0&ndash;172.31.255.255</strong>*</li>
+<li><strong>C类地址：192.168.0.0&ndash;192.168.255.255</strong></li>
+</ul>
+<p><strong>所以局域网在选取使用私有地址时，一般会按照实际需要容纳的主机数来选择私有地址段。常见的局域网由于容量小，一般选择C类的192.168.0.0作为地址段使用，一些大型企业就需要使用B类甚至A类地址段作为内部网络的地址段。</strong>
+<strong>最后需要补充说明的是，由于NAT和子网掩码的存在，实际在使用中，一个C类大小的局域网也可以选择A类的10.0.0.0网段作为自己的IP地址段。大多数局域网之所以仍然选择192.168.0.0/24或者192.168.1.0/24作为自己的IP地址段，更多的是因为约定成俗或者说网管个人习惯的关系。</strong></p>
+<p><strong>作者：匿名用户</strong>
+<strong>链接：https://www.zhihu.com/question/19813460/answer/13042143</strong>
+<strong>来源：知乎</strong>
+<strong>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</strong></p>
+<h4 id="子网划分">子网划分</h4>
+<p>子网划分是指由网络管理员将本单位一个给定的网络分为若干个更小的部分，这些更小的部分被称为子网。当本单位网络中的主机总数未超出所给定的某类网络可容纳的最大主机数，但单位内部又要划分成若干个分段而便于进行管理时，就可以采用子网划分的方法。为了创建子网，网络管理员需要从原有的两个层次结构的IP 地址的主机位中借出连续的高若干位作为子网络号，后面剩下的仍为主机号字段。于是，原来的<strong>两级层次结构的IP地址在本单位内就变为三级IP地址：网络号、子网号、主机号</strong>。</p>
+
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">lihongda</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      2021-08-30
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://lihd2199.github.io/tags/%E7%BD%91%E7%BB%9C%E5%B1%82/">网络层</a>
+          <a href="https://lihd2199.github.io/tags/ip/">ip</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/post/network/hierarchical-model/">
+            
+            <i class="iconfont">
+              <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M691.908486 949.511495l75.369571-89.491197c10.963703-12.998035 10.285251-32.864502-1.499144-44.378743L479.499795 515.267417 757.434875 204.940602c11.338233-12.190647 11.035334-32.285311-0.638543-44.850487l-80.46666-86.564541c-11.680017-12.583596-30.356378-12.893658-41.662889-0.716314L257.233596 494.235404c-11.332093 12.183484-11.041474 32.266891 0.657986 44.844348l80.46666 86.564541c1.772366 1.910513 3.706415 3.533476 5.750981 4.877077l306.620399 321.703933C662.505829 963.726242 680.945807 962.528973 691.908486 949.511495z"></path>
+</svg>
+
+            </i>
+            <span class="prev-text nav-default">网络分层模型</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        
+          <a class="next" href="/post/network/transport-layer/">
+            <span class="next-text nav-default">运输层</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+    
+
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="mailto:lihd9999@gmail.com" rel="me noopener" class="iconfont"
+      title="email" >
+      <svg class="icon" viewBox="0 0 1451 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M664.781909 681.472759 0 97.881301C0 3.997201 71.046997 0 71.046997 0L474.477909 0 961.649408 0 1361.641813 0C1361.641813 0 1432.688811 3.997201 1432.688811 97.881301L771.345323 681.472759C771.345323 681.472759 764.482731 685.154773 753.594283 688.65053L753.594283 688.664858C741.602731 693.493018 729.424896 695.068979 718.077952 694.839748 706.731093 695.068979 694.553173 693.493018 682.561621 688.664858L682.561621 688.65053C671.644501 685.140446 664.781909 681.472759 664.781909 681.472759L664.781909 681.472759ZM718.063616 811.603883C693.779541 811.016482 658.879232 802.205449 619.10784 767.734955 542.989056 701.759633 0 212.052267 0 212.052267L0 942.809523C0 942.809523 0 1024 83.726336 1024L682.532949 1024 753.579947 1024 1348.948139 1024C1432.688811 1024 1432.688811 942.809523 1432.688811 942.809523L1432.688811 212.052267C1432.688811 212.052267 893.138176 701.759633 817.019477 767.734955 777.248 802.205449 742.347691 811.03081 718.063616 811.603883L718.063616 811.603883Z"></path>
+</svg>
+
+    </a>
+  
+    <a href="https://github.com/lihd2199" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://lihd2199.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    2021
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        lihongda
+        
+      </span></span>
+
+  
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <script type="text/javascript" src="/js/load-photoswipe.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe.min.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe-ui-default.min.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
