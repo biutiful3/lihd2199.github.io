@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Raft算法 - China Number One!</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="lihongda" />
+  <meta name="description" content="本文为著名的 RAFT 一致性算法论文的中文翻译 Abstract Raft 是一种用于管理复制日志的共识算法。它产生的效果等价于(multi-)Paxos，和Paxos一样高" />
+
+  <meta name="keywords" content="Hugo, theme, jane" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.87.0" />
+
+
+<link rel="canonical" href="https://lihd2199.github.io/post/consistency/raft/" />
+
+
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.27cf0d17b54f07bde9f93e811bf33a08cc06979e74774c8f0d164b740e2e8ed8.css" integrity="sha256-J88NF7VPB73p&#43;T6BG/M6CMwGl550d0yPDRZLdA4ujtg=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="Raft算法" />
+<meta property="og:description" content="本文为著名的 RAFT 一致性算法论文的中文翻译 Abstract Raft 是一种用于管理复制日志的共识算法。它产生的效果等价于(multi-)Paxos，和Paxos一样高" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://lihd2199.github.io/post/consistency/raft/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-08-31T10:44:55+08:00" />
+<meta property="article:modified_time" content="2021-08-31T10:44:55+08:00" />
+
+<meta itemprop="name" content="Raft算法">
+<meta itemprop="description" content="本文为著名的 RAFT 一致性算法论文的中文翻译 Abstract Raft 是一种用于管理复制日志的共识算法。它产生的效果等价于(multi-)Paxos，和Paxos一样高"><meta itemprop="datePublished" content="2021-08-31T10:44:55+08:00" />
+<meta itemprop="dateModified" content="2021-08-31T10:44:55+08:00" />
+<meta itemprop="wordCount" content="4623">
+<meta itemprop="keywords" content="一致性算法,raft," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Raft算法"/>
+<meta name="twitter:description" content="本文为著名的 RAFT 一致性算法论文的中文翻译 Abstract Raft 是一种用于管理复制日志的共识算法。它产生的效果等价于(multi-)Paxos，和Paxos一样高"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">China Number One!</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/index.html">首页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/post/">全部</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/categories/">分类</a>
+          
+        
+      </li>
+    
+
+    
+  </ul>
+</nav>
+
+
+  
+    
+
+
+
+
+
+
+  <link rel="stylesheet" href="/lib/photoswipe/photoswipe.min.css" />
+  <link rel="stylesheet" href="/lib/photoswipe/default-skin/default-skin.min.css" />
+
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+  
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      China Number One!
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/index.html">首页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/post/">全部</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://lihd2199.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+
+    
+    
+
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">Raft算法</h1>
+      
+      <div class="post-meta">
+        <time datetime="2021-08-31" class="post-time">
+          August 2021
+        </time>
+        <div class="post-category">
+            <a href="https://lihd2199.github.io/categories/%E4%B8%80%E8%87%B4%E6%80%A7%E7%AE%97%E6%B3%95/"> 一致性算法 </a>
+            
+          </div>
+        
+
+        
+        
+
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    
+    <div class="post-content">
+      <p>本文为著名的 RAFT 一致性算法论文的中文翻译</p>
+<h3 id="abstract">Abstract</h3>
+<p>　　Raft 是一种用于管理复制日志的共识算法。它产生的效果等价于(multi-)Paxos，和Paxos一样高效，但它的结构与Paxos不同；这使得 Raft 比 Paxos 更容易理解，也为构建实用系统提供了更好的基础。为了增强可理解性，Raft 将共识的关键要素（例如领导者选举、日志复制和安全性）分离，并强制执行更强的一致性以减少必须考虑的状态数量。用户研究的结果表明，Raft 比 Paxos 更容易让学生学习。 Raft 还包含了一种用于更改集群成员的新机制，该机制使用重叠多数（overlapping majorities）来保证安全。</p>
+<h3 id="1-introduction">1 Introduction</h3>
+<p>　　共识算法允许许多机器作为一个集群工作，可以在某些机器出现故障时仍然能正常的工作。 因此，它们在构建可靠的大型软件系统方面发挥着关键作用。 Paxos在过去十年主导了共识算法的讨论：大多数共识的实现都基于 Paxos 或受其影响，而 Paxos 已成为用于向学生教授共识的主要工具。</p>
+<p>　　不幸的是，Paxos 非常难以理解，尽管多次尝试使其更易于理解。 此外，其架构需要进行复杂的更改才能支持实际系统。 因此，系统构建者和学生都在为 Paxos 苦苦挣扎。</p>
+<p>　　在自己与Paxos苦苦挣扎之后，我们着手寻找一种新的共识算法，可以为系统构建和教育提供更好的基础。 我们的方法不同寻常，因为我们的主要目标是在稳定性下，能否为实际系统定义一个共识算法，并以比 Paxos 更容易学习的方式来描述它？ 此外，我们希望该算法能够促进对系统构建者至关重要的直觉的发展（ Furthermore, we wanted the algorithm to facilitate the development of intuitions that are essential for system builders.）。 重要的不仅是算法要起作用，而且要清楚它为什么起作用。</p>
+<p>　　这项工作的结果是一种称为 Raft 的共识算法。 在设计 Raft 时，我们应用了特定的技术来提高可理解性，包括分解（Raft 将领导选举、日志复制和安全性模块化）和状态空间缩减（相对于 Paxos，Raft 减少了不确定性程度和服务器之间彼此不一致的方式 ）。 对两所大学的 43 名学生进行的用户研究表明，Raft 比 Paxos 更容易理解：在学习了这两种算法后，相对于Paxos，其中 33 名学生能够更好地回答有关 Raft 的问题。</p>
+<p>　　Raft 在许多方面与现有的共识算法相似（最著名的是 Oki 和 Liskov 的 ViewstampedReplication），但它有几个新颖的特点：</p>
+<ul>
+<li>
+<p>Strong leader:  Raft 使用比其他共识算法更强的领导形式。 例如，log entries 仅从领导者流向其他服务器。 这简化了复制日志的管理，使 Raft 更容易理解。</p>
+</li>
+<li>
+<p>Leader election: Raft 使用随机计时器来选举领导者。这为共识算法已经需要的心跳增加了少量机制，同时可以简单快速地解决冲突。</p>
+</li>
+<li>
+<p>Membership changes: Raft 使用了一种新的联合共识方法用于更改集群中服务器，其中两种不同配置的大多数在转换期间重叠。 这允许集群在配置更改期间继续正常运行。</p>
+</li>
+</ul>
+<p>　　无论是出于教育目的还是作为实现的基础，我们相信 Raft 优于 Paxos 和其他共识算法。Raft 比其他算法更简单易懂；它的描述足够完整，可以满足实际系统的需要； 它有几个开源实现，被多家公司使用； 其安全特性已被正式证明； 其效率可与其他算法相媲美。</p>
+<p>　　论文的其余部分介绍了复制状态机问题（第 2 节），讨论了 Paxos 的优缺点（第 3 节），描述了我们实现可理解性的一般方法（第 4 节），介绍了 Raft 共识算法（第 5 节– 第 7 节)，评估 Raft（第 8 节），并讨论相关工作（第 9 节）。 由于篇幅限制，这里省略了 Raft 算法的一些元素，但可以在扩展的技术报告中找到它们 。 附加材料描述了客户端如何与系统交互，以及如何回收 Raft 日志中的空间。</p>
+<h3 id="2-replicated-state-machines">2 Replicated state machines</h3>
+<p>　　一致性算法是在复制状态机的背景下产生的。 在这种方法中，一组服务器上的状态机计算相同状态的相同副本，并且即使某些服务器出现故障也可以继续运行。 复制状态机用于解决分布式系统中的各种容错问题。 例如，具有单个集群领导者的大型系统，如 GFS、HDFS 和 RAMCloud，通常使用单独的复制状态机来进行 leader 选举和存储 leader 崩溃后重新选举需要的配置信息。 复制状态机的例子包括 Chubby 和 ZooKeeper。</p>
+<p><a href="../../../img/%E5%A4%8D%E5%88%B6%E7%8A%B6%E6%80%81%E6%9C%BA.png"><img src="/img/%E7%8A%B6%E6%80%81%E5%A4%8D%E5%88%B6%E6%9C%BA.png" alt=""></a></p>
+<p>　　　　　　　　　　　　　　　图 1：复制状态机架构</p>
+<p>　　复制状态机通常使用复制日志来实现，如图 1 所示。每个服务器存储一个包含一系列命令的日志，其状态机按顺序执行这些命令。 每个日志以相同的顺序包含相同的命令，因此每个状态机处理相同的命令序列。 这样就能得到相同的状态和相同的输出序列。</p>
+<p>　　一致性算法的工作就是保持复制日志的一致性。 服务器接收来自客户端的命令并将它们添加到其日志中。 它与其他服务器通信，以确保即使某些服务器出现故障，每个日志最终包含相同顺序的相同请求。 一旦命令被正确复制，每个服务器就会按日志顺序处理它们，并将输出返回给客户端。 因此，服务器形成了一个单一的、高度可靠的状态机。</p>
+<p>实际系统的共识算法通常具有以下特性：</p>
+<ul>
+<li>
+<p>它们在所有非<a href="https://zh.wikipedia.org/wiki/%E6%8B%9C%E5%8D%A0%E5%BA%AD%E5%B0%86%E5%86%9B%E9%97%AE%E9%A2%98"><!-- raw HTML omitted -->拜占庭条件<!-- raw HTML omitted --></a>下确保安全（不返回错误结果），包括网络延迟、分区和丢包、重复和重新排序。</p>
+</li>
+<li>
+<p>只要大多数服务器都可以运行，并且可以相互之间通信，同时可以和客户端通信，它们就完全可以发挥作用（可用）。 因此，一个典型的五台服务器集群可以容忍任意两台服务器的故障。 假设服务器因故障停止，他们稍后可能会从稳定存储的状态中恢复并重新加入集群。</p>
+</li>
+<li>
+<p>它们不依赖于时钟来确保日志的一致性，错误的时钟和极端的消息延迟在最坏的情况下会导致可用性问题。</p>
+</li>
+<li>
+<p>在一般情况下，只要集群的大部分响应了一轮远程过程调用，命令就可以完成。 少数慢速服务器不影响整体系统性能。</p>
+</li>
+</ul>
+<h3 id="3-whats-wrong-with-paxos">3 What’s wrong with Paxos?</h3>
+<p>　　在过去十年中，Leslie Lamport 的 Paxos 协议几乎成为共识算法的同义词：它是课程中最常教授的协议，大多数共识的实现都以它为起点。 Paxos 首先定义了一个能够就单个决策达成一致的协议，例如单个复制的日志条目。 我们将这个子集称为single-decree Paxos。 然后 Paxos 组合该协议的多个实例以促进一系列决策，例如日志（multi-Paxos）。 Paxos 确保安全性和稳定性，并且支持集群成员的更改。 其正确性已被证明，在一般情况下是有效的。</p>
+<p>　　不幸的是，Paxos 有两个明显的缺点。 第一个缺点是 Paxos 异常难以理解。 众所周知，Paxos完整的解释是不透明的。付出巨大的努力，但是很少有人能够成功地理解它。 因此，有几次尝试用更简单的术语来解释 Paxos。 这些解释侧重于single-decree Paxos，但它们仍然具有挑战性。 在 NSDI 2012 对 atten dees 的非正式调查中，我们发现很少有人对 Paxos 感到满意，即使在经验丰富的研究人员中也是如此。 我们自己也在与 Paxos 斗争； 在阅读了一些简化的解释并设计了我们自己的替代协议之后，我们才能够理解完整的协议，这个过程花了将近一年的时间。</p>
+<p>　　我们假设 Paxos 的不透明性源于它选择单一法令子集作为其基础。 单令Paxos密集而微妙：它分为两个阶段，没有简单直观的解释，不能独立理解。 因此，很难对单一法令协议的工作原理产生直觉。 多 Paxos 的组合规则显着增加了复杂性和微妙性。 我们认为，就多个决策（即日志而不是单个条目）达成共识的整体问题可以用其他更直接、更明显的方式进行分解。</p>
+<h3 id="4-designing-for-understandability">4 Designing for understandability</h3>
+<p>　　我们在设计 Raft 时有几个目标：它必须为系统构建提供完整且实用的基础，从而显著的减少开发人员所需的设计工作量； 它必须在所有条件下都是安全的，并且在常规的操作条件下可用； 并且它必须对常见操作有效。 但我们最重要的目标，也是最困难的挑战——可理解性。 必须让大量观众轻松地理解算法。 此外，必须能够对算法产生直觉，以便系统构建者可以在现实世界的实现中进行不可避免的扩展。（so that system builders can make the extensions that are inevitable in real-world implementations.）</p>
+<p>　　在 Raft 的设计中有很多地方我们不得不在替代方法中进行选择。 在这些情况下，我们根据可理解性评估了备选方案：解释每个备选方案有多难（例如，它的状态空间有多复杂，是否有微妙的含义？），以及对读者来说有多容易 完全理解该方法及其含义？</p>
+<p>　　我们认识到这种分析具有高度的主观性；尽管如此，我们还是使用了两种普遍适用的技术。第一种技术是众所周知的问题分解方法：只要有可能，我们将问题分成可以相对独立地解决、解释和理解的单独部分。例如，在 Raft 中，我们将leader election， log replication， safety，和 membership changes分开。</p>
+<p>　　我们的第二种方法是通过减少要考虑的状态数量来简化状态空间，使系统更加连贯并尽可能消除不确定性。具体来说，日志是不允许有漏洞的，Raft 限制了日志彼此不一致的方式。尽管在大多数情况下我们试图消除不确定性，但在某些情况下，不确定性实际上在改善可稳定性。特别是，随机方法引入了不确定性，但它们倾向于通过以类似的方式处理所有可能的选择来减少状态空间（“选择任何一个；无关紧要”）。我们使用随机化来简化 Raft leader 选举算法。</p>
+<h3 id="5-the-raft-consensus-algorithm">5 The Raft consensus algorithm</h3>
+<p>　　Raft 是一种用于管理第 2 节中描述的复制日志的算法。图 2 总结了该算法以供参考，图 3 列出了该算法的关键特性；这些图的元素将在本节的其余部分逐个讨论。</p>
+<h4 id="state">state</h4>
+<ul>
+<li>在所有服务器上持久存在的（在响应远程过程调用 RPC 之前稳定存储的）:　</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">currentTerm</td>
+<td>服务器最后知道的任期（初始化时从０开始递增）</td>
+</tr>
+<tr>
+<td style="text-align:left">votedFor</td>
+<td>在当前任期内收到选票的 Candidate id（如果没有就为 null）</td>
+</tr>
+<tr>
+<td style="text-align:left">log[]</td>
+<td>日志条目; 每个条目包含状态机的命令和从leader处接收到的任期号</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>在所有服务器上部位定存在的:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>commitIndex</td>
+<td>已知提交的最高的日志条目的索引（初始化为 0，单调增加）</td>
+</tr>
+<tr>
+<td>lastApplied</td>
+<td>复制到状态机的最高日志条目的索引（初始化为 0，单调增加）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>leader的不稳定状态（选举后重新初始化）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nextIndex[]</td>
+<td>对于每个服务器，要发送到该服务器的下一个日志条目的索引（初始化为leader最后一个日志索引 + 1）</td>
+</tr>
+<tr>
+<td>matchIndex[]</td>
+<td>对于每个服务器，已知在服务器上复制的最高日志条目的索引（初始化为0，单调递增）</td>
+</tr>
+</tbody>
+</table>
+<h4 id="appendentries-rpc">AppendEntries RPC</h4>
+<p>由leader调用以复制日志条目（第 5.3 节）； 也用作心跳（第 5.2 节）。</p>
+<ul>
+<li>参数</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>term</td>
+<td>leader’s 任期</td>
+</tr>
+<tr>
+<td>leaderId</td>
+<td>Leader 的 id，为了其他服务器能重定向到客户端</td>
+</tr>
+<tr>
+<td>prevLogIndex</td>
+<td>紧接在新条目之前的日志条目的索引</td>
+</tr>
+<tr>
+<td>prevLogTerm</td>
+<td>上一个日志的所在任期</td>
+</tr>
+<tr>
+<td>entries[]</td>
+<td>要存储的日志条目（为空的时候代表心跳；为了效率可以发送多个）</td>
+</tr>
+<tr>
+<td>leaderCommit</td>
+<td>leader’s commitIndex</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>响应</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>term</td>
+<td>currentTerm, for leader to update itself</td>
+</tr>
+<tr>
+<td>success</td>
+<td>如果 follower 包含匹配prevLogIndex 和 prevLogTerm 的 log entry  返回 true</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>follower的实现</li>
+</ul>
+<ol>
+<li>如果 term &lt; currentTerm (第 5.1 节)，则回复 false</li>
+<li>如果日志在 prevLogIndex 中不包含与 prevLogTerm 匹配的条目，则回复 false（第 5.3 节）</li>
+<li>如果现有条目与新条目冲突（相同的索引但不同的内容），删除现有条目及其后的所有条目（第 5.3 节）</li>
+<li>追加尚未出现在日志中的新条目</li>
+<li>如果leaderCommit &gt; commitIndex，设置commitIndex =min(leaderCommit, index of last new entry)</li>
+</ol>
+<h4 id="requestvote-rpc">RequestVote RPC</h4>
+<p>由candidates调用以收集选票（第 5.2 节）</p>
+<ul>
+<li>参数</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>term</td>
+<td>candidate’s term</td>
+</tr>
+<tr>
+<td>candidateId</td>
+<td>candidate requesting vote</td>
+</tr>
+<tr>
+<td>lastLogIndex</td>
+<td>candidate最后一个日志条目的索引（第 5.4 节）</td>
+</tr>
+<tr>
+<td>lastLogTerm</td>
+<td>candidate最后一个日志条目的任期（第 5.4 节）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>响应</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>term</td>
+<td>当前的任期号，用于 Candidate 更新自己的任期号</td>
+</tr>
+<tr>
+<td>voteGranted</td>
+<td>如果 Candidate 收到选票为 true</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Receiver implementation:</li>
+</ul>
+<ol>
+<li>返回 false 如果 term &lt; currentTerm (第 5.1 节)</li>
+<li>如果votedFor为空或者与candidateId相同，并且 Candidate 的日志和自己的日志一样新，则给该 Candidate 投票（5.2节 和 5.4节）</li>
+</ol>
+<p>　　Raft 通过首先选举一个特殊的领导者来实现共识，然后让领导者完全负责管理复制日志。领导者接受来自客户端的日志条目，将它们复制到其他服务器上，并告诉服务器何时将日志条目应用到它们的状态机是安全的。拥有领导者简化了复制日志的管理。例如，领导者可以决定在日志中放置新条目的位置，而无需咨询其他服务器，并且数据以简单的方式从领导者流向其他服务器。领导者可能会失败或与其他服务器断开连接，在这种情况下会选出新的领导者。</p>
+<p>　　鉴于领导者方法，Raft 将共识问题分解为三个相对独立的子问题，这些子问题将在以下小节中讨论：</p>
+<p><a href="https://web.stanford.edu/~ouster/cgi-bin/papers/raft-atc14.pdf">raft-论文原文</a></p>
+<p><a href="http://thesecretlivesofdata.com/raft/">动画演示</a></p>
+
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">lihongda</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+      August 2021
+      
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://lihd2199.github.io/tags/%E4%B8%80%E8%87%B4%E6%80%A7%E7%AE%97%E6%B3%95/">一致性算法</a>
+          <a href="https://lihd2199.github.io/tags/raft/">raft</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/post/network/http/">
+            <span class="next-text nav-default">http</span>
+            <span class="prev-text nav-mobile">Next</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="https://github.com/lihd2199" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://lihd2199.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    2021
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        lihongda
+        
+      </span></span>
+
+  
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js" integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <script type="text/javascript" src="/js/load-photoswipe.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe.min.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe-ui-default.min.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
