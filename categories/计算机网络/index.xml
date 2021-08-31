@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>计算机网络 on 新的一天</title>
+    <title>计算机网络 on China Number One!</title>
     <link>https://lihd2199.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</link>
-    <description>Recent content in 计算机网络 on 新的一天</description>
+    <description>Recent content in 计算机网络 on China Number One!</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
+    <copyright>lihongda</copyright>
     <lastBuildDate>Mon, 30 Aug 2021 20:27:54 +0800</lastBuildDate><atom:link href="https://lihd2199.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>http</title>

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>SSL/TLS on 新的一天</title>
+    <title>SSL/TLS on China Number One!</title>
     <link>https://lihd2199.github.io/tags/ssl/tls/</link>
-    <description>Recent content in SSL/TLS on 新的一天</description>
+    <description>Recent content in SSL/TLS on China Number One!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language><atom:link href="https://lihd2199.github.io/tags/ssl/tls/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <copyright>lihongda</copyright><atom:link href="https://lihd2199.github.io/tags/ssl/tls/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>加密</title>
       <link>https://lihd2199.github.io/post/network/encryption/</link>

@@ -1,15 +1,282 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>定风波 on 新的一天</title>
+    <title>定风波 on China Number One!</title>
     <link>https://lihd2199.github.io/</link>
-    <description>Recent content in 定风波 on 新的一天</description>
+    <description>Recent content in 定风波 on China Number One!</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
+    <copyright>lihongda</copyright>
     <lastBuildDate>Mon, 30 Aug 2021 19:47:57 +0800</lastBuildDate>
     
         <atom:link href="https://lihd2199.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Raft算法</title>
+      <link>https://lihd2199.github.io/post/consistency/raft/</link>
+      <pubDate>Tue, 31 Aug 2021 10:44:55 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/consistency/raft/</guid>
+      
+        <description>&lt;p&gt;本文为著名的 RAFT 一致性算法论文的中文翻译&lt;/p&gt;
+&lt;h3 id=&#34;abstract&#34;&gt;Abstract&lt;/h3&gt;
+&lt;p&gt;　　Raft 是一种用于管理复制日志的共识算法。它产生的效果等价于(multi-)Paxos，和Paxos一样高效，但它的结构与Paxos不同；这使得 Raft 比 Paxos 更容易理解，也为构建实用系统提供了更好的基础。为了增强可理解性，Raft 将共识的关键要素（例如领导者选举、日志复制和安全性）分离，并强制执行更强的一致性以减少必须考虑的状态数量。用户研究的结果表明，Raft 比 Paxos 更容易让学生学习。 Raft 还包含了一种用于更改集群成员的新机制，该机制使用重叠多数（overlapping majorities）来保证安全。&lt;/p&gt;
+&lt;h3 id=&#34;1-introduction&#34;&gt;1 Introduction&lt;/h3&gt;
+&lt;p&gt;　　共识算法允许许多机器作为一个集群工作，可以在某些机器出现故障时仍然能正常的工作。 因此，它们在构建可靠的大型软件系统方面发挥着关键作用。 Paxos在过去十年主导了共识算法的讨论：大多数共识的实现都基于 Paxos 或受其影响，而 Paxos 已成为用于向学生教授共识的主要工具。&lt;/p&gt;
+&lt;p&gt;　　不幸的是，Paxos 非常难以理解，尽管多次尝试使其更易于理解。 此外，其架构需要进行复杂的更改才能支持实际系统。 因此，系统构建者和学生都在为 Paxos 苦苦挣扎。&lt;/p&gt;
+&lt;p&gt;　　在自己与Paxos苦苦挣扎之后，我们着手寻找一种新的共识算法，可以为系统构建和教育提供更好的基础。 我们的方法不同寻常，因为我们的主要目标是在稳定性下，能否为实际系统定义一个共识算法，并以比 Paxos 更容易学习的方式来描述它？ 此外，我们希望该算法能够促进对系统构建者至关重要的直觉的发展（ Furthermore, we wanted the algorithm to facilitate the development of intuitions that are essential for system builders.）。 重要的不仅是算法要起作用，而且要清楚它为什么起作用。&lt;/p&gt;
+&lt;p&gt;　　这项工作的结果是一种称为 Raft 的共识算法。 在设计 Raft 时，我们应用了特定的技术来提高可理解性，包括分解（Raft 将领导选举、日志复制和安全性模块化）和状态空间缩减（相对于 Paxos，Raft 减少了不确定性程度和服务器之间彼此不一致的方式 ）。 对两所大学的 43 名学生进行的用户研究表明，Raft 比 Paxos 更容易理解：在学习了这两种算法后，相对于Paxos，其中 33 名学生能够更好地回答有关 Raft 的问题。&lt;/p&gt;
+&lt;p&gt;　　Raft 在许多方面与现有的共识算法相似（最著名的是 Oki 和 Liskov 的 ViewstampedReplication），但它有几个新颖的特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Strong leader:  Raft 使用比其他共识算法更强的领导形式。 例如，log entries 仅从领导者流向其他服务器。 这简化了复制日志的管理，使 Raft 更容易理解。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Leader election: Raft 使用随机计时器来选举领导者。这为共识算法已经需要的心跳增加了少量机制，同时可以简单快速地解决冲突。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Membership changes: Raft 使用了一种新的联合共识方法用于更改集群中服务器，其中两种不同配置的大多数在转换期间重叠。 这允许集群在配置更改期间继续正常运行。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;　　无论是出于教育目的还是作为实现的基础，我们相信 Raft 优于 Paxos 和其他共识算法。Raft 比其他算法更简单易懂；它的描述足够完整，可以满足实际系统的需要； 它有几个开源实现，被多家公司使用； 其安全特性已被正式证明； 其效率可与其他算法相媲美。&lt;/p&gt;
+&lt;p&gt;　　论文的其余部分介绍了复制状态机问题（第 2 节），讨论了 Paxos 的优缺点（第 3 节），描述了我们实现可理解性的一般方法（第 4 节），介绍了 Raft 共识算法（第 5 节– 第 7 节)，评估 Raft（第 8 节），并讨论相关工作（第 9 节）。 由于篇幅限制，这里省略了 Raft 算法的一些元素，但可以在扩展的技术报告中找到它们 。 附加材料描述了客户端如何与系统交互，以及如何回收 Raft 日志中的空间。&lt;/p&gt;
+&lt;h3 id=&#34;2-replicated-state-machines&#34;&gt;2 Replicated state machines&lt;/h3&gt;
+&lt;p&gt;　　一致性算法是在复制状态机的背景下产生的。 在这种方法中，一组服务器上的状态机计算相同状态的相同副本，并且即使某些服务器出现故障也可以继续运行。 复制状态机用于解决分布式系统中的各种容错问题。 例如，具有单个集群领导者的大型系统，如 GFS、HDFS 和 RAMCloud，通常使用单独的复制状态机来进行 leader 选举和存储 leader 崩溃后重新选举需要的配置信息。 复制状态机的例子包括 Chubby 和 ZooKeeper。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;../../../img/%E5%A4%8D%E5%88%B6%E7%8A%B6%E6%80%81%E6%9C%BA.png&#34;&gt;&lt;img src=&#34;https://lihd2199.github.io/img/%E7%8A%B6%E6%80%81%E5%A4%8D%E5%88%B6%E6%9C%BA.png&#34; alt=&#34;&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;　　　　　　　　　　　　　　　图 1：复制状态机架构&lt;/p&gt;
+&lt;p&gt;　　复制状态机通常使用复制日志来实现，如图 1 所示。每个服务器存储一个包含一系列命令的日志，其状态机按顺序执行这些命令。 每个日志以相同的顺序包含相同的命令，因此每个状态机处理相同的命令序列。 这样就能得到相同的状态和相同的输出序列。&lt;/p&gt;
+&lt;p&gt;　　一致性算法的工作就是保持复制日志的一致性。 服务器接收来自客户端的命令并将它们添加到其日志中。 它与其他服务器通信，以确保即使某些服务器出现故障，每个日志最终包含相同顺序的相同请求。 一旦命令被正确复制，每个服务器就会按日志顺序处理它们，并将输出返回给客户端。 因此，服务器形成了一个单一的、高度可靠的状态机。&lt;/p&gt;
+&lt;p&gt;实际系统的共识算法通常具有以下特性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;它们在所有非&lt;a href=&#34;https://zh.wikipedia.org/wiki/%E6%8B%9C%E5%8D%A0%E5%BA%AD%E5%B0%86%E5%86%9B%E9%97%AE%E9%A2%98&#34;&gt;&lt;!-- raw HTML omitted --&gt;拜占庭条件&lt;!-- raw HTML omitted --&gt;&lt;/a&gt;下确保安全（不返回错误结果），包括网络延迟、分区和丢包、重复和重新排序。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;只要大多数服务器都可以运行，并且可以相互之间通信，同时可以和客户端通信，它们就完全可以发挥作用（可用）。 因此，一个典型的五台服务器集群可以容忍任意两台服务器的故障。 假设服务器因故障停止，他们稍后可能会从稳定存储的状态中恢复并重新加入集群。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;它们不依赖于时钟来确保日志的一致性，错误的时钟和极端的消息延迟在最坏的情况下会导致可用性问题。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在一般情况下，只要集群的大部分响应了一轮远程过程调用，命令就可以完成。 少数慢速服务器不影响整体系统性能。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-whats-wrong-with-paxos&#34;&gt;3 What’s wrong with Paxos?&lt;/h3&gt;
+&lt;p&gt;　　在过去十年中，Leslie Lamport 的 Paxos 协议几乎成为共识算法的同义词：它是课程中最常教授的协议，大多数共识的实现都以它为起点。 Paxos 首先定义了一个能够就单个决策达成一致的协议，例如单个复制的日志条目。 我们将这个子集称为single-decree Paxos。 然后 Paxos 组合该协议的多个实例以促进一系列决策，例如日志（multi-Paxos）。 Paxos 确保安全性和稳定性，并且支持集群成员的更改。 其正确性已被证明，在一般情况下是有效的。&lt;/p&gt;
+&lt;p&gt;　　不幸的是，Paxos 有两个明显的缺点。 第一个缺点是 Paxos 异常难以理解。 众所周知，Paxos完整的解释是不透明的。付出巨大的努力，但是很少有人能够成功地理解它。 因此，有几次尝试用更简单的术语来解释 Paxos。 这些解释侧重于single-decree Paxos，但它们仍然具有挑战性。 在 NSDI 2012 对 atten dees 的非正式调查中，我们发现很少有人对 Paxos 感到满意，即使在经验丰富的研究人员中也是如此。 我们自己也在与 Paxos 斗争； 在阅读了一些简化的解释并设计了我们自己的替代协议之后，我们才能够理解完整的协议，这个过程花了将近一年的时间。&lt;/p&gt;
+&lt;p&gt;　　我们假设 Paxos 的不透明性源于它选择单一法令子集作为其基础。 单令Paxos密集而微妙：它分为两个阶段，没有简单直观的解释，不能独立理解。 因此，很难对单一法令协议的工作原理产生直觉。 多 Paxos 的组合规则显着增加了复杂性和微妙性。 我们认为，就多个决策（即日志而不是单个条目）达成共识的整体问题可以用其他更直接、更明显的方式进行分解。&lt;/p&gt;
+&lt;h3 id=&#34;4-designing-for-understandability&#34;&gt;4 Designing for understandability&lt;/h3&gt;
+&lt;p&gt;　　我们在设计 Raft 时有几个目标：它必须为系统构建提供完整且实用的基础，从而显著的减少开发人员所需的设计工作量； 它必须在所有条件下都是安全的，并且在常规的操作条件下可用； 并且它必须对常见操作有效。 但我们最重要的目标，也是最困难的挑战——可理解性。 必须让大量观众轻松地理解算法。 此外，必须能够对算法产生直觉，以便系统构建者可以在现实世界的实现中进行不可避免的扩展。（so that system builders can make the extensions that are inevitable in real-world implementations.）&lt;/p&gt;
+&lt;p&gt;　　在 Raft 的设计中有很多地方我们不得不在替代方法中进行选择。 在这些情况下，我们根据可理解性评估了备选方案：解释每个备选方案有多难（例如，它的状态空间有多复杂，是否有微妙的含义？），以及对读者来说有多容易 完全理解该方法及其含义？&lt;/p&gt;
+&lt;p&gt;　　我们认识到这种分析具有高度的主观性；尽管如此，我们还是使用了两种普遍适用的技术。第一种技术是众所周知的问题分解方法：只要有可能，我们将问题分成可以相对独立地解决、解释和理解的单独部分。例如，在 Raft 中，我们将leader election， log replication， safety，和 membership changes分开。&lt;/p&gt;
+&lt;p&gt;　　我们的第二种方法是通过减少要考虑的状态数量来简化状态空间，使系统更加连贯并尽可能消除不确定性。具体来说，日志是不允许有漏洞的，Raft 限制了日志彼此不一致的方式。尽管在大多数情况下我们试图消除不确定性，但在某些情况下，不确定性实际上在改善可稳定性。特别是，随机方法引入了不确定性，但它们倾向于通过以类似的方式处理所有可能的选择来减少状态空间（“选择任何一个；无关紧要”）。我们使用随机化来简化 Raft leader 选举算法。&lt;/p&gt;
+&lt;h3 id=&#34;5-the-raft-consensus-algorithm&#34;&gt;5 The Raft consensus algorithm&lt;/h3&gt;
+&lt;p&gt;　　Raft 是一种用于管理第 2 节中描述的复制日志的算法。图 2 总结了该算法以供参考，图 3 列出了该算法的关键特性；这些图的元素将在本节的其余部分逐个讨论。&lt;/p&gt;
+&lt;h4 id=&#34;state&#34;&gt;state&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;在所有服务器上持久存在的（在响应远程过程调用 RPC 之前稳定存储的）:　&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;名称&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;currentTerm&lt;/td&gt;
+&lt;td&gt;服务器最后知道的任期（初始化时从０开始递增）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;votedFor&lt;/td&gt;
+&lt;td&gt;在当前任期内收到选票的 Candidate id（如果没有就为 null）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;log[]&lt;/td&gt;
+&lt;td&gt;日志条目; 每个条目包含状态机的命令和从leader处接收到的任期号&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;在所有服务器上部位定存在的:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;名称&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;commitIndex&lt;/td&gt;
+&lt;td&gt;已知提交的最高的日志条目的索引（初始化为 0，单调增加）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;lastApplied&lt;/td&gt;
+&lt;td&gt;复制到状态机的最高日志条目的索引（初始化为 0，单调增加）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;leader的不稳定状态（选举后重新初始化）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;名称&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;nextIndex[]&lt;/td&gt;
+&lt;td&gt;对于每个服务器，要发送到该服务器的下一个日志条目的索引（初始化为leader最后一个日志索引 + 1）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;matchIndex[]&lt;/td&gt;
+&lt;td&gt;对于每个服务器，已知在服务器上复制的最高日志条目的索引（初始化为0，单调递增）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id=&#34;appendentries-rpc&#34;&gt;AppendEntries RPC&lt;/h4&gt;
+&lt;p&gt;由leader调用以复制日志条目（第 5.3 节）； 也用作心跳（第 5.2 节）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;参数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;名称&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;term&lt;/td&gt;
+&lt;td&gt;leader’s 任期&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;leaderId&lt;/td&gt;
+&lt;td&gt;Leader 的 id，为了其他服务器能重定向到客户端&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;prevLogIndex&lt;/td&gt;
+&lt;td&gt;紧接在新条目之前的日志条目的索引&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;prevLogTerm&lt;/td&gt;
+&lt;td&gt;上一个日志的所在任期&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;entries[]&lt;/td&gt;
+&lt;td&gt;要存储的日志条目（为空的时候代表心跳；为了效率可以发送多个）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;leaderCommit&lt;/td&gt;
+&lt;td&gt;leader’s commitIndex&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;响应&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;名称&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;term&lt;/td&gt;
+&lt;td&gt;currentTerm, for leader to update itself&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;success&lt;/td&gt;
+&lt;td&gt;如果 follower 包含匹配prevLogIndex 和 prevLogTerm 的 log entry  返回 true&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;follower的实现&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;如果 term &amp;lt; currentTerm (第 5.1 节)，则回复 false&lt;/li&gt;
+&lt;li&gt;如果日志在 prevLogIndex 中不包含与 prevLogTerm 匹配的条目，则回复 false（第 5.3 节）&lt;/li&gt;
+&lt;li&gt;如果现有条目与新条目冲突（相同的索引但不同的内容），删除现有条目及其后的所有条目（第 5.3 节）&lt;/li&gt;
+&lt;li&gt;追加尚未出现在日志中的新条目&lt;/li&gt;
+&lt;li&gt;如果leaderCommit &amp;gt; commitIndex，设置commitIndex =min(leaderCommit, index of last new entry)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;requestvote-rpc&#34;&gt;RequestVote RPC&lt;/h4&gt;
+&lt;p&gt;由candidates调用以收集选票（第 5.2 节）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;参数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;名称&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;term&lt;/td&gt;
+&lt;td&gt;candidate’s term&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;candidateId&lt;/td&gt;
+&lt;td&gt;candidate requesting vote&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;lastLogIndex&lt;/td&gt;
+&lt;td&gt;candidate最后一个日志条目的索引（第 5.4 节）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;lastLogTerm&lt;/td&gt;
+&lt;td&gt;candidate最后一个日志条目的任期（第 5.4 节）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;响应&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;名称&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;term&lt;/td&gt;
+&lt;td&gt;当前的任期号，用于 Candidate 更新自己的任期号&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;voteGranted&lt;/td&gt;
+&lt;td&gt;如果 Candidate 收到选票为 true&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;Receiver implementation:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;返回 false 如果 term &amp;lt; currentTerm (第 5.1 节)&lt;/li&gt;
+&lt;li&gt;如果votedFor为空或者与candidateId相同，并且 Candidate 的日志和自己的日志一样新，则给该 Candidate 投票（5.2节 和 5.4节）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;　　Raft 通过首先选举一个特殊的领导者来实现共识，然后让领导者完全负责管理复制日志。领导者接受来自客户端的日志条目，将它们复制到其他服务器上，并告诉服务器何时将日志条目应用到它们的状态机是安全的。拥有领导者简化了复制日志的管理。例如，领导者可以决定在日志中放置新条目的位置，而无需咨询其他服务器，并且数据以简单的方式从领导者流向其他服务器。领导者可能会失败或与其他服务器断开连接，在这种情况下会选出新的领导者。&lt;/p&gt;
+&lt;p&gt;　　鉴于领导者方法，Raft 将共识问题分解为三个相对独立的子问题，这些子问题将在以下小节中讨论：&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://web.stanford.edu/~ouster/cgi-bin/papers/raft-atc14.pdf&#34;&gt;raft-论文原文&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://thesecretlivesofdata.com/raft/&#34;&gt;动画演示&lt;/a&gt;&lt;/p&gt;
+</description>
+      
+    </item>
     
     <item>
       <title>http</title>
