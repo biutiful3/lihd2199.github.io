@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Raft算法 - China Number One!</title>
+  <title>Raft算法 - China No. 1</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -53,7 +53,7 @@
 
 
 
-<link rel="stylesheet" href="/sass/jane.min.27cf0d17b54f07bde9f93e811bf33a08cc06979e74774c8f0d164b740e2e8ed8.css" integrity="sha256-J88NF7VPB73p&#43;T6BG/M6CMwGl550d0yPDRZLdA4ujtg=" media="screen" crossorigin="anonymous">
+<link rel="stylesheet" href="/sass/jane.min.0f5dd5ee58d28a2e8481f238781f7e5214cc6c0170c58cbcb15f1218042794c3.css" integrity="sha256-D13V7ljSii6EgfI4eB9&#43;UhTMbAFwxYy8sV8SGAQnlMM=" media="screen" crossorigin="anonymous">
 
 
 
@@ -69,7 +69,7 @@
 <meta itemprop="name" content="Raft算法">
 <meta itemprop="description" content="本文为著名的 RAFT 一致性算法论文的中文翻译 Abstract Raft 是一种用于管理复制日志的共识算法。它产生的效果等价于(multi-)Paxos，和Paxos一样高"><meta itemprop="datePublished" content="2021-08-31T10:44:55+08:00" />
 <meta itemprop="dateModified" content="2021-08-31T10:44:55+08:00" />
-<meta itemprop="wordCount" content="4623">
+<meta itemprop="wordCount" content="5513">
 <meta itemprop="keywords" content="一致性算法,raft," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Raft算法"/>
 <meta name="twitter:description" content="本文为著名的 RAFT 一致性算法论文的中文翻译 Abstract Raft 是一种用于管理复制日志的共识算法。它产生的效果等价于(multi-)Paxos，和Paxos一样高"/>
@@ -90,7 +90,7 @@
 <body>
   <div id="mobile-navbar" class="mobile-navbar">
   <div class="mobile-header-logo">
-    <a href="/" class="logo">China Number One!</a>
+    <a href="/" class="logo">China No. 1 </a>
   </div>
   <div class="mobile-navbar-icon">
     <span></span>
@@ -204,7 +204,7 @@
     <div class="logo-wrapper">
   <a href="/" class="logo">
     
-      China Number One!
+      China No. 1 
     
   </a>
 </div>
@@ -296,6 +296,25 @@
 
     
     
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#abstract">Abstract</a></li>
+        <li><a href="#1-introduction">1 Introduction</a></li>
+        <li><a href="#2-replicated-state-machines">2 Replicated state machines</a></li>
+        <li><a href="#3-whats-wrong-with-paxos">3 What’s wrong with Paxos?</a></li>
+        <li><a href="#4-designing-for-understandability">4 Designing for understandability</a></li>
+        <li><a href="#5-the-raft-consensus-algorithm">5 The Raft consensus algorithm</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
 
     
     <div class="post-content">
@@ -351,8 +370,13 @@
 <p>　　在 Raft 的设计中有很多地方我们不得不在替代方法中进行选择。 在这些情况下，我们根据可理解性评估了备选方案：解释每个备选方案有多难（例如，它的状态空间有多复杂，是否有微妙的含义？），以及对读者来说有多容易 完全理解该方法及其含义？</p>
 <p>　　我们认识到这种分析具有高度的主观性；尽管如此，我们还是使用了两种普遍适用的技术。第一种技术是众所周知的问题分解方法：只要有可能，我们将问题分成可以相对独立地解决、解释和理解的单独部分。例如，在 Raft 中，我们将leader election， log replication， safety，和 membership changes分开。</p>
 <p>　　我们的第二种方法是通过减少要考虑的状态数量来简化状态空间，使系统更加连贯并尽可能消除不确定性。具体来说，日志是不允许有漏洞的，Raft 限制了日志彼此不一致的方式。尽管在大多数情况下我们试图消除不确定性，但在某些情况下，不确定性实际上在改善可稳定性。特别是，随机方法引入了不确定性，但它们倾向于通过以类似的方式处理所有可能的选择来减少状态空间（“选择任何一个；无关紧要”）。我们使用随机化来简化 Raft leader 选举算法。</p>
+<p>//todo 后续补上</p>
 <h3 id="5-the-raft-consensus-algorithm">5 The Raft consensus algorithm</h3>
 <p>　　Raft 是一种用于管理第 2 节中描述的复制日志的算法。图 2 总结了该算法以供参考，图 3 列出了该算法的关键特性；这些图的元素将在本节的其余部分逐个讨论。</p>
+<p>　　Raft 通过首先选举一个leader来实现共识，然后让leader完全负责管理复制日志。 leader接受来自客户端的日志条目，将它们复制到其他服务器上，并告诉服务器何时将日志条目应用到它们的状态机是安全的。 拥有leader简化了复制日志的管理。 例如，leader可以决定在日志中放置新条目的位置，而无需咨询其他服务器，并且数据以简单的方式从leader流向其他服务器。 leader可能会失败或与其他服务器断开连接，在这种情况下会选出新的leader。</p>
+<p>　　鉴于领导者方法，Raft 将共识问题分解为三个相对独立的子问题，这些子问题将在以下小节中讨论：</p>
+<pre><code> • Leader election:
+</code></pre><p>　　当现有领导者失败时，必须选择新领导者（第 5.2 节）</p>
 <h4 id="state">state</h4>
 <ul>
 <li>在所有服务器上持久存在的（在响应远程过程调用 RPC 之前稳定存储的）:　</li>
@@ -550,6 +574,44 @@
 <li>返回 false 如果 term &lt; currentTerm (第 5.1 节)</li>
 <li>如果votedFor为空或者与candidateId相同，并且 Candidate 的日志和自己的日志一样新，则给该 Candidate 投票（5.2节 和 5.4节）</li>
 </ol>
+<h4 id="rules-for-servers">Rules for Servers</h4>
+<h5 id="all-servers">All Servers:</h5>
+<ul>
+<li>如果 commitIndex &gt; lastApplied：增加 lastApplied，将 log[lastApplied] 应用到状态机（第 5.3 节）</li>
+<li>如果 RPC 请求或响应包 term T &gt; currentTerm：设置 currentTerm = T，转换为follower（第 5.1 节）</li>
+</ul>
+<h5 id="followers第-52-节">Followers:（第 5.2 节）</h5>
+<ul>
+<li>Respond to RPCs from candidates and leaders</li>
+<li>如果在超过选取时间之前没有收到来自当前领导人的<code>AppendEntries RPC</code>或者没有收到候选人的投票请求，则自己转换状态为候选人</li>
+</ul>
+<h5 id="candidates第-52-节">Candidates:（第 5.2 节）</h5>
+<ul>
+<li>转换为候选人后，开始选举：
+<ul>
+<li>currentTerm + 1</li>
+<li>投票给自己</li>
+<li>重置选举计时器</li>
+<li>发送 RequestVote RPCs给其他服务</li>
+</ul>
+</li>
+<li>如果从大多数服务收到选票，成为leader</li>
+<li>如果从新的leader收到 AppendEntries RPC，变成follower</li>
+<li>如果选举超时，开启新一轮选举</li>
+</ul>
+<h5 id="leaders">Leaders</h5>
+<ul>
+<li>选举后：发送空的AppendEntries RPCs (heartbeat)给每台服务器，在空闲期间重复以防止其他服务器超时选举（第 5.2 节）</li>
+<li>如果从客户端收到命令，将entry附加到本地日志，在状态机后之后响应应用entry（第 5.3 节）</li>
+<li>如果对于某个follower  最后的 log index ≥ nextIndex ，那么发送从 nextIndex 开始的所有日志条目：
+<ul>
+<li>如果成功：更新相应跟随者的 follower 和 matchIndex（第 5.3 节）</li>
+<li>如果因为日志不一致而失败，减少 nextIndex 重试（第 5.3 节）</li>
+</ul>
+</li>
+<li>假设存在大于 <code>commitIndex</code> 的 <code>N</code>，使得大多数的 <code>matchIndex[i] ≥ N</code> 成立，且 <code>log[N].term == currentTerm</code> 成立，则令 <code>commitIndex</code> 等于 <code>N</code> （5.3 和 5.4 节）</li>
+</ul>
+<p>图2：以上是Raft 共识算法的简要总结（不包括成员变更和日志压缩）。（上面一大段其实是张图）</p>
 <p>　　Raft 通过首先选举一个特殊的领导者来实现共识，然后让领导者完全负责管理复制日志。领导者接受来自客户端的日志条目，将它们复制到其他服务器上，并告诉服务器何时将日志条目应用到它们的状态机是安全的。拥有领导者简化了复制日志的管理。例如，领导者可以决定在日志中放置新条目的位置，而无需咨询其他服务器，并且数据以简单的方式从领导者流向其他服务器。领导者可能会失败或与其他服务器断开连接，在这种情况下会选出新的领导者。</p>
 <p>　　鉴于领导者方法，Raft 将共识问题分解为三个相对独立的子问题，这些子问题将在以下小节中讨论：</p>
 <p><a href="https://web.stanford.edu/~ouster/cgi-bin/papers/raft-atc14.pdf">raft-论文原文</a></p>
@@ -614,6 +676,21 @@
   
 
   
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+    
+
   
 
         </div>
