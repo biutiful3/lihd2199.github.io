@@ -1,0 +1,8 @@
+﻿canvas {
+  display: block;
+}
+
+.block-audio {
+  display: none;
+}
+body{padding: 0px;margin: 0px}
