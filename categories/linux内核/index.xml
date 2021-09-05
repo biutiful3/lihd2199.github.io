@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>linux内核 on China No. 1</title>
+    <link>https://lihd2199.github.io/categories/linux%E5%86%85%E6%A0%B8/</link>
+    <description>Recent content in linux内核 on China No. 1</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>lihongda</copyright>
+    <lastBuildDate>Sun, 05 Sep 2021 21:21:00 +0800</lastBuildDate><atom:link href="https://lihd2199.github.io/categories/linux%E5%86%85%E6%A0%B8/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>linux内核（二）cpu缓存相关</title>
+      <link>https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/</link>
+      <pubDate>Sun, 05 Sep 2021 21:21:00 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/</guid>
+      <description>CPU的三级缓存 首先，我们都知道现在的CPU多核技术，都会有几级缓存，一般都是三级缓存的结构，结构如下图所示： 原图链接 L1缓存分成两种，一种</description>
+    </item>
+    
+    <item>
+      <title>linux内核（一）linux内核结构</title>
+      <link>https://lihd2199.github.io/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</link>
+      <pubDate>Sun, 05 Sep 2021 21:13:00 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</guid>
+      <description>linux内核结构 操作系统是所有应用程序生长的河床，它帮我们屏蔽各种硬件的细节，并且抽象出各种系统调用供应用开发人员来使用。本节简单介绍一下</description>
+    </item>
+    
+  </channel>
+</rss>
