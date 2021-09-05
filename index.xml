@@ -13,6 +13,85 @@
     
     
     <item>
+      <title>linux内核（二）cpu缓存相关</title>
+      <link>https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/</link>
+      <pubDate>Sun, 05 Sep 2021 21:21:00 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/</guid>
+      
+        <description>&lt;h2 id=&#34;cpu的三级缓存&#34;&gt;CPU的三级缓存&lt;/h2&gt;
+&lt;p&gt;　　首先，我们都知道现在的CPU多核技术，都会有几级缓存，一般都是三级缓存的结构，结构如下图所示：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://lihd2199.github.io/img/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/0voice/linux_kernel_wiki/blob/main/%E6%96%87%E7%AB%A0/%E6%B5%85%E8%B0%88Linux%E5%86%85%E6%A0%B8%E4%B9%8BCPU%E7%BC%93%E5%AD%98.md&#34;&gt;原图链接&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;L1缓存分成两种，一种是指令缓存，一种是数据缓存。L2缓存和L3缓存不分指令和数据；&lt;/li&gt;
+&lt;li&gt;L1和L2缓存在每一个CPU核中，L3则是所有CPU核心共享的内存；&lt;/li&gt;
+&lt;li&gt;L1、L2、L3的越离CPU近就越小，速度也越快；&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;带有高速缓存cpu执行计算的流程&#34;&gt;带有高速缓存CPU执行计算的流程&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;程序以及数据被加载到主内存&lt;/li&gt;
+&lt;li&gt;指令和数据被加载到CPU的高速缓存&lt;/li&gt;
+&lt;li&gt;CPU执行指令，把结果写到高速缓存&lt;/li&gt;
+&lt;li&gt;高速缓存中的数据写回主内存&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;cpu缓存一致性协议mesi&#34;&gt;CPU缓存一致性协议(MESI)&lt;/h2&gt;
+&lt;p&gt;　　MESI（Modified Exclusive Shared Or Invalid）是一种广泛使用的支持写回策略的缓存一致性协议。为了保证多个CPU缓存中共享数据的一致性，定义了缓存行(Cache Line)的四种状态，而CPU对缓存行的四种操作可能会产生不一致的状态，因此缓存控制器监听到本地操作和远程操作的时候，需要对地址一致的缓存行的状态进行一致性修改，从而保证数据在多个缓存之间保持一致性。&lt;/p&gt;
+&lt;p&gt;　　 &lt;a href=&#34;https://zh.wikipedia.org/wiki/MESI%E5%8D%8F%E8%AE%AE&#34;&gt;MESI的维基百科&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&#34;mesi定义的四种状态&#34;&gt;MESI定义的四种状态&lt;/h4&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;状态&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;M（修改）modified&lt;/td&gt;
+&lt;td&gt;缓存行是脏的（&lt;em&gt;dirty&lt;/em&gt;），与主存的值不同。如果别的CPU内核要读主存这块数据，该缓存行必须回写到主存，状态变为共享(S).&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;E（互斥）exclusive&lt;/td&gt;
+&lt;td&gt;缓存行只在当前缓存中，但是干净的（clean）&amp;ndash;缓存数据同于主存数据。当别的缓存读取它时，状态变为共享；当前写数据时，变为已修改状态。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;S（共享）shared&lt;/td&gt;
+&lt;td&gt;缓存行也存在于其它缓存中且是干净的。缓存行可以在任意时刻抛弃。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;I（无效）invalid&lt;/td&gt;
+&lt;td&gt;缓存行是无效的&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>linux内核（一）linux内核结构</title>
+      <link>https://lihd2199.github.io/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</link>
+      <pubDate>Sun, 05 Sep 2021 21:13:00 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</guid>
+      
+        <description>&lt;h2 id=&#34;linux内核结构&#34;&gt;linux内核结构&lt;/h2&gt;
+&lt;p&gt;操作系统是所有应用程序生长的河床，它帮我们屏蔽各种硬件的细节，并且抽象出各种系统调用供应用开发人员来使用。本节简单介绍一下linux内核的结构，对linux内核有个整体的印象，然后在分模块学习。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://lihd2199.github.io/img/linux%E7%BB%93%E6%9E%84.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;整个Linux内核可以分为4层：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;驱动管理层，驱动并管理外部一些硬件设备，例如磁盘、网卡等。&lt;/li&gt;
+&lt;li&gt;工具层，内核抽象出一些通用组件便于自己使用，例如并发管理中的一些锁、per-cpu变量等工具，另外还有中断机制，也给进程管理、信号处理等提供了基础功能。&lt;/li&gt;
+&lt;li&gt;系统能力层，操作系统的功能包括进程管理、内存管理、文件系统、I/O管理、网络等，这些功能都是基于工具层和驱动管理层提供的能力来构建的。&lt;/li&gt;
+&lt;li&gt;系统调用接口层（syscall），给应用程序开发人员提供相关接口。因为系统调用的使用成本较高，参数也比较多，需要对内核有较多了解，所以，又抽象出一些libc等库函数来封装系统调用，应用开发人员一般都是通过libc等库来与内核打交道的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;linux内核分析及应用&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
       <title>Raft算法</title>
       <link>https://lihd2199.github.io/post/consistency/raft/</link>
       <pubDate>Tue, 31 Aug 2021 10:44:55 +0800</pubDate>
@@ -20,9 +99,9 @@
       <guid>https://lihd2199.github.io/post/consistency/raft/</guid>
       
         <description>&lt;p&gt;本文为著名的 RAFT 一致性算法论文的中文翻译&lt;/p&gt;
-&lt;h3 id=&#34;abstract&#34;&gt;Abstract&lt;/h3&gt;
+&lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
 &lt;p&gt;　　Raft 是一种用于管理复制日志的共识算法。它产生的效果等价于(multi-)Paxos，和Paxos一样高效，但它的结构与Paxos不同；这使得 Raft 比 Paxos 更容易理解，也为构建实用系统提供了更好的基础。为了增强可理解性，Raft 将共识的关键要素（例如领导者选举、日志复制和安全性）分离，并强制执行更强的一致性以减少必须考虑的状态数量。用户研究的结果表明，Raft 比 Paxos 更容易让学生学习。 Raft 还包含了一种用于更改集群成员的新机制，该机制使用重叠多数（overlapping majorities）来保证安全。&lt;/p&gt;
-&lt;h3 id=&#34;1-introduction&#34;&gt;1 Introduction&lt;/h3&gt;
+&lt;h2 id=&#34;1-introduction&#34;&gt;1 Introduction&lt;/h2&gt;
 &lt;p&gt;　　共识算法允许许多机器作为一个集群工作，可以在某些机器出现故障时仍然能正常的工作。 因此，它们在构建可靠的大型软件系统方面发挥着关键作用。 Paxos在过去十年主导了共识算法的讨论：大多数共识的实现都基于 Paxos 或受其影响，而 Paxos 已成为用于向学生教授共识的主要工具。&lt;/p&gt;
 &lt;p&gt;　　不幸的是，Paxos 非常难以理解，尽管多次尝试使其更易于理解。 此外，其架构需要进行复杂的更改才能支持实际系统。 因此，系统构建者和学生都在为 Paxos 苦苦挣扎。&lt;/p&gt;
 &lt;p&gt;　　在自己与Paxos苦苦挣扎之后，我们着手寻找一种新的共识算法，可以为系统构建和教育提供更好的基础。 我们的方法不同寻常，因为我们的主要目标是在稳定性下，能否为实际系统定义一个共识算法，并以比 Paxos 更容易学习的方式来描述它？ 此外，我们希望该算法能够促进对系统构建者至关重要的直觉的发展（ Furthermore, we wanted the algorithm to facilitate the development of intuitions that are essential for system builders.）。 重要的不仅是算法要起作用，而且要清楚它为什么起作用。&lt;/p&gt;
@@ -41,7 +120,7 @@
 &lt;/ul&gt;
 &lt;p&gt;　　无论是出于教育目的还是作为实现的基础，我们相信 Raft 优于 Paxos 和其他共识算法。Raft 比其他算法更简单易懂；它的描述足够完整，可以满足实际系统的需要； 它有几个开源实现，被多家公司使用； 其安全特性已被正式证明； 其效率可与其他算法相媲美。&lt;/p&gt;
 &lt;p&gt;　　论文的其余部分介绍了复制状态机问题（第 2 节），讨论了 Paxos 的优缺点（第 3 节），描述了我们实现可理解性的一般方法（第 4 节），介绍了 Raft 共识算法（第 5 节– 第 7 节)，评估 Raft（第 8 节），并讨论相关工作（第 9 节）。 由于篇幅限制，这里省略了 Raft 算法的一些元素，但可以在扩展的技术报告中找到它们 。 附加材料描述了客户端如何与系统交互，以及如何回收 Raft 日志中的空间。&lt;/p&gt;
-&lt;h3 id=&#34;2-replicated-state-machines&#34;&gt;2 Replicated state machines&lt;/h3&gt;
+&lt;h2 id=&#34;2-replicated-state-machines&#34;&gt;2 Replicated state machines&lt;/h2&gt;
 &lt;p&gt;　　一致性算法是在复制状态机的背景下产生的。 在这种方法中，一组服务器上的状态机计算相同状态的相同副本，并且即使某些服务器出现故障也可以继续运行。 复制状态机用于解决分布式系统中的各种容错问题。 例如，具有单个集群领导者的大型系统，如 GFS、HDFS 和 RAMCloud，通常使用单独的复制状态机来进行 leader 选举和存储 leader 崩溃后重新选举需要的配置信息。 复制状态机的例子包括 Chubby 和 ZooKeeper。&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;../../../img/%E5%A4%8D%E5%88%B6%E7%8A%B6%E6%80%81%E6%9C%BA.png&#34;&gt;&lt;img src=&#34;https://lihd2199.github.io/img/%E7%8A%B6%E6%80%81%E5%A4%8D%E5%88%B6%E6%9C%BA.png&#34; alt=&#34;&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;　　　　　　　　　　　　　　　图 1：复制状态机架构&lt;/p&gt;
@@ -62,23 +141,29 @@
 &lt;p&gt;在一般情况下，只要集群的大部分响应了一轮远程过程调用，命令就可以完成。 少数慢速服务器不影响整体系统性能。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id=&#34;3-whats-wrong-with-paxos&#34;&gt;3 What’s wrong with Paxos?&lt;/h3&gt;
+&lt;h2 id=&#34;3-whats-wrong-with-paxos&#34;&gt;3 What’s wrong with Paxos?&lt;/h2&gt;
 &lt;p&gt;　　在过去十年中，Leslie Lamport 的 Paxos 协议几乎成为共识算法的同义词：它是课程中最常教授的协议，大多数共识的实现都以它为起点。 Paxos 首先定义了一个能够就单个决策达成一致的协议，例如单个复制的日志条目。 我们将这个子集称为single-decree Paxos。 然后 Paxos 组合该协议的多个实例以促进一系列决策，例如日志（multi-Paxos）。 Paxos 确保安全性和稳定性，并且支持集群成员的更改。 其正确性已被证明，在一般情况下是有效的。&lt;/p&gt;
 &lt;p&gt;　　不幸的是，Paxos 有两个明显的缺点。 第一个缺点是 Paxos 异常难以理解。 众所周知，Paxos完整的解释是不透明的。付出巨大的努力，但是很少有人能够成功地理解它。 因此，有几次尝试用更简单的术语来解释 Paxos。 这些解释侧重于single-decree Paxos，但它们仍然具有挑战性。 在 NSDI 2012 对 atten dees 的非正式调查中，我们发现很少有人对 Paxos 感到满意，即使在经验丰富的研究人员中也是如此。 我们自己也在与 Paxos 斗争； 在阅读了一些简化的解释并设计了我们自己的替代协议之后，我们才能够理解完整的协议，这个过程花了将近一年的时间。&lt;/p&gt;
 &lt;p&gt;　　我们假设 Paxos 的不透明性源于它选择单一法令子集作为其基础。 单令Paxos密集而微妙：它分为两个阶段，没有简单直观的解释，不能独立理解。 因此，很难对单一法令协议的工作原理产生直觉。 多 Paxos 的组合规则显着增加了复杂性和微妙性。 我们认为，就多个决策（即日志而不是单个条目）达成共识的整体问题可以用其他更直接、更明显的方式进行分解。&lt;/p&gt;
-&lt;h3 id=&#34;4-designing-for-understandability&#34;&gt;4 Designing for understandability&lt;/h3&gt;
+&lt;h2 id=&#34;4-designing-for-understandability&#34;&gt;4 Designing for understandability&lt;/h2&gt;
 &lt;p&gt;　　我们在设计 Raft 时有几个目标：它必须为系统构建提供完整且实用的基础，从而显著的减少开发人员所需的设计工作量； 它必须在所有条件下都是安全的，并且在常规的操作条件下可用； 并且它必须对常见操作有效。 但我们最重要的目标，也是最困难的挑战——可理解性。 必须让大量观众轻松地理解算法。 此外，必须能够对算法产生直觉，以便系统构建者可以在现实世界的实现中进行不可避免的扩展。（so that system builders can make the extensions that are inevitable in real-world implementations.）&lt;/p&gt;
 &lt;p&gt;　　在 Raft 的设计中有很多地方我们不得不在替代方法中进行选择。 在这些情况下，我们根据可理解性评估了备选方案：解释每个备选方案有多难（例如，它的状态空间有多复杂，是否有微妙的含义？），以及对读者来说有多容易 完全理解该方法及其含义？&lt;/p&gt;
 &lt;p&gt;　　我们认识到这种分析具有高度的主观性；尽管如此，我们还是使用了两种普遍适用的技术。第一种技术是众所周知的问题分解方法：只要有可能，我们将问题分成可以相对独立地解决、解释和理解的单独部分。例如，在 Raft 中，我们将leader election， log replication， safety，和 membership changes分开。&lt;/p&gt;
 &lt;p&gt;　　我们的第二种方法是通过减少要考虑的状态数量来简化状态空间，使系统更加连贯并尽可能消除不确定性。具体来说，日志是不允许有漏洞的，Raft 限制了日志彼此不一致的方式。尽管在大多数情况下我们试图消除不确定性，但在某些情况下，不确定性实际上在改善可稳定性。特别是，随机方法引入了不确定性，但它们倾向于通过以类似的方式处理所有可能的选择来减少状态空间（“选择任何一个；无关紧要”）。我们使用随机化来简化 Raft leader 选举算法。&lt;/p&gt;
 &lt;p&gt;//todo 后续补上&lt;/p&gt;
-&lt;h3 id=&#34;5-the-raft-consensus-algorithm&#34;&gt;5 The Raft consensus algorithm&lt;/h3&gt;
+&lt;h2 id=&#34;5-the-raft-consensus-algorithm&#34;&gt;5 The Raft consensus algorithm&lt;/h2&gt;
 &lt;p&gt;　　Raft 是一种用于管理第 2 节中描述的复制日志的算法。图 2 总结了该算法以供参考，图 3 列出了该算法的关键特性；这些图的元素将在本节的其余部分逐个讨论。&lt;/p&gt;
 &lt;p&gt;　　Raft 通过首先选举一个leader来实现共识，然后让leader完全负责管理复制日志。 leader接受来自客户端的日志条目，将它们复制到其他服务器上，并告诉服务器何时将日志条目应用到它们的状态机是安全的。 拥有leader简化了复制日志的管理。 例如，leader可以决定在日志中放置新条目的位置，而无需咨询其他服务器，并且数据以简单的方式从leader流向其他服务器。 leader可能会失败或与其他服务器断开连接，在这种情况下会选出新的leader。&lt;/p&gt;
 &lt;p&gt;　　鉴于领导者方法，Raft 将共识问题分解为三个相对独立的子问题，这些子问题将在以下小节中讨论：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt; • Leader election:
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;　　当现有领导者失败时，必须选择新领导者（第 5.2 节）&lt;/p&gt;
-&lt;h4 id=&#34;state&#34;&gt;state&lt;/h4&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;　　当现有Leader失败时，必须选择新Leader（第 5.2 节）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; •Log replication:
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;　　Leader必须接受来自客户端的日志条目并在集群中复制它们，迫使其他节点和自己的日志一致（第 5.3 节）。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; •Safety:
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;　　Raft 的关键安全属性是图 3 中的状态机安全属性：如果任何服务器已将特定日志条目应用到其状态机，则其他服务器不能对相同的日志索引应用不同的命令。 5.4 节描述了 Raft 如何确保这个属性； 该解决方案涉及对第 5.2 节中描述的选举机制的额外限制。&lt;/p&gt;
+&lt;p&gt;在介绍了共识算法之后，本节讨论了可用性问题和时序在系统中的作用。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;—————图2下—————
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;state&#34;&gt;state&lt;/h4&gt;
 &lt;ul&gt;
 &lt;li&gt;在所有服务器上持久存在的（在响应远程过程调用 RPC 之前稳定存储的）:　&lt;/li&gt;
 &lt;/ul&gt;
@@ -300,7 +385,7 @@
 &lt;li&gt;如果从新的leader收到 AppendEntries RPC，变成follower&lt;/li&gt;
 &lt;li&gt;如果选举超时，开启新一轮选举&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h5 id=&#34;leaders&#34;&gt;Leaders&lt;/h5&gt;
+&lt;h5 id=&#34;leaders&#34;&gt;Leaders：&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;选举后：发送空的AppendEntries RPCs (heartbeat)给每台服务器，在空闲期间重复以防止其他服务器超时选举（第 5.2 节）&lt;/li&gt;
 &lt;li&gt;如果从客户端收到命令，将entry附加到本地日志，在状态机后之后响应应用entry（第 5.3 节）&lt;/li&gt;
@@ -313,6 +398,17 @@
 &lt;li&gt;假设存在大于 &lt;code&gt;commitIndex&lt;/code&gt; 的 &lt;code&gt;N&lt;/code&gt;，使得大多数的 &lt;code&gt;matchIndex[i] ≥ N&lt;/code&gt; 成立，且 &lt;code&gt;log[N].term == currentTerm&lt;/code&gt; 成立，则令 &lt;code&gt;commitIndex&lt;/code&gt; 等于 &lt;code&gt;N&lt;/code&gt; （5.3 和 5.4 节）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;图2：以上是Raft 共识算法的简要总结（不包括成员变更和日志压缩）。（上面一大段其实是张图）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;—————图2上—————
+&lt;/code&gt;&lt;/pre&gt;&lt;pre&gt;&lt;code&gt;—————图3下—————
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;Election Safety: 在给定的任期内最多可以选举一个leader。（第 5.2 节）&lt;/li&gt;
+&lt;li&gt;Leader Append-Only: leader从不覆盖或删除其日志中的条目； 它只附加新条目。（第 5.3 节）&lt;/li&gt;
+&lt;li&gt;Log Matching:如果两个日志包含具有相同索引和术语的条目，则日志在给定索引之前的所有条目中都是相同的。（第 5.3 节）&lt;/li&gt;
+&lt;li&gt;Leader Completeness: 如果在给定的任期内提交了一个日志条目，那么该条目将出现在所有更高编号任期的leader的日志中。（第 5.4 节）&lt;/li&gt;
+&lt;li&gt;State Machine Safety:如果服务器已将给定索引处的日志条目应用于其状态机，则其他服务器将永远不会为同一索引应用不同的日志条目。第 5.4.3 节）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;—————图3上—————
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;51-raft-basics&#34;&gt;5.1 Raft basics&lt;/h3&gt;
 &lt;p&gt;　　Raft 通过首先选举一个特殊的领导者来实现共识，然后让领导者完全负责管理复制日志。领导者接受来自客户端的日志条目，将它们复制到其他服务器上，并告诉服务器何时将日志条目应用到它们的状态机是安全的。拥有领导者简化了复制日志的管理。例如，领导者可以决定在日志中放置新条目的位置，而无需咨询其他服务器，并且数据以简单的方式从领导者流向其他服务器。领导者可能会失败或与其他服务器断开连接，在这种情况下会选出新的领导者。&lt;/p&gt;
 &lt;p&gt;　　鉴于领导者方法，Raft 将共识问题分解为三个相对独立的子问题，这些子问题将在以下小节中讨论：&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://web.stanford.edu/~ouster/cgi-bin/papers/raft-atc14.pdf&#34;&gt;raft-论文原文&lt;/a&gt;&lt;/p&gt;

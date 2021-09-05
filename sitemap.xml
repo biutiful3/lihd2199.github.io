@@ -3,7 +3,49 @@
   
   <url>
     <loc>https://lihd2199.github.io/categories/</loc>
-    <lastmod>2021-08-31T10:44:55+08:00</lastmod>
+    <lastmod>2021-09-05T21:21:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lihd2199.github.io/tags/cpu/</loc>
+    <lastmod>2021-09-05T21:21:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lihd2199.github.io/categories/linux%E5%86%85%E6%A0%B8/</loc>
+    <lastmod>2021-09-05T21:21:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/</loc>
+    <lastmod>2021-09-05T21:21:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lihd2199.github.io/tags/</loc>
+    <lastmod>2021-09-05T21:21:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lihd2199.github.io/tags/linux%E5%86%85%E6%A0%B8/</loc>
+    <lastmod>2021-09-05T21:13:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lihd2199.github.io/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</loc>
+    <lastmod>2021-09-05T21:13:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -17,13 +59,6 @@
   
   <url>
     <loc>https://lihd2199.github.io/post/consistency/raft/</loc>
-    <lastmod>2021-08-31T10:44:55+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://lihd2199.github.io/tags/</loc>
     <lastmod>2021-08-31T10:44:55+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

@@ -53,7 +53,7 @@
 
 
 
-<link rel="stylesheet" href="/sass/jane.min.0f5dd5ee58d28a2e8481f238781f7e5214cc6c0170c58cbcb15f1218042794c3.css" integrity="sha256-D13V7ljSii6EgfI4eB9&#43;UhTMbAFwxYy8sV8SGAQnlMM=" media="screen" crossorigin="anonymous">
+<link rel="stylesheet" href="/sass/jane.min.827f49e5d762011f2c9a584368d239d9210d0b71048196bdc10a3c7be0e1dcd0.css" integrity="sha256-gn9J5ddiAR8smlhDaNI52SENC3EEgZa9wQo8e&#43;Dh3NA=" media="screen" crossorigin="anonymous">
 
 
 
@@ -69,7 +69,7 @@
 <meta itemprop="name" content="Raft算法">
 <meta itemprop="description" content="本文为著名的 RAFT 一致性算法论文的中文翻译 Abstract Raft 是一种用于管理复制日志的共识算法。它产生的效果等价于(multi-)Paxos，和Paxos一样高"><meta itemprop="datePublished" content="2021-08-31T10:44:55+08:00" />
 <meta itemprop="dateModified" content="2021-08-31T10:44:55+08:00" />
-<meta itemprop="wordCount" content="5513">
+<meta itemprop="wordCount" content="6026">
 <meta itemprop="keywords" content="一致性算法,raft," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Raft算法"/>
 <meta name="twitter:description" content="本文为著名的 RAFT 一致性算法论文的中文翻译 Abstract Raft 是一种用于管理复制日志的共识算法。它产生的效果等价于(multi-)Paxos，和Paxos一样高"/>
@@ -112,13 +112,6 @@
           
           
             <a class="menu-item-link" href="https://lihd2199.github.io/post/">全部</a>
-          
-        
-      </li><li class="mobile-menu-item">
-        
-          
-          
-            <a class="menu-item-link" href="https://lihd2199.github.io/tags/">标签</a>
           
         
       </li><li class="mobile-menu-item">
@@ -239,17 +232,6 @@
         
           
           
-            <a class="menu-item-link" href="https://lihd2199.github.io/tags/">标签</a>
-          
-
-        
-
-      </li>
-    
-        <li class="menu-item">
-        
-          
-          
             <a class="menu-item-link" href="https://lihd2199.github.io/categories/">分类</a>
           
 
@@ -301,14 +283,15 @@
   <div class="post-toc-content">
     <nav id="TableOfContents">
   <ul>
-    <li>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#1-introduction">1 Introduction</a></li>
+    <li><a href="#2-replicated-state-machines">2 Replicated state machines</a></li>
+    <li><a href="#3-whats-wrong-with-paxos">3 What’s wrong with Paxos?</a></li>
+    <li><a href="#4-designing-for-understandability">4 Designing for understandability</a></li>
+    <li><a href="#5-the-raft-consensus-algorithm">5 The Raft consensus algorithm</a>
       <ul>
-        <li><a href="#abstract">Abstract</a></li>
-        <li><a href="#1-introduction">1 Introduction</a></li>
-        <li><a href="#2-replicated-state-machines">2 Replicated state machines</a></li>
-        <li><a href="#3-whats-wrong-with-paxos">3 What’s wrong with Paxos?</a></li>
-        <li><a href="#4-designing-for-understandability">4 Designing for understandability</a></li>
-        <li><a href="#5-the-raft-consensus-algorithm">5 The Raft consensus algorithm</a></li>
+        <li></li>
+        <li><a href="#51-raft-basics">5.1 Raft basics</a></li>
       </ul>
     </li>
   </ul>
@@ -319,9 +302,9 @@
     
     <div class="post-content">
       <p>本文为著名的 RAFT 一致性算法论文的中文翻译</p>
-<h3 id="abstract">Abstract</h3>
+<h2 id="abstract">Abstract</h2>
 <p>　　Raft 是一种用于管理复制日志的共识算法。它产生的效果等价于(multi-)Paxos，和Paxos一样高效，但它的结构与Paxos不同；这使得 Raft 比 Paxos 更容易理解，也为构建实用系统提供了更好的基础。为了增强可理解性，Raft 将共识的关键要素（例如领导者选举、日志复制和安全性）分离，并强制执行更强的一致性以减少必须考虑的状态数量。用户研究的结果表明，Raft 比 Paxos 更容易让学生学习。 Raft 还包含了一种用于更改集群成员的新机制，该机制使用重叠多数（overlapping majorities）来保证安全。</p>
-<h3 id="1-introduction">1 Introduction</h3>
+<h2 id="1-introduction">1 Introduction</h2>
 <p>　　共识算法允许许多机器作为一个集群工作，可以在某些机器出现故障时仍然能正常的工作。 因此，它们在构建可靠的大型软件系统方面发挥着关键作用。 Paxos在过去十年主导了共识算法的讨论：大多数共识的实现都基于 Paxos 或受其影响，而 Paxos 已成为用于向学生教授共识的主要工具。</p>
 <p>　　不幸的是，Paxos 非常难以理解，尽管多次尝试使其更易于理解。 此外，其架构需要进行复杂的更改才能支持实际系统。 因此，系统构建者和学生都在为 Paxos 苦苦挣扎。</p>
 <p>　　在自己与Paxos苦苦挣扎之后，我们着手寻找一种新的共识算法，可以为系统构建和教育提供更好的基础。 我们的方法不同寻常，因为我们的主要目标是在稳定性下，能否为实际系统定义一个共识算法，并以比 Paxos 更容易学习的方式来描述它？ 此外，我们希望该算法能够促进对系统构建者至关重要的直觉的发展（ Furthermore, we wanted the algorithm to facilitate the development of intuitions that are essential for system builders.）。 重要的不仅是算法要起作用，而且要清楚它为什么起作用。</p>
@@ -340,7 +323,7 @@
 </ul>
 <p>　　无论是出于教育目的还是作为实现的基础，我们相信 Raft 优于 Paxos 和其他共识算法。Raft 比其他算法更简单易懂；它的描述足够完整，可以满足实际系统的需要； 它有几个开源实现，被多家公司使用； 其安全特性已被正式证明； 其效率可与其他算法相媲美。</p>
 <p>　　论文的其余部分介绍了复制状态机问题（第 2 节），讨论了 Paxos 的优缺点（第 3 节），描述了我们实现可理解性的一般方法（第 4 节），介绍了 Raft 共识算法（第 5 节– 第 7 节)，评估 Raft（第 8 节），并讨论相关工作（第 9 节）。 由于篇幅限制，这里省略了 Raft 算法的一些元素，但可以在扩展的技术报告中找到它们 。 附加材料描述了客户端如何与系统交互，以及如何回收 Raft 日志中的空间。</p>
-<h3 id="2-replicated-state-machines">2 Replicated state machines</h3>
+<h2 id="2-replicated-state-machines">2 Replicated state machines</h2>
 <p>　　一致性算法是在复制状态机的背景下产生的。 在这种方法中，一组服务器上的状态机计算相同状态的相同副本，并且即使某些服务器出现故障也可以继续运行。 复制状态机用于解决分布式系统中的各种容错问题。 例如，具有单个集群领导者的大型系统，如 GFS、HDFS 和 RAMCloud，通常使用单独的复制状态机来进行 leader 选举和存储 leader 崩溃后重新选举需要的配置信息。 复制状态机的例子包括 Chubby 和 ZooKeeper。</p>
 <p><a href="../../../img/%E5%A4%8D%E5%88%B6%E7%8A%B6%E6%80%81%E6%9C%BA.png"><img src="/img/%E7%8A%B6%E6%80%81%E5%A4%8D%E5%88%B6%E6%9C%BA.png" alt=""></a></p>
 <p>　　　　　　　　　　　　　　　图 1：复制状态机架构</p>
@@ -361,23 +344,29 @@
 <p>在一般情况下，只要集群的大部分响应了一轮远程过程调用，命令就可以完成。 少数慢速服务器不影响整体系统性能。</p>
 </li>
 </ul>
-<h3 id="3-whats-wrong-with-paxos">3 What’s wrong with Paxos?</h3>
+<h2 id="3-whats-wrong-with-paxos">3 What’s wrong with Paxos?</h2>
 <p>　　在过去十年中，Leslie Lamport 的 Paxos 协议几乎成为共识算法的同义词：它是课程中最常教授的协议，大多数共识的实现都以它为起点。 Paxos 首先定义了一个能够就单个决策达成一致的协议，例如单个复制的日志条目。 我们将这个子集称为single-decree Paxos。 然后 Paxos 组合该协议的多个实例以促进一系列决策，例如日志（multi-Paxos）。 Paxos 确保安全性和稳定性，并且支持集群成员的更改。 其正确性已被证明，在一般情况下是有效的。</p>
 <p>　　不幸的是，Paxos 有两个明显的缺点。 第一个缺点是 Paxos 异常难以理解。 众所周知，Paxos完整的解释是不透明的。付出巨大的努力，但是很少有人能够成功地理解它。 因此，有几次尝试用更简单的术语来解释 Paxos。 这些解释侧重于single-decree Paxos，但它们仍然具有挑战性。 在 NSDI 2012 对 atten dees 的非正式调查中，我们发现很少有人对 Paxos 感到满意，即使在经验丰富的研究人员中也是如此。 我们自己也在与 Paxos 斗争； 在阅读了一些简化的解释并设计了我们自己的替代协议之后，我们才能够理解完整的协议，这个过程花了将近一年的时间。</p>
 <p>　　我们假设 Paxos 的不透明性源于它选择单一法令子集作为其基础。 单令Paxos密集而微妙：它分为两个阶段，没有简单直观的解释，不能独立理解。 因此，很难对单一法令协议的工作原理产生直觉。 多 Paxos 的组合规则显着增加了复杂性和微妙性。 我们认为，就多个决策（即日志而不是单个条目）达成共识的整体问题可以用其他更直接、更明显的方式进行分解。</p>
-<h3 id="4-designing-for-understandability">4 Designing for understandability</h3>
+<h2 id="4-designing-for-understandability">4 Designing for understandability</h2>
 <p>　　我们在设计 Raft 时有几个目标：它必须为系统构建提供完整且实用的基础，从而显著的减少开发人员所需的设计工作量； 它必须在所有条件下都是安全的，并且在常规的操作条件下可用； 并且它必须对常见操作有效。 但我们最重要的目标，也是最困难的挑战——可理解性。 必须让大量观众轻松地理解算法。 此外，必须能够对算法产生直觉，以便系统构建者可以在现实世界的实现中进行不可避免的扩展。（so that system builders can make the extensions that are inevitable in real-world implementations.）</p>
 <p>　　在 Raft 的设计中有很多地方我们不得不在替代方法中进行选择。 在这些情况下，我们根据可理解性评估了备选方案：解释每个备选方案有多难（例如，它的状态空间有多复杂，是否有微妙的含义？），以及对读者来说有多容易 完全理解该方法及其含义？</p>
 <p>　　我们认识到这种分析具有高度的主观性；尽管如此，我们还是使用了两种普遍适用的技术。第一种技术是众所周知的问题分解方法：只要有可能，我们将问题分成可以相对独立地解决、解释和理解的单独部分。例如，在 Raft 中，我们将leader election， log replication， safety，和 membership changes分开。</p>
 <p>　　我们的第二种方法是通过减少要考虑的状态数量来简化状态空间，使系统更加连贯并尽可能消除不确定性。具体来说，日志是不允许有漏洞的，Raft 限制了日志彼此不一致的方式。尽管在大多数情况下我们试图消除不确定性，但在某些情况下，不确定性实际上在改善可稳定性。特别是，随机方法引入了不确定性，但它们倾向于通过以类似的方式处理所有可能的选择来减少状态空间（“选择任何一个；无关紧要”）。我们使用随机化来简化 Raft leader 选举算法。</p>
 <p>//todo 后续补上</p>
-<h3 id="5-the-raft-consensus-algorithm">5 The Raft consensus algorithm</h3>
+<h2 id="5-the-raft-consensus-algorithm">5 The Raft consensus algorithm</h2>
 <p>　　Raft 是一种用于管理第 2 节中描述的复制日志的算法。图 2 总结了该算法以供参考，图 3 列出了该算法的关键特性；这些图的元素将在本节的其余部分逐个讨论。</p>
 <p>　　Raft 通过首先选举一个leader来实现共识，然后让leader完全负责管理复制日志。 leader接受来自客户端的日志条目，将它们复制到其他服务器上，并告诉服务器何时将日志条目应用到它们的状态机是安全的。 拥有leader简化了复制日志的管理。 例如，leader可以决定在日志中放置新条目的位置，而无需咨询其他服务器，并且数据以简单的方式从leader流向其他服务器。 leader可能会失败或与其他服务器断开连接，在这种情况下会选出新的leader。</p>
 <p>　　鉴于领导者方法，Raft 将共识问题分解为三个相对独立的子问题，这些子问题将在以下小节中讨论：</p>
 <pre><code> • Leader election:
-</code></pre><p>　　当现有领导者失败时，必须选择新领导者（第 5.2 节）</p>
-<h4 id="state">state</h4>
+</code></pre><p>　　当现有Leader失败时，必须选择新Leader（第 5.2 节）</p>
+<pre><code> •Log replication:
+</code></pre><p>　　Leader必须接受来自客户端的日志条目并在集群中复制它们，迫使其他节点和自己的日志一致（第 5.3 节）。</p>
+<pre><code> •Safety:
+</code></pre><p>　　Raft 的关键安全属性是图 3 中的状态机安全属性：如果任何服务器已将特定日志条目应用到其状态机，则其他服务器不能对相同的日志索引应用不同的命令。 5.4 节描述了 Raft 如何确保这个属性； 该解决方案涉及对第 5.2 节中描述的选举机制的额外限制。</p>
+<p>在介绍了共识算法之后，本节讨论了可用性问题和时序在系统中的作用。</p>
+<pre><code>—————图2下—————
+</code></pre><h4 id="state">state</h4>
 <ul>
 <li>在所有服务器上持久存在的（在响应远程过程调用 RPC 之前稳定存储的）:　</li>
 </ul>
@@ -599,7 +588,7 @@
 <li>如果从新的leader收到 AppendEntries RPC，变成follower</li>
 <li>如果选举超时，开启新一轮选举</li>
 </ul>
-<h5 id="leaders">Leaders</h5>
+<h5 id="leaders">Leaders：</h5>
 <ul>
 <li>选举后：发送空的AppendEntries RPCs (heartbeat)给每台服务器，在空闲期间重复以防止其他服务器超时选举（第 5.2 节）</li>
 <li>如果从客户端收到命令，将entry附加到本地日志，在状态机后之后响应应用entry（第 5.3 节）</li>
@@ -612,6 +601,17 @@
 <li>假设存在大于 <code>commitIndex</code> 的 <code>N</code>，使得大多数的 <code>matchIndex[i] ≥ N</code> 成立，且 <code>log[N].term == currentTerm</code> 成立，则令 <code>commitIndex</code> 等于 <code>N</code> （5.3 和 5.4 节）</li>
 </ul>
 <p>图2：以上是Raft 共识算法的简要总结（不包括成员变更和日志压缩）。（上面一大段其实是张图）</p>
+<pre><code>—————图2上—————
+</code></pre><pre><code>—————图3下—————
+</code></pre><ul>
+<li>Election Safety: 在给定的任期内最多可以选举一个leader。（第 5.2 节）</li>
+<li>Leader Append-Only: leader从不覆盖或删除其日志中的条目； 它只附加新条目。（第 5.3 节）</li>
+<li>Log Matching:如果两个日志包含具有相同索引和术语的条目，则日志在给定索引之前的所有条目中都是相同的。（第 5.3 节）</li>
+<li>Leader Completeness: 如果在给定的任期内提交了一个日志条目，那么该条目将出现在所有更高编号任期的leader的日志中。（第 5.4 节）</li>
+<li>State Machine Safety:如果服务器已将给定索引处的日志条目应用于其状态机，则其他服务器将永远不会为同一索引应用不同的日志条目。第 5.4.3 节）</li>
+</ul>
+<pre><code>—————图3上—————
+</code></pre><h3 id="51-raft-basics">5.1 Raft basics</h3>
 <p>　　Raft 通过首先选举一个特殊的领导者来实现共识，然后让领导者完全负责管理复制日志。领导者接受来自客户端的日志条目，将它们复制到其他服务器上，并告诉服务器何时将日志条目应用到它们的状态机是安全的。拥有领导者简化了复制日志的管理。例如，领导者可以决定在日志中放置新条目的位置，而无需咨询其他服务器，并且数据以简单的方式从领导者流向其他服务器。领导者可能会失败或与其他服务器断开连接，在这种情况下会选出新的领导者。</p>
 <p>　　鉴于领导者方法，Raft 将共识问题分解为三个相对独立的子问题，这些子问题将在以下小节中讨论：</p>
 <p><a href="https://web.stanford.edu/~ouster/cgi-bin/papers/raft-atc14.pdf">raft-论文原文</a></p>
@@ -654,6 +654,19 @@
       
       <nav class="post-nav">
         
+          <a class="prev" href="/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/">
+            
+            <i class="iconfont">
+              <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M691.908486 949.511495l75.369571-89.491197c10.963703-12.998035 10.285251-32.864502-1.499144-44.378743L479.499795 515.267417 757.434875 204.940602c11.338233-12.190647 11.035334-32.285311-0.638543-44.850487l-80.46666-86.564541c-11.680017-12.583596-30.356378-12.893658-41.662889-0.716314L257.233596 494.235404c-11.332093 12.183484-11.041474 32.266891 0.657986 44.844348l80.46666 86.564541c1.772366 1.910513 3.706415 3.533476 5.750981 4.877077l306.620399 321.703933C662.505829 963.726242 680.945807 962.528973 691.908486 949.511495z"></path>
+</svg>
+
+            </i>
+            <span class="prev-text nav-default">linux内核（一）linux内核结构</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
         
           <a class="next" href="/post/network/http/">
             <span class="next-text nav-default">http</span>

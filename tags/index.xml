@@ -7,7 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>lihongda</copyright>
-    <lastBuildDate>Tue, 31 Aug 2021 10:44:55 +0800</lastBuildDate><atom:link href="https://lihd2199.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 05 Sep 2021 21:21:00 +0800</lastBuildDate><atom:link href="https://lihd2199.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>cpu</title>
+      <link>https://lihd2199.github.io/tags/cpu/</link>
+      <pubDate>Sun, 05 Sep 2021 21:21:00 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/tags/cpu/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux内核</title>
+      <link>https://lihd2199.github.io/tags/linux%E5%86%85%E6%A0%B8/</link>
+      <pubDate>Sun, 05 Sep 2021 21:13:00 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/tags/linux%E5%86%85%E6%A0%B8/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>raft</title>
       <link>https://lihd2199.github.io/tags/raft/</link>
