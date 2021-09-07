@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>指令重排 on China No. 1</title>
+    <link>https://lihd2199.github.io/tags/%E6%8C%87%E4%BB%A4%E9%87%8D%E6%8E%92/</link>
+    <description>Recent content in 指令重排 on China No. 1</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>lihongda</copyright>
+    <lastBuildDate>Sun, 05 Sep 2021 21:21:00 +0800</lastBuildDate><atom:link href="https://lihd2199.github.io/tags/%E6%8C%87%E4%BB%A4%E9%87%8D%E6%8E%92/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>linux内核前言（三）cpu缓存相关</title>
+      <link>https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/</link>
+      <pubDate>Sun, 05 Sep 2021 21:21:00 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/</guid>
+      <description>CPU缓存的意义 CPU往往需要重复处理相同的数据、重复执行相同的指令，如果这部分数据、指令CPU能在CPU缓存中找到，CPU就不需要从内存或</description>
+    </item>
+    
+  </channel>
+</rss>

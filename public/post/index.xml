@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Post on China No. 1</title>
+    <link>https://lihd2199.github.io/post/</link>
+    <description>Recent content in Post on China No. 1</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>lihongda</copyright>
+    <lastBuildDate>Mon, 30 Aug 2021 20:27:54 +0800</lastBuildDate><atom:link href="https://lihd2199.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>704-二分查找</title>
+      <link>https://lihd2199.github.io/post/leetcode/704/</link>
+      <pubDate>Tue, 07 Sep 2021 10:26:41 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/leetcode/704/</guid>
+      <description>704. 二分查找 - 力扣（LeetCode） (leetcode-cn.com) 两种解题方案： 一、循环 public int search(int[] nums, int target) { int low = 0, high = nums.length - 1; while (low &amp;lt;= high) { int min = (high + low) / 2; if (nums[min] == target) { return min; } else if (target</description>
+    </item>
+    
+    <item>
+      <title>linux内核前言（四）Io与网络模型</title>
+      <link>https://lihd2199.github.io/post/linux/io%E4%B8%8E%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</link>
+      <pubDate>Mon, 06 Sep 2021 20:44:10 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/io%E4%B8%8E%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</guid>
+      <description>常见的io模型介绍： 阻塞 &amp;amp; 非阻塞 多路复用 Signal IO 异步 IO libevent</description>
+    </item>
+    
+    <item>
+      <title>linux内核前言（四）Linux并发工具</title>
+      <link>https://lihd2199.github.io/post/linux/linux%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Mon, 06 Sep 2021 20:33:30 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/linux%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7/</guid>
+      <description>Linux内核针对不同并发场景的工具实现 atomic 原子变量 x86在多核环境下，多核竞争数据总线时，提供Lock指令进行锁总线操作。保证“读-修改-写</description>
+    </item>
+    
+    <item>
+      <title>linux内核前言（三）cpu缓存相关</title>
+      <link>https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/</link>
+      <pubDate>Sun, 05 Sep 2021 21:21:00 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/</guid>
+      <description>CPU缓存的意义 CPU往往需要重复处理相同的数据、重复执行相同的指令，如果这部分数据、指令CPU能在CPU缓存中找到，CPU就不需要从内存或</description>
+    </item>
+    
+    <item>
+      <title>linux内核前言（二）linux内核结构</title>
+      <link>https://lihd2199.github.io/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</link>
+      <pubDate>Sun, 05 Sep 2021 21:13:00 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</guid>
+      <description>linux内核结构 承接上文，上文大概的介绍了什么是Linux内核，本节简单介绍一下linux内核的结构，对linux内核有个整体的印象，然后</description>
+    </item>
+    
+    <item>
+      <title>linux内核前言（一）什么是linux内核</title>
+      <link>https://lihd2199.github.io/post/linux/%E4%BB%80%E4%B9%88%E6%98%AFlinux%E5%86%85%E6%A0%B8/</link>
+      <pubDate>Sat, 04 Sep 2021 19:21:00 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/%E4%BB%80%E4%B9%88%E6%98%AFlinux%E5%86%85%E6%A0%B8/</guid>
+      <description>最近在工作中学习中总数听人说Linux内核，自己又总是听不懂；另外之前面试也经常被问到，synchronize的内核态和用户态切换，vola</description>
+    </item>
+    
+    <item>
+      <title>Raft算法</title>
+      <link>https://lihd2199.github.io/post/consistency/raft/</link>
+      <pubDate>Tue, 31 Aug 2021 10:44:55 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/consistency/raft/</guid>
+      <description>本文为著名的 RAFT 一致性算法论文的中文翻译 Abstract Raft 是一种用于管理复制日志的共识算法。它产生的效果等价于(multi-)Paxos，和Paxos一样高</description>
+    </item>
+    
+    <item>
+      <title>http</title>
+      <link>https://lihd2199.github.io/post/network/http/</link>
+      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/network/http/</guid>
+      <description>HTTP 超文本传输协议是位于 TCP/IP 体系结构中的应用层协议，它是万维网数据通信的基础。 HTTP/1.1 是目前使用最广泛的版本，一般没有特别标明版本都是指 HTTP/1.</description>
+    </item>
+    
+    <item>
+      <title>MySQL事务</title>
+      <link>https://lihd2199.github.io/post/datasource/mysql-transaction/</link>
+      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/datasource/mysql-transaction/</guid>
+      <description>一、事务的基本要素（ACID） 1、原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。und</description>
+    </item>
+    
+    <item>
+      <title>tcp</title>
+      <link>https://lihd2199.github.io/post/network/tcp/</link>
+      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/network/tcp/</guid>
+      <description>一、tcp概述 1、TCP是面向连接的运输层协议 2、每一条TCP连接只能有两个端点(endpoint)，每一条TCP连接只能是点对点的（一对一</description>
+    </item>
+    
+    <item>
+      <title>udp</title>
+      <link>https://lihd2199.github.io/post/network/udp/</link>
+      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/network/udp/</guid>
+      <description>一、概述 UDP是无连接的，即发送数据之前不需要建立连接，因此减少了开销和发送数据之前的时延。 UDP使用尽最大努力交付，即不保证可靠交付，因此</description>
+    </item>
+    
+    <item>
+      <title>加密</title>
+      <link>https://lihd2199.github.io/post/network/encryption/</link>
+      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/network/encryption/</guid>
+      <description>加密算法 对称密钥密码体制 对称密钥密码体制，即加密密钥和解密密钥是使用相同的密码体制。对称密钥加密技术的缺点之一就是发送者和接收者在对话之前，</description>
+    </item>
+    
+    <item>
+      <title>硬件的常识</title>
+      <link>https://lihd2199.github.io/post/network/hard/</link>
+      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/network/hard/</guid>
+      <description>(1) 物理层使用的中间设备叫做转发器(repeater)。 (2) 数据链路层使用的中间设备叫做网桥或桥接器(bridge)。 (3) 网络层使用的中间设备叫做</description>
+    </item>
+    
+    <item>
+      <title>网络分层模型</title>
+      <link>https://lihd2199.github.io/post/network/hierarchical-model/</link>
+      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/network/hierarchical-model/</guid>
+      <description>五层结构 一、物理层 在物理层上所传数据的单位是比特。发送方发送1（或0）时，接收方应当收到1（或0）而不是0（或1）。因此物理层要考虑用多大的</description>
+    </item>
+    
+    <item>
+      <title>网络层</title>
+      <link>https://lihd2199.github.io/post/network/network-layer/</link>
+      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/network/network-layer/</guid>
+      <description>一、网络层的设计 因特网采用的设计思路是这样的：网络层向上只提供简单灵活的、无连接的、尽最大努力交付的数据报服务。网络在发送分组时不需要先建立</description>
+    </item>
+    
+    <item>
+      <title>运输层</title>
+      <link>https://lihd2199.github.io/post/network/transport-layer/</link>
+      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/network/transport-layer/</guid>
+      <description>一、运输层协议 运输层向它上面的应用层提供通信服务，它属于面向通信部分的最高层，同时也是用户功能中的最低层；两个主机进行通信就是两个主机中的应</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>linux内核 on China No. 1</title>
+    <link>https://lihd2199.github.io/tags/linux%E5%86%85%E6%A0%B8/</link>
+    <description>Recent content in linux内核 on China No. 1</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>lihongda</copyright>
+    <lastBuildDate>Mon, 06 Sep 2021 20:33:30 +0800</lastBuildDate><atom:link href="https://lihd2199.github.io/tags/linux%E5%86%85%E6%A0%B8/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>linux内核前言（四）Linux并发工具</title>
+      <link>https://lihd2199.github.io/post/linux/linux%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Mon, 06 Sep 2021 20:33:30 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/linux%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7/</guid>
+      <description>Linux内核针对不同并发场景的工具实现 atomic 原子变量 x86在多核环境下，多核竞争数据总线时，提供Lock指令进行锁总线操作。保证“读-修改-写</description>
+    </item>
+    
+    <item>
+      <title>linux内核前言（二）linux内核结构</title>
+      <link>https://lihd2199.github.io/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</link>
+      <pubDate>Sun, 05 Sep 2021 21:13:00 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</guid>
+      <description>linux内核结构 承接上文，上文大概的介绍了什么是Linux内核，本节简单介绍一下linux内核的结构，对linux内核有个整体的印象，然后</description>
+    </item>
+    
+  </channel>
+</rss>
