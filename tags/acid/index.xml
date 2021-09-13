@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ACID on China No. 1</title>
+    <title>ACID on 山河一统</title>
     <link>https://lihd2199.github.io/tags/acid/</link>
-    <description>Recent content in ACID on China No. 1</description>
+    <description>Recent content in ACID on 山河一统</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>lihongda</copyright>
     <lastBuildDate>Mon, 30 Aug 2021 20:27:54 +0800</lastBuildDate><atom:link href="https://lihd2199.github.io/tags/acid/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>MySQL事务</title>
-      <link>https://lihd2199.github.io/post/datasource/mysql-transaction/</link>
+      <link>https://lihd2199.github.io/post/datasource/mysql%E4%BA%8B%E5%8A%A1/</link>
       <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/post/datasource/mysql-transaction/</guid>
+      <guid>https://lihd2199.github.io/post/datasource/mysql%E4%BA%8B%E5%8A%A1/</guid>
       <description>一、事务的基本要素（ACID） 1、原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。und</description>
     </item>
     

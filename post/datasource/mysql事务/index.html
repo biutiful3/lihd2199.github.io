@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>网络分层模型 - China No. 1</title>
+  <title>MySQL事务 - 山河一统</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -23,7 +23,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="author" content="lihongda" />
-  <meta name="description" content="五层结构 一、物理层 在物理层上所传数据的单位是比特。发送方发送1（或0）时，接收方应当收到1（或0）而不是0（或1）。因此物理层要考虑用多大的" />
+  <meta name="description" content="一、事务的基本要素（ACID） 1、原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。und" />
 
   <meta name="keywords" content="Hugo, theme, jane" />
 
@@ -35,7 +35,7 @@
 <meta name="generator" content="Hugo 0.87.0" />
 
 
-<link rel="canonical" href="https://lihd2199.github.io/post/network/hierarchical-model/" />
+<link rel="canonical" href="https://lihd2199.github.io/post/datasource/mysql%E4%BA%8B%E5%8A%A1/" />
 
 
 
@@ -53,26 +53,26 @@
 
 
 
-<link rel="stylesheet" href="/sass/jane.min.a7e1ec5c2377858e6f0687af7de9a2f73aa595c607520d32f2c7f2993ffcff3b.css" integrity="sha256-p&#43;HsXCN3hY5vBoevfemi9zqllcYHUg0y8sfymT/8/zs=" media="screen" crossorigin="anonymous">
+<link rel="stylesheet" href="/sass/jane.min.ef473b2af189d1fe93d4f6eeccd9228f4374744d710128eb14d535fe0670ecfe.css" integrity="sha256-70c7KvGJ0f6T1PbuzNkij0N0dE1xASjrFNU1/gZw7P4=" media="screen" crossorigin="anonymous">
 
 
 
 
 
-<meta property="og:title" content="网络分层模型" />
-<meta property="og:description" content="五层结构 一、物理层 在物理层上所传数据的单位是比特。发送方发送1（或0）时，接收方应当收到1（或0）而不是0（或1）。因此物理层要考虑用多大的" />
+<meta property="og:title" content="MySQL事务" />
+<meta property="og:description" content="一、事务的基本要素（ACID） 1、原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。und" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://lihd2199.github.io/post/network/hierarchical-model/" /><meta property="article:section" content="post" />
+<meta property="og:url" content="https://lihd2199.github.io/post/datasource/mysql%E4%BA%8B%E5%8A%A1/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2021-08-30T20:27:54+08:00" />
 <meta property="article:modified_time" content="2021-08-30T20:27:54+08:00" />
 
-<meta itemprop="name" content="网络分层模型">
-<meta itemprop="description" content="五层结构 一、物理层 在物理层上所传数据的单位是比特。发送方发送1（或0）时，接收方应当收到1（或0）而不是0（或1）。因此物理层要考虑用多大的"><meta itemprop="datePublished" content="2021-08-30T20:27:54+08:00" />
+<meta itemprop="name" content="MySQL事务">
+<meta itemprop="description" content="一、事务的基本要素（ACID） 1、原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。und"><meta itemprop="datePublished" content="2021-08-30T20:27:54+08:00" />
 <meta itemprop="dateModified" content="2021-08-30T20:27:54+08:00" />
-<meta itemprop="wordCount" content="770">
-<meta itemprop="keywords" content="网络分层模型," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="网络分层模型"/>
-<meta name="twitter:description" content="五层结构 一、物理层 在物理层上所传数据的单位是比特。发送方发送1（或0）时，接收方应当收到1（或0）而不是0（或1）。因此物理层要考虑用多大的"/>
+<meta itemprop="wordCount" content="1639">
+<meta itemprop="keywords" content="MySQL事务,ACID,事务隔离级别,MVCC,间隙锁," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MySQL事务"/>
+<meta name="twitter:description" content="一、事务的基本要素（ACID） 1、原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。und"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -90,7 +90,7 @@
 <body>
   <div id="mobile-navbar" class="mobile-navbar">
   <div class="mobile-header-logo">
-    <a href="/" class="logo">China No. 1 </a>
+    <a href="/" class="logo">山河一统</a>
   </div>
   <div class="mobile-navbar-icon">
     <span></span>
@@ -197,7 +197,7 @@
     <div class="logo-wrapper">
   <a href="/" class="logo">
     
-      China No. 1 
+      山河一统
     
   </a>
 </div>
@@ -256,14 +256,14 @@
           <article class="post bg-white">
     
     <header class="post-header">
-      <h1 class="post-title">网络分层模型</h1>
+      <h1 class="post-title">MySQL事务</h1>
       
       <div class="post-meta">
         <time datetime="2021-08-30" class="post-time">
           August 2021
         </time>
         <div class="post-category">
-            <a href="https://lihd2199.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"> 计算机网络 </a>
+            <a href="https://lihd2199.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"> 数据库 </a>
             
           </div>
         
@@ -281,28 +281,88 @@
 
     
     <div class="post-content">
-      <h2 id="五层结构"><strong>五层结构</strong></h2>
-<h3 id="一物理层">一、物理层</h3>
-<p>在物理层上所传数据的单位是比特。<strong>发送方发送1（或0）时，接收方应当收到1（或0）而不是0（或1）。因此物理层要考虑用多大的电压代表“1”或“0”，以及接收方如何识别出发送方所发送的比特</strong>。物理层还要确定连接电缆的插头应当有多少根引脚以及各条引脚应如何连接。请注意，传递信息所利用的一些物理媒体，如双绞线、同轴电缆、光缆、无线信道等，并不在物理层协议之内而是在物理层协议的下面。</p>
-<h3 id="二数据链路层">二、数据链路层</h3>
-<p>在两个相邻结点之间传送数据时，数据链路层将网络层交下来的IP数据报组装成帧，在两个相邻结点间的链路上传送帧。每一帧包括数据和必要的控制信息（如同步信息、地址信息、差错控制等）。</p>
-<h3 id="三网络层">三、网络层</h3>
-<p>网络层负责为分组交换网上的不同主机提供通信服务。在发送数据时，网络层把运输层产生的报文段或用户数据报封装成分组或包(packet)进行传送。<strong>在TCP/IP体系中，网络层使用IP协议，分组也叫作 IP数据报，或简称为数据报(datagram)</strong>。</p>
-<p>网络层的另一个任务就是要选择合适的路由，使源主机运输层所传下来的分组能够通过网络中的路由器找到目的主机。</p>
-<h3 id="四传输层">四、传输层</h3>
-<p>运输层的任务就是负责向两个主机中进程之间的通信提供通用的数据传输服务。应用进程利用该服务传送应用层报文。</p>
-<p>运输层主要使用以下两种协议：</p>
+      <h3 id="一事务的基本要素acid">一、事务的基本要素（ACID）</h3>
+<p>1、原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。undo log 日志</p>
+<p>2、一致性（Consistency）：事务开始前和结束后，数据库的完整性约束没有被破坏 。比如A向B转账，不可能A扣了钱，B却没收到。</p>
+<p>3、隔离性（Isolation）：同一时间，只允许一个事务请求同一数据，不同的事务之间彼此没有任何干扰。MVCC和间隙锁</p>
+<p>4、持久性（Durability）：事务完成后，事务对数据库的所有更新将被保存到数据库，不能回滚 redo log。</p>
+<h3 id="二事务隔离级别">二、事务隔离级别</h3>
+<table>
+<thead>
+<tr>
+<th>事务隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>读未提交 ru</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>不可重复读 rc</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>可重复读 rr</td>
+<td>否</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td>串行化</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<h3 id="三事务的并发问题">三、事务的并发问题</h3>
 <ul>
 <li>
-<p>传输控制协议TCP (Transmission Control Protocol)——提供面向连接的、可靠的数据传输服务，其数据传输的单位是报文段(segment)。</p>
+<p>脏读：事务A读取了事务B更新的数据，然后B回滚操作，那么A读取到的数据是脏数据</p>
 </li>
 <li>
-<p>用户数据报协议 UDP (User Datagram Protocol)——提供无连接的、尽最大努力(best-effort)的数据传输服务（不保证数据传输的可靠性），其数据传输的单位是用户数据报。</p>
+<p>不可重复读：事务 A 多次读取同一数据，事务 B 在事务A多次读取的过程中，对数据作了更新并提交，导致事务A多次读取同一数据时，结果不一致。</p>
+</li>
+<li>
+<p>幻读：系统管理员A将数据库中所有学生的成绩从具体分数改为ABCDE等级，但是系统管理员B就在这个时候插入了一条具体分数的记录，当系统管理员A改结束后发现还有一条记录没有改过来，就好像发生了幻觉一样，这就叫幻读。</p>
+<p>小结：不可重复读的和幻读很容易混淆，不可重复读侧重于修改，幻读侧重于新增或删除。解决不可重复读的问题只需锁住满足条件的行，解决幻读需要锁表</p>
 </li>
 </ul>
-<h3 id="五-应用层">五、 应用层</h3>
-<p>应用层的任务是通过应用进程间的交互来完成特定网络应用。**应用层协议定义的是应用进程间通信和交互的规则。**这里的进程(process)就是指主机中正在运行的程序。</p>
-<p><img src="/img/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93.png" alt=""></p>
+<h3 id="四当前读和快照读">四、当前读和快照读</h3>
+<p>快照读：
+一般的 select * from &hellip;. where &hellip; 语句都是快照读
+快照读通过mvcc实现
+当前读：
+当前读，会在搜索的时候加锁</p>
+<pre><code>select * from .... where  ... for update
+select * from .... where  ... lock in share mode
+update .... set .. where ...
+delete from. . where ..
+</code></pre><p>当前读通过 next key lock 避免幻读
+如果事务中都使用快照读，那么就不会产生幻读现象，但是快照读和当前读混用就会产生幻读。</p>
+<h3 id="五mvcc版本控制">五、MVCC版本控制</h3>
+<p>1、MVCC：多版本并发控制，是针对快照读的一种不通过锁来保证事务可见性的实现方式，主要是通过Innodb的undo log和一致性试图（read view）实现的。</p>
+<p>2、Mysql会在某一时刻，创建一致性视图（read view实现的），RR隔离级别是在事务开始时刻，确切地说是第一个读操作创建read view的；RC隔离级别是在语句开始时刻创建read view的。我理解这个一致性试图是当前活跃的事务的id数组。</p>
+<p>3、undo log 主要是回滚用的，我们知道每次新增或者修改一条数据，都会产生一条undo log，我们可以理解为是历史数据的记录，或者是对当前操作的反向记录。在我们的每条记录中，数据库都会给我们增加三个字段，id、事务id、回滚指针，我们对一条数据的操作，通过回滚指针，会将数据的undo log形成一条数据链。</p>
+<p>4、在我们在遍历undo log链的时候，比较这条undo log链数据的事务id，如果事务id小于记录的最小的事务id，那么这条数据对当前事务是可见的，如果大于记录的最大事务id，那么这条数据对当前事务是不可见的，如果事务id落在了两者之间，那么需要判断是不是被记录了。如果被记录了，说明不可见。</p>
+<pre><code>通过high/low water mark快速判断：
+trx_id &lt; view-&gt;up_limit_id的记录对于当前read view是一定可见的；
+trx_id &gt;= view-&gt;low_limit_id的记录对于当前read view是一定不可见的；
+如果trx_id落在[up_limit_id, low_limit_id)，需要在活跃读写事务数组查找trx_id是否存在，如果存在，记录对于当前read view是不可见
+</code></pre><h3 id="六lbcc基于锁的控制">六、LBCC基于锁的控制</h3>
+<p>只使用唯一索引查询，并且只锁定一条记录时，innoDB会使用行锁。</p>
+<p>只使用唯一索引查询，但是检索条件是范围检索，或者是唯一检索然而检索结果不存在时，会产生 Next-Key Lock。</p>
+<p>使用普通索引检索时，不管是何种查询，只要加锁，都会产生间隙锁。</p>
+<p>同时使用唯一索引和普通索引时，由于数据行是优先根据普通索引排序，再根据唯一索引排序，所以也会产生间隙锁。</p>
+<p>锁住普通索引，会锁住对应的唯一索引的行。</p>
 
     </div>
 
@@ -333,14 +393,18 @@
 
     <footer class="post-footer">
       <div class="post-tags">
-          <a href="https://lihd2199.github.io/tags/%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B/">网络分层模型</a>
+          <a href="https://lihd2199.github.io/tags/mysql%E4%BA%8B%E5%8A%A1/">MySQL事务</a>
+          <a href="https://lihd2199.github.io/tags/acid/">ACID</a>
+          <a href="https://lihd2199.github.io/tags/%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/">事务隔离级别</a>
+          <a href="https://lihd2199.github.io/tags/mvcc/">MVCC</a>
+          <a href="https://lihd2199.github.io/tags/%E9%97%B4%E9%9A%99%E9%94%81/">间隙锁</a>
           
         </div>
 
       
       <nav class="post-nav">
         
-          <a class="prev" href="/post/network/hard/">
+          <a class="prev" href="/post/network/http%E5%8D%8F%E8%AE%AE/">
             
             <i class="iconfont">
               <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
@@ -350,12 +414,12 @@
 </svg>
 
             </i>
-            <span class="prev-text nav-default">硬件的常识</span>
+            <span class="prev-text nav-default">http协议</span>
             <span class="prev-text nav-mobile">Prev</span>
           </a>
         
-          <a class="next" href="/post/network/network-layer/">
-            <span class="next-text nav-default">网络层</span>
+          <a class="next" href="/post/network/tcp%E5%8D%8F%E8%AE%AE/">
+            <span class="next-text nav-default">tcp</span>
             <span class="prev-text nav-mobile">Next</span>
             
             <i class="iconfont">

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>定风波 on China No. 1</title>
+    <title>定风波 on 山河一统</title>
     <link>https://lihd2199.github.io/</link>
-    <description>Recent content in 定风波 on China No. 1</description>
+    <description>Recent content in 定风波 on 山河一统</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>lihongda</copyright>
@@ -11,6 +11,56 @@
     
         <atom:link href="https://lihd2199.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>linux内核前言（六）进程,线程,协程</title>
+      <link>https://lihd2199.github.io/post/linux/%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B%E5%8D%8F%E7%A8%8B/</link>
+      <pubDate>Mon, 13 Sep 2021 11:25:40 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B%E5%8D%8F%E7%A8%8B/</guid>
+      
+        <description></description>
+      
+    </item>
+    
+    <item>
+      <title>ifconfig 命令</title>
+      <link>https://lihd2199.github.io/post/network/ifconfig/</link>
+      <pubDate>Wed, 08 Sep 2021 19:45:42 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/network/ifconfig/</guid>
+      
+        <description>&lt;p&gt;　　这篇是linux很常用的一个命令，之前只知道它可以查询ip信息，也没有认真的研究过，近期看redis超时的问题，看到了一些相关东西，在网上找了些资料；&lt;/p&gt;
+&lt;p&gt;　　&lt;a href=&#34;https://www.cnblogs.com/taosiyu/p/11431758.html&#34;&gt;Linux的ifconfig看到的信息详解 - 一颗桃子t - 博客园 (cnblogs.com)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;　　&lt;a href=&#34;https://www.sunzhongwei.com/read-the-card-from-the-ifconfig-traffic&#34;&gt;从 ifconfig 读取网卡流量 - Linux - 大象笔记 (sunzhongwei.com)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;　　&lt;a href=&#34;https://www.cnblogs.com/taobataoma/archive/2007/12/27/1016689.html&#34;&gt;Linux系统下ifconfig命令使用及结果分析 - OldHawk - 博客园 (cnblogs.com)&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;~&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;$&lt;/span&gt; ifconfig &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;a
+eth0      Link encap:Ethernet  HWaddr &lt;span style=&#34;color:#ae81ff&#34;&gt;00&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;22&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;33&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;44&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;55&lt;/span&gt;  
+          inet addr:&lt;span style=&#34;color:#ae81ff&#34;&gt;10.10.10.10&lt;/span&gt;  Bcast:&lt;span style=&#34;color:#ae81ff&#34;&gt;10.10.255.255&lt;/span&gt;  Mask:&lt;span style=&#34;color:#ae81ff&#34;&gt;255.255.0.0&lt;/span&gt;
+          UP BROADCAST RUNNING MULTICAST  MTU:&lt;span style=&#34;color:#ae81ff&#34;&gt;1500&lt;/span&gt;  Metric:&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+          RX packets:&lt;span style=&#34;color:#ae81ff&#34;&gt;666433288&lt;/span&gt; errors:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; dropped:&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; overruns:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; frame:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+          TX packets:&lt;span style=&#34;color:#ae81ff&#34;&gt;430278029&lt;/span&gt; errors:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; dropped:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; overruns:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; carrier:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+          collisions:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; txqueuelen:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 
+          RX bytes:&lt;span style=&#34;color:#ae81ff&#34;&gt;123925389232&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;123.9&lt;/span&gt; GB)  TX bytes:&lt;span style=&#34;color:#ae81ff&#34;&gt;329876469836&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;329.8&lt;/span&gt; GB)
+
+lo        Link encap:Local Loopback  
+          inet addr:&lt;span style=&#34;color:#ae81ff&#34;&gt;127.0.0.1&lt;/span&gt;  Mask:&lt;span style=&#34;color:#ae81ff&#34;&gt;255.0.0.0&lt;/span&gt;
+          UP LOOPBACK RUNNING  MTU:&lt;span style=&#34;color:#ae81ff&#34;&gt;65536&lt;/span&gt;  Metric:&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+          RX packets:&lt;span style=&#34;color:#ae81ff&#34;&gt;46060&lt;/span&gt; errors:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; dropped:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; overruns:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; frame:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+          TX packets:&lt;span style=&#34;color:#ae81ff&#34;&gt;46060&lt;/span&gt; errors:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; dropped:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; overruns:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; carrier:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+          collisions:&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; txqueuelen:&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; 
+          RX bytes:&lt;span style=&#34;color:#ae81ff&#34;&gt;2303000&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;2.3&lt;/span&gt; MB)  TX bytes:&lt;span style=&#34;color:#ae81ff&#34;&gt;2303000&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;2.3&lt;/span&gt; MB
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面是我的电脑的一个ifconfig命令，里面的IP地址和mac地址做了模糊。&lt;/p&gt;
+&lt;p&gt;首先可以看到是两个模块，第一个模块eth0是第一个网卡的意思，第二个是主机的回环地址，其实一般都是测试用的，也就是我们的127.0.0.1地址。&lt;/p&gt;
+&lt;p&gt;下面看一下第一个模块的内容：&lt;/p&gt;
+&lt;p&gt;第一行：连接类型：Ethernet（以太网）HWaddr（硬件mac地址）&lt;/p&gt;
+&lt;p&gt;第二行：网络地址：10.10.10.10    广播地址：10.10.255.255  子网掩码：255.255.0.0&lt;/p&gt;
+&lt;p&gt;第三行：UP（代表网卡开启状态）RUNNING（代表网卡的网线被接上）MULTICAST（支持组播）MTU:1500（最大传输单元）：1500字节&lt;/p&gt;
+&lt;p&gt;第四、五行：接收、发送数据包情况统计&lt;/p&gt;
+&lt;p&gt;第七行：接收、发送数据字节数统计信息&lt;/p&gt;
+</description>
+      
+    </item>
     
     <item>
       <title>704-二分查找</title>
@@ -63,18 +113,116 @@
     </item>
     
     <item>
-      <title>linux内核前言（四）Io与网络模型</title>
+      <title>linux内核前言（五）Io与网络模型</title>
       <link>https://lihd2199.github.io/post/linux/io%E4%B8%8E%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</link>
       <pubDate>Mon, 06 Sep 2021 20:44:10 +0800</pubDate>
       
       <guid>https://lihd2199.github.io/post/linux/io%E4%B8%8E%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</guid>
       
         <description>&lt;h3 id=&#34;常见的io模型介绍&#34;&gt;常见的io模型介绍：&lt;/h3&gt;
-&lt;p&gt;阻塞 &amp;amp; 非阻塞&lt;/p&gt;
-&lt;p&gt;多路复用&lt;/p&gt;
-&lt;p&gt;Signal IO&lt;/p&gt;
-&lt;p&gt;异步 IO&lt;/p&gt;
-&lt;p&gt;libevent&lt;/p&gt;
+&lt;h4 id=&#34;阻塞&#34;&gt;阻塞&lt;/h4&gt;
+&lt;p&gt;在linux中，默认情况下所有的socket都是blocking，一个典型的读操作流程大概是这样：&lt;/p&gt;
+&lt;p&gt;当用户进程调用了recvfrom这个系统调用，kernel就开始了IO的第一个阶段：准备数据（对于网络IO来说，很多时候数据在一开始还没有到达。比如，还没有收到一个完整的UDP包。这个时候kernel就要等待足够的数据到来）。这个过程需要等待，也就是说数据被拷贝到操作系统内核的缓冲区中是需要一个过程的。而在用户进程这边，整个进程会被阻塞（当然，是进程自己选择的阻塞）。当kernel一直等到数据准备好了，它就会将数据从kernel中拷贝到用户内存，然后kernel返回结果，用户进程才解除block的状态，重新运行起来。&lt;/p&gt;
+&lt;p&gt;所以，blocking IO的特点就是在IO执行的两个阶段都被block了。&lt;/p&gt;
+&lt;h4 id=&#34;非阻塞io&#34;&gt;非阻塞IO&lt;/h4&gt;
+&lt;p&gt;linux下，可以通过设置socket使其变为non-blocking。当对一个non-blocking socket执行读操作时，流程是这个样子：&lt;/p&gt;
+&lt;p&gt;当用户进程发出read操作时，如果kernel中的数据还没有准备好，那么它并不会block用户进程，而是立刻返回一个error。从用户进程角度讲 ，它发起一个read操作后，并不需要等待，而是马上就得到了一个结果。用户进程判断结果是一个error时，它就知道数据还没有准备好，于是它可以再次发送read操作。一旦kernel中的数据准备好了，并且又再次收到了用户进程的system call，那么它马上就将数据拷贝到了用户内存，然后返回。&lt;/p&gt;
+&lt;p&gt;所以，nonblocking IO的特点是用户进程需要&lt;strong&gt;不断的主动询问&lt;/strong&gt;kernel数据好了没有。&lt;/p&gt;
+&lt;h4 id=&#34;多线程处理&#34;&gt;多线程处理&lt;/h4&gt;
+&lt;p&gt;当有多个socket消息需要处理，阻塞IO搞不定，有一种可能是多个进程/线程，每当有一个连接建立（accept socket)，都会启动一个线程去处理新建立的连接。但是，这种模型性能不太好，创建多进程、多线程时会有开销。&lt;/p&gt;
+&lt;p&gt;经典的C10K问题，意思是 在一台服务器上维护1w个连接，需要建立1w个进程或者线程。那么如果维护1亿用户在线，则需要1w台服务器。&lt;/p&gt;
+&lt;p&gt;IO多路复用，则是解决以上问题的场景。&lt;/p&gt;
+&lt;p&gt;总结：多进程、多线程模型企图把每一个fd放到不同的线程/进程处理，避免阻塞的问题，从而引入了进程创建\撤销，调度的开销。能否在一个线程内搞定所有IO? &amp;ndash; 这就是多路复用的作用。&lt;/p&gt;
+&lt;h4 id=&#34;多路复用&#34;&gt;多路复用&lt;/h4&gt;
+&lt;h5 id=&#34;select&#34;&gt;select&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; maxfd,fd_set &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;rdset,fd_set &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;wrset,fd_set &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;exset,&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; timeval &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;timeout);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h6 id=&#34;select函数的调用过程&#34;&gt;select函数的调用过程&lt;/h6&gt;
+&lt;p&gt;&lt;img src=&#34;https://lihd2199.github.io/img/select.png&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
+&lt;p&gt;（1）使用copy_from_user从用户空间拷贝fd_set到内核空间&lt;/p&gt;
+&lt;p&gt;（2）注册回调函数__pollwait&lt;/p&gt;
+&lt;p&gt;（3）遍历所有fd，调用其对应的poll方法（对于socket，这个poll方法是sock_poll，sock_poll根据情况会调用到tcp_poll,udp_poll或者datagram_poll）&lt;/p&gt;
+&lt;p&gt;（4）以tcp_poll为例，其核心实现就是__pollwait，也就是上面注册的回调函数。&lt;/p&gt;
+&lt;p&gt;（5）__pollwait的主要工作就是把current（当前进程）挂到设备的等待队列中，不同的设备有不同的等待队列，对于tcp_poll来说，其等待队列是sk-&amp;gt;sk_sleep（注意把进程挂到等待队列中并不代表进程已经睡眠了）。在设备收到一条消息（网络设备）或填写完文件数据（磁盘设备）后，会唤醒设备等待队列上睡眠的进程，这时current便被唤醒了。&lt;/p&gt;
+&lt;p&gt;（6）poll方法返回时会返回一个描述读写操作是否就绪的mask掩码，根据这个mask掩码给fd_set赋值。&lt;/p&gt;
+&lt;p&gt;（7）如果遍历完所有的fd，还没有返回一个可读写的mask掩码，则会调用schedule_timeout是调用select的进程（也就是current）进入睡眠。当设备驱动发生自身资源可读写后，会唤醒其等待队列上睡眠的进程。如果超过一定的超时时间（schedule_timeout指定），还是没人唤醒，则调用select的进程会重新被唤醒获得CPU，进而重新遍历fd，判断有没有就绪的fd。&lt;/p&gt;
+&lt;p&gt;（8）把fd_set从内核空间拷贝到用户空间。&lt;/p&gt;
+&lt;h6 id=&#34;select睡眠和唤醒过程&#34;&gt;select睡眠和唤醒过程&lt;/h6&gt;
+&lt;p&gt;　　select巧妙的利用等待队列机制让用户进程适当在没有资源可读/写时睡眠，有资源可读/写时唤醒。&lt;/p&gt;
+&lt;h6 id=&#34;select睡眠过程&#34;&gt;select睡眠过程&lt;/h6&gt;
+&lt;p&gt;　　select会循环遍历它所监测的fd_　set内的所有文件描述符对应的驱动程序的poll函数。&lt;/p&gt;
+&lt;p&gt;　　驱动程序提供的poll函数首先会将调用select的用户进程插入到该设备驱动对应资源的等待队列(如读/写等待队列)，然后返回一个bitmask告诉select当前资源哪些可用。　&lt;/p&gt;
+&lt;p&gt;　　当select循环遍历完所有fd_set内指定的文件描述符对应的poll函数后，如果没有一个资源可用(即没有一个文件可供操作)，则select让该进程睡眠，一直等到有资源可用为止，进程被唤醒(或者timeout)继续往下执行。&lt;/p&gt;
+&lt;h6 id=&#34;select唤醒过程&#34;&gt;select唤醒过程&lt;/h6&gt;
+&lt;p&gt;　　唤醒该进程的过程通常是在所监测文件的设备驱动内实现的。&lt;/p&gt;
+&lt;p&gt;　　驱动程序维护了针对自身资源读写的等待队列。当设备驱动发现自身资源变为可读写并且有进程睡眠在该资源的等待队列上时，就会唤醒这个资源等待队列上的进程。&lt;/p&gt;
+&lt;p&gt;原文链接：https://blog.csdn.net/lixungogogo/article/details/52219951&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;h3 id=&#34;文件描述符-fd&#34;&gt;文件描述符 fd&lt;/h3&gt;
+&lt;p&gt;文件描述符（file descriptor）是一个非负整数，从 0 开始。进程使用文件描述符来标识一个打开的文件。&lt;/p&gt;
+&lt;p&gt;系统为每一个进程维护了一个文件描述符表，表示该进程打开文件的记录表，而&lt;strong&gt;文件描述符实际上就是这张表的索引&lt;/strong&gt;。当进程打开（&lt;code&gt;open&lt;/code&gt;）或者新建（&lt;code&gt;create&lt;/code&gt;）文件时，内核会在该进程的文件列表中新增一个表项，同时返回一个文件描述符 —— 也就是新增表项的下标。&lt;/p&gt;
+&lt;p&gt;一般来说，每个进程最多可以打开 64 个文件，&lt;code&gt;fd ∈ 0~63&lt;/code&gt;。在不同系统上，最多允许打开的文件个数不同，Linux 2.4.22 强制规定最多不能超过 1,048,576。&lt;/p&gt;
+&lt;p&gt;每个进程默认都有 3 个文件描述符：0 (stdin)、1 (stdout)、2 (stderr)。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;两个问题：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;性能开销大
+&lt;ol&gt;
+&lt;li&gt;调用 &lt;code&gt;select&lt;/code&gt; 时会陷入内核，这时需要将参数中的 &lt;code&gt;fd_set&lt;/code&gt; 从用户空间拷贝到内核空间&lt;/li&gt;
+&lt;li&gt;内核需要遍历传递进来的所有 &lt;code&gt;fd_set&lt;/code&gt; 的每一位，不管它们是否就绪&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;同时能够监听的文件描述符数量太少。受限于 &lt;code&gt;sizeof(fd_set)&lt;/code&gt; 的大小，在编译内核时就确定了且无法更改。一般是 1024，不同的操作系统不相同&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;别人写的select的应用，可以看看有助了解：&lt;a href=&#34;https://www.huaweicloud.com/articles/8355434.html&#34;&gt;I/O多路复用之select:多用户聊天室学习与开发&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Chat&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; sock)
+{
+	&lt;span style=&#34;color:#75715e&#34;&gt;//启动两个线程进行读写
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	fd_set refd;
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Maxfd;
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; talk[&lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;];
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; ret;
+
+	Maxfd&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sock;
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+	{
+		FD_ZERO(&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;refd);
+		FD_SET(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;refd);
+		FD_SET(sock,&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;refd);
+		ret&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;select(Maxfd&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;refd,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (ret&lt;span style=&#34;color:#f92672&#34;&gt;==-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)&lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(FD_ISSET(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;refd))
+		{
+			&lt;span style=&#34;color:#75715e&#34;&gt;//scanf(&amp;#34;%s&amp;#34;,talk);
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;			memset(talk,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;);
+			fgets(talk,&lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;,stdin);
+			send(sock,talk,strlen(talk)&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
+		}
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(FD_ISSET(sock,&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;refd))
+		{
+			memset(talk,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;);
+			recv(sock,talk,&lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
+			printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%s&amp;#34;&lt;/span&gt;,talk);
+		}
+	}
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+}
+&lt;span style=&#34;color:#75715e&#34;&gt;#endif
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;poll&#34;&gt;poll&lt;/h5&gt;
+&lt;p&gt;poll 和 select 几乎没有区别。poll 在用户态通过&lt;strong&gt;数组&lt;/strong&gt;方式&lt;strong&gt;传递&lt;/strong&gt;文件描述符，在内核会转为&lt;strong&gt;链表&lt;/strong&gt;方式&lt;strong&gt;存储&lt;/strong&gt;，没有最大数量的限制&lt;/p&gt;
+&lt;p&gt;从性能开销上看，poll 和 select 的差别不大。&lt;/p&gt;
+&lt;h5 id=&#34;epoll&#34;&gt;epoll&lt;/h5&gt;
+&lt;p&gt;epoll ：在内核中的实现不是通过轮询的方式，而是通过注册callback函数的方式。当某个文件描述符发现变化，就主动通知。成功解决了select的两个问题，“epoll 被称为解决 C10K 问题的利器。”&lt;/p&gt;
+&lt;p&gt;epoll 是对 select 和 poll 的改进，避免了“性能开销大”和“文件描述符数量少”两个缺点。&lt;/p&gt;
+&lt;p&gt;简而言之，epoll 有以下几个特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用&lt;strong&gt;红黑树&lt;/strong&gt;存储文件描述符集合&lt;/li&gt;
+&lt;li&gt;使用&lt;strong&gt;队列&lt;/strong&gt;存储就绪的文件描述符&lt;/li&gt;
+&lt;li&gt;每个文件描述符只需在添加时传入一次；通过事件更改文件描述符状态&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;epoll获取事件的时候，无须遍历整个被监听的描述符集，只要遍历那些被内核I/O事件异步唤醒而加入就绪队列的描述符集合。&lt;/p&gt;
+&lt;p&gt;epoll_create: 创建epoll池子；&lt;/p&gt;
+&lt;p&gt;epoll_ctl：向epoll注册事件。告诉内核epoll关心哪些文件，让内核没有健忘症；&lt;/p&gt;
+&lt;p&gt;epoll_wait：等待就绪事件的到来。专门等哪些文件，第2个参数 是输出参数，包含满足的fd，不需要再遍历所有的fd文件；&lt;/p&gt;
 </description>
       
     </item>
@@ -615,11 +763,11 @@
     </item>
     
     <item>
-      <title>http</title>
-      <link>https://lihd2199.github.io/post/network/http/</link>
+      <title>http协议</title>
+      <link>https://lihd2199.github.io/post/network/http%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/post/network/http/</guid>
+      <guid>https://lihd2199.github.io/post/network/http%E5%8D%8F%E8%AE%AE/</guid>
       
         <description>&lt;p&gt;HTTP 超文本传输协议是位于 TCP/IP 体系结构中的应用层协议，它是万维网数据通信的基础。&lt;/p&gt;
 &lt;p&gt;HTTP/1.1 是目前使用最广泛的版本，一般没有特别标明版本都是指 HTTP/1.1。&lt;/p&gt;
@@ -668,10 +816,10 @@
     
     <item>
       <title>MySQL事务</title>
-      <link>https://lihd2199.github.io/post/datasource/mysql-transaction/</link>
+      <link>https://lihd2199.github.io/post/datasource/mysql%E4%BA%8B%E5%8A%A1/</link>
       <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/post/datasource/mysql-transaction/</guid>
+      <guid>https://lihd2199.github.io/post/datasource/mysql%E4%BA%8B%E5%8A%A1/</guid>
       
         <description>&lt;h3 id=&#34;一事务的基本要素acid&#34;&gt;一、事务的基本要素（ACID）&lt;/h3&gt;
 &lt;p&gt;1、原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。undo log 日志&lt;/p&gt;
@@ -761,10 +909,10 @@ trx_id &amp;gt;= view-&amp;gt;low_limit_id的记录对于当前read view是一�
     
     <item>
       <title>tcp</title>
-      <link>https://lihd2199.github.io/post/network/tcp/</link>
+      <link>https://lihd2199.github.io/post/network/tcp%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/post/network/tcp/</guid>
+      <guid>https://lihd2199.github.io/post/network/tcp%E5%8D%8F%E8%AE%AE/</guid>
       
         <description>&lt;h3 id=&#34;一tcp概述&#34;&gt;一、tcp概述&lt;/h3&gt;
 &lt;p&gt;1、&lt;strong&gt;TCP是面向连接的运输层协议&lt;/strong&gt;&lt;/p&gt;
@@ -825,10 +973,10 @@ trx_id &amp;gt;= view-&amp;gt;low_limit_id的记录对于当前read view是一�
     
     <item>
       <title>udp</title>
-      <link>https://lihd2199.github.io/post/network/udp/</link>
+      <link>https://lihd2199.github.io/post/network/udp%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/post/network/udp/</guid>
+      <guid>https://lihd2199.github.io/post/network/udp%E5%8D%8F%E8%AE%AE/</guid>
       
         <description>&lt;h4 id=&#34;一概述&#34;&gt;一、概述&lt;/h4&gt;
 &lt;p&gt;UDP是无连接的，即发送数据之前不需要建立连接，因此减少了开销和发送数据之前的时延。&lt;/p&gt;
@@ -849,11 +997,26 @@ trx_id &amp;gt;= view-&amp;gt;low_limit_id的记录对于当前read view是一�
     </item>
     
     <item>
-      <title>加密</title>
-      <link>https://lihd2199.github.io/post/network/encryption/</link>
+      <title>硬件的常识</title>
+      <link>https://lihd2199.github.io/post/network/%E7%A1%AC%E4%BB%B6/</link>
       <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/post/network/encryption/</guid>
+      <guid>https://lihd2199.github.io/post/network/%E7%A1%AC%E4%BB%B6/</guid>
+      
+        <description>&lt;p&gt;(1) 物理层使用的中间设备叫做转发器(repeater)。&lt;/p&gt;
+&lt;p&gt;(2) 数据链路层使用的中间设备叫做网桥或桥接器(bridge)。&lt;/p&gt;
+&lt;p&gt;(3) 网络层使用的中间设备叫做路由器(router）。&lt;/p&gt;
+&lt;p&gt;(4) 在网络层以上使用的中间设备叫做网关(gateway)。用网关连接两个不兼容的系统需要在高层进行协议的转换。&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>网络中的加密</title>
+      <link>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E5%8A%A0%E5%AF%86/</link>
+      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E5%8A%A0%E5%AF%86/</guid>
       
         <description>&lt;h2 id=&#34;加密算法&#34;&gt;加密算法&lt;/h2&gt;
 &lt;h4 id=&#34;对称密钥密码体制&#34;&gt;对称密钥密码体制&lt;/h4&gt;
@@ -898,26 +1061,11 @@ trx_id &amp;gt;= view-&amp;gt;low_limit_id的记录对于当前read view是一�
     </item>
     
     <item>
-      <title>硬件的常识</title>
-      <link>https://lihd2199.github.io/post/network/hard/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
-      
-      <guid>https://lihd2199.github.io/post/network/hard/</guid>
-      
-        <description>&lt;p&gt;(1) 物理层使用的中间设备叫做转发器(repeater)。&lt;/p&gt;
-&lt;p&gt;(2) 数据链路层使用的中间设备叫做网桥或桥接器(bridge)。&lt;/p&gt;
-&lt;p&gt;(3) 网络层使用的中间设备叫做路由器(router）。&lt;/p&gt;
-&lt;p&gt;(4) 在网络层以上使用的中间设备叫做网关(gateway)。用网关连接两个不兼容的系统需要在高层进行协议的转换。&lt;/p&gt;
-</description>
-      
-    </item>
-    
-    <item>
       <title>网络分层模型</title>
-      <link>https://lihd2199.github.io/post/network/hierarchical-model/</link>
+      <link>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B/</link>
       <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/post/network/hierarchical-model/</guid>
+      <guid>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B/</guid>
       
         <description>&lt;h2 id=&#34;五层结构&#34;&gt;&lt;strong&gt;五层结构&lt;/strong&gt;&lt;/h2&gt;
 &lt;h3 id=&#34;一物理层&#34;&gt;一、物理层&lt;/h3&gt;
@@ -947,10 +1095,10 @@ trx_id &amp;gt;= view-&amp;gt;low_limit_id的记录对于当前read view是一�
     
     <item>
       <title>网络层</title>
-      <link>https://lihd2199.github.io/post/network/network-layer/</link>
+      <link>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E5%B1%82/</link>
       <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/post/network/network-layer/</guid>
+      <guid>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E5%B1%82/</guid>
       
         <description>&lt;h3 id=&#34;一网络层的设计&#34;&gt;一、网络层的设计&lt;/h3&gt;
 &lt;p&gt;因特网采用的设计思路是这样的：&lt;strong&gt;网络层向上只提供简单灵活的、无连接的、尽最大努力交付的数据报服务&lt;/strong&gt;。网络在发送分组时不需要先建立连接。每一个分组（也就是IP数据报）独立发送，与其前后的分组无关（不进行编号）。&lt;strong&gt;网络层不提供服务质量的承诺&lt;/strong&gt;。也就是说，所传送的分组可能出错、丢失、重复和失序（即不按序到达终点），当然也不保证分组交付的时限。由于传输网络不提供端到端的可靠传输服务，这就使网络中的路由器可以做得比较简单，而且价格低廉。&lt;strong&gt;如果主机中的进程之间的通信需要是可靠的，那么就由网络的主机中的运输层负责（包括差错处理、流量控制等）。&lt;/strong&gt;&lt;/p&gt;
@@ -1091,16 +1239,19 @@ trx_id &amp;gt;= view-&amp;gt;low_limit_id的记录对于当前read view是一�
 &lt;strong&gt;著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。&lt;/strong&gt;&lt;/p&gt;
 &lt;h4 id=&#34;子网划分&#34;&gt;子网划分&lt;/h4&gt;
 &lt;p&gt;子网划分是指由网络管理员将本单位一个给定的网络分为若干个更小的部分，这些更小的部分被称为子网。当本单位网络中的主机总数未超出所给定的某类网络可容纳的最大主机数，但单位内部又要划分成若干个分段而便于进行管理时，就可以采用子网划分的方法。为了创建子网，网络管理员需要从原有的两个层次结构的IP 地址的主机位中借出连续的高若干位作为子网络号，后面剩下的仍为主机号字段。于是，原来的&lt;strong&gt;两级层次结构的IP地址在本单位内就变为三级IP地址：网络号、子网号、主机号&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://zh.wikipedia.org/wiki/%E5%AD%90%E7%BD%91&#34;&gt;子网掩码 - 维基百科，自由的百科全书 (wikipedia.org)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;　　在因特网协议中，子网指的是从分类网络中划分出来的一部分。具有相同的前半部分地址的一组IP地址，可以利用地址的前半部分划分组。在一个IP网络中划分子网使我们能将一个单一的大型网络（看上去如此）分成若干个较小的网络。在最初引入这个概念的时候，IPv4还未引入分类网络这个概念。而引入划分子网这个概念的目的是为了允许一个单一的站点能拥有多个局域网。&lt;/p&gt;
+&lt;p&gt;　　“网络掩码”又叫“子网掩码”、“地址掩码”，它是一种用来指明一个IP地址的哪些位标识的是主机所在的网络地址以及哪些位标识的是主机地址的位掩码。&lt;/p&gt;
 </description>
       
     </item>
     
     <item>
       <title>运输层</title>
-      <link>https://lihd2199.github.io/post/network/transport-layer/</link>
+      <link>https://lihd2199.github.io/post/network/%E8%BF%90%E8%BE%93%E5%B1%82/</link>
       <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/post/network/transport-layer/</guid>
+      <guid>https://lihd2199.github.io/post/network/%E8%BF%90%E8%BE%93%E5%B1%82/</guid>
       
         <description>&lt;h3 id=&#34;一运输层协议&#34;&gt;一、运输层协议&lt;/h3&gt;
 &lt;p&gt;运输层向它上面的应用层提供通信服务，它属于面向通信部分的最高层，同时也是用户功能中的最低层；两个主机进行通信就是两个主机中的应用进程互相通信；从运输层的角度看，通信的真正端点并不是主机而是主机中的进程。&lt;/p&gt;

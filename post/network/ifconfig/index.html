@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>udp - China No. 1</title>
+  <title>ifconfig 命令 - 山河一统</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -23,7 +23,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="author" content="lihongda" />
-  <meta name="description" content="一、概述 UDP是无连接的，即发送数据之前不需要建立连接，因此减少了开销和发送数据之前的时延。 UDP使用尽最大努力交付，即不保证可靠交付，因此" />
+  <meta name="description" content="这篇是linux很常用的一个命令，之前只知道它可以查询ip信息，也没有认真的研究过，近期看redis超时的问题，看到了一些相关东西，在网上找" />
 
   <meta name="keywords" content="Hugo, theme, jane" />
 
@@ -35,7 +35,7 @@
 <meta name="generator" content="Hugo 0.87.0" />
 
 
-<link rel="canonical" href="https://lihd2199.github.io/post/network/udp/" />
+<link rel="canonical" href="https://lihd2199.github.io/post/network/ifconfig/" />
 
 
 
@@ -53,26 +53,26 @@
 
 
 
-<link rel="stylesheet" href="/sass/jane.min.a7e1ec5c2377858e6f0687af7de9a2f73aa595c607520d32f2c7f2993ffcff3b.css" integrity="sha256-p&#43;HsXCN3hY5vBoevfemi9zqllcYHUg0y8sfymT/8/zs=" media="screen" crossorigin="anonymous">
+<link rel="stylesheet" href="/sass/jane.min.ef473b2af189d1fe93d4f6eeccd9228f4374744d710128eb14d535fe0670ecfe.css" integrity="sha256-70c7KvGJ0f6T1PbuzNkij0N0dE1xASjrFNU1/gZw7P4=" media="screen" crossorigin="anonymous">
 
 
 
 
 
-<meta property="og:title" content="udp" />
-<meta property="og:description" content="一、概述 UDP是无连接的，即发送数据之前不需要建立连接，因此减少了开销和发送数据之前的时延。 UDP使用尽最大努力交付，即不保证可靠交付，因此" />
+<meta property="og:title" content="ifconfig 命令" />
+<meta property="og:description" content="这篇是linux很常用的一个命令，之前只知道它可以查询ip信息，也没有认真的研究过，近期看redis超时的问题，看到了一些相关东西，在网上找" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://lihd2199.github.io/post/network/udp/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2021-08-30T20:27:54+08:00" />
-<meta property="article:modified_time" content="2021-08-30T20:27:54+08:00" />
+<meta property="og:url" content="https://lihd2199.github.io/post/network/ifconfig/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-09-08T19:45:42+08:00" />
+<meta property="article:modified_time" content="2021-09-08T19:45:42+08:00" />
 
-<meta itemprop="name" content="udp">
-<meta itemprop="description" content="一、概述 UDP是无连接的，即发送数据之前不需要建立连接，因此减少了开销和发送数据之前的时延。 UDP使用尽最大努力交付，即不保证可靠交付，因此"><meta itemprop="datePublished" content="2021-08-30T20:27:54+08:00" />
-<meta itemprop="dateModified" content="2021-08-30T20:27:54+08:00" />
-<meta itemprop="wordCount" content="529">
-<meta itemprop="keywords" content="运输层,udp," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="udp"/>
-<meta name="twitter:description" content="一、概述 UDP是无连接的，即发送数据之前不需要建立连接，因此减少了开销和发送数据之前的时延。 UDP使用尽最大努力交付，即不保证可靠交付，因此"/>
+<meta itemprop="name" content="ifconfig 命令">
+<meta itemprop="description" content="这篇是linux很常用的一个命令，之前只知道它可以查询ip信息，也没有认真的研究过，近期看redis超时的问题，看到了一些相关东西，在网上找"><meta itemprop="datePublished" content="2021-09-08T19:45:42+08:00" />
+<meta itemprop="dateModified" content="2021-09-08T19:45:42+08:00" />
+<meta itemprop="wordCount" content="554">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ifconfig 命令"/>
+<meta name="twitter:description" content="这篇是linux很常用的一个命令，之前只知道它可以查询ip信息，也没有认真的研究过，近期看redis超时的问题，看到了一些相关东西，在网上找"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -90,7 +90,7 @@
 <body>
   <div id="mobile-navbar" class="mobile-navbar">
   <div class="mobile-header-logo">
-    <a href="/" class="logo">China No. 1 </a>
+    <a href="/" class="logo">山河一统</a>
   </div>
   <div class="mobile-navbar-icon">
     <span></span>
@@ -197,7 +197,7 @@
     <div class="logo-wrapper">
   <a href="/" class="logo">
     
-      China No. 1 
+      山河一统
     
   </a>
 </div>
@@ -256,11 +256,11 @@
           <article class="post bg-white">
     
     <header class="post-header">
-      <h1 class="post-title">udp</h1>
+      <h1 class="post-title">ifconfig 命令</h1>
       
       <div class="post-meta">
-        <time datetime="2021-08-30" class="post-time">
-          August 2021
+        <time datetime="2021-09-08" class="post-time">
+          September 2021
         </time>
         <div class="post-category">
             <a href="https://lihd2199.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"> 计算机网络 </a>
@@ -281,20 +281,34 @@
 
     
     <div class="post-content">
-      <h4 id="一概述">一、概述</h4>
-<p>UDP是无连接的，即发送数据之前不需要建立连接，因此减少了开销和发送数据之前的时延。</p>
-<p>UDP使用尽最大努力交付，即不保证可靠交付，因此主机不需要维持复杂的连接状态表。</p>
-<p>UDP是面向报文的。发送方的UDP对应用程序交下来的报文，在添加首部后就向下交付IP层。UDP对应用层交下来的报文，既不合并，也不拆分，而是保留这些报文的边界。</p>
-<p><img src="/img/udp%E9%9D%A2%E5%90%91%E6%8A%A5%E6%96%87.png" alt=""></p>
-<p>UDP没有拥塞控制，因此网络出现的拥塞不会使源主机的发送速率降低</p>
-<p>UDP支持一对一、一对多、多对一和多对多的交互通信</p>
-<h3 id="二udp的首部格式">二、UDP的首部格式</h3>
-<p><img src="/img/udp%E9%A6%96%E9%83%A8.png" alt=""></p>
-<p>(1) 源端口 源端口号。在需要对方回信时选用。不需要时可用全0。</p>
-<p>(2) 目的端口 目的端口号。这在终点交付报文时必须要使用到。</p>
-<p>(3) 长度 UDP用户数据报的长度，其最小值是8（仅有首部）。</p>
-<p>(4) 检验和 检测UDP用户数据报在传输中是否有错。有错就丢弃。</p>
-<p>UDP用户数据报首部中检验和的计算方法有些特殊。在计算检验和时，要在UDP用户数据报之前增加12个字节的伪首部。所谓“伪首部”是因为这种伪首部并不是UDP用户数据报真正的首部。只是在计算检验和时，临时添加在UDP用户数据报前面，得到一个临时的UDP用户数据报。检验和就是按照这个临时的UDP用户数据报来计算的。伪首部既不向下传送也不向上递交，而仅仅是为了计算检验和。</p>
+      <p>　　这篇是linux很常用的一个命令，之前只知道它可以查询ip信息，也没有认真的研究过，近期看redis超时的问题，看到了一些相关东西，在网上找了些资料；</p>
+<p>　　<a href="https://www.cnblogs.com/taosiyu/p/11431758.html">Linux的ifconfig看到的信息详解 - 一颗桃子t - 博客园 (cnblogs.com)</a></p>
+<p>　　<a href="https://www.sunzhongwei.com/read-the-card-from-the-ifconfig-traffic">从 ifconfig 读取网卡流量 - Linux - 大象笔记 (sunzhongwei.com)</a></p>
+<p>　　<a href="https://www.cnblogs.com/taobataoma/archive/2007/12/27/1016689.html">Linux系统下ifconfig命令使用及结果分析 - OldHawk - 博客园 (cnblogs.com)</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#f92672">~</span><span style="color:#960050;background-color:#1e0010">$</span> ifconfig <span style="color:#f92672">-</span>a
+eth0      Link encap:Ethernet  HWaddr <span style="color:#ae81ff">00</span><span style="color:#f92672">:</span><span style="color:#ae81ff">11</span><span style="color:#f92672">:</span><span style="color:#ae81ff">22</span><span style="color:#f92672">:</span><span style="color:#ae81ff">33</span><span style="color:#f92672">:</span><span style="color:#ae81ff">44</span><span style="color:#f92672">:</span><span style="color:#ae81ff">55</span>  
+          inet addr:<span style="color:#ae81ff">10.10.10.10</span>  Bcast:<span style="color:#ae81ff">10.10.255.255</span>  Mask:<span style="color:#ae81ff">255.255.0.0</span>
+          UP BROADCAST RUNNING MULTICAST  MTU:<span style="color:#ae81ff">1500</span>  Metric:<span style="color:#ae81ff">1</span>
+          RX packets:<span style="color:#ae81ff">666433288</span> errors:<span style="color:#ae81ff">0</span> dropped:<span style="color:#ae81ff">2</span> overruns:<span style="color:#ae81ff">0</span> frame:<span style="color:#ae81ff">0</span>
+          TX packets:<span style="color:#ae81ff">430278029</span> errors:<span style="color:#ae81ff">0</span> dropped:<span style="color:#ae81ff">0</span> overruns:<span style="color:#ae81ff">0</span> carrier:<span style="color:#ae81ff">0</span>
+          collisions:<span style="color:#ae81ff">0</span> txqueuelen:<span style="color:#ae81ff">0</span> 
+          RX bytes:<span style="color:#ae81ff">123925389232</span> (<span style="color:#ae81ff">123.9</span> GB)  TX bytes:<span style="color:#ae81ff">329876469836</span> (<span style="color:#ae81ff">329.8</span> GB)
+
+lo        Link encap:Local Loopback  
+          inet addr:<span style="color:#ae81ff">127.0.0.1</span>  Mask:<span style="color:#ae81ff">255.0.0.0</span>
+          UP LOOPBACK RUNNING  MTU:<span style="color:#ae81ff">65536</span>  Metric:<span style="color:#ae81ff">1</span>
+          RX packets:<span style="color:#ae81ff">46060</span> errors:<span style="color:#ae81ff">0</span> dropped:<span style="color:#ae81ff">0</span> overruns:<span style="color:#ae81ff">0</span> frame:<span style="color:#ae81ff">0</span>
+          TX packets:<span style="color:#ae81ff">46060</span> errors:<span style="color:#ae81ff">0</span> dropped:<span style="color:#ae81ff">0</span> overruns:<span style="color:#ae81ff">0</span> carrier:<span style="color:#ae81ff">0</span>
+          collisions:<span style="color:#ae81ff">0</span> txqueuelen:<span style="color:#ae81ff">1</span> 
+          RX bytes:<span style="color:#ae81ff">2303000</span> (<span style="color:#ae81ff">2.3</span> MB)  TX bytes:<span style="color:#ae81ff">2303000</span> (<span style="color:#ae81ff">2.3</span> MB
+</code></pre></div><p>上面是我的电脑的一个ifconfig命令，里面的IP地址和mac地址做了模糊。</p>
+<p>首先可以看到是两个模块，第一个模块eth0是第一个网卡的意思，第二个是主机的回环地址，其实一般都是测试用的，也就是我们的127.0.0.1地址。</p>
+<p>下面看一下第一个模块的内容：</p>
+<p>第一行：连接类型：Ethernet（以太网）HWaddr（硬件mac地址）</p>
+<p>第二行：网络地址：10.10.10.10    广播地址：10.10.255.255  子网掩码：255.255.0.0</p>
+<p>第三行：UP（代表网卡开启状态）RUNNING（代表网卡的网线被接上）MULTICAST（支持组播）MTU:1500（最大传输单元）：1500字节</p>
+<p>第四、五行：接收、发送数据包情况统计</p>
+<p>第七行：接收、发送数据字节数统计信息</p>
 
     </div>
 
@@ -308,7 +322,7 @@
   <p class="copyright-item">
     <span class="item-title">LastMod</span>
     <span class="item-content">
-      August 2021
+      September 2021
       
     </span>
   </p>
@@ -324,16 +338,12 @@
     
 
     <footer class="post-footer">
-      <div class="post-tags">
-          <a href="https://lihd2199.github.io/tags/%E8%BF%90%E8%BE%93%E5%B1%82/">运输层</a>
-          <a href="https://lihd2199.github.io/tags/udp/">udp</a>
-          
-        </div>
+      
 
       
       <nav class="post-nav">
         
-          <a class="prev" href="/post/network/tcp/">
+          <a class="prev" href="/post/linux/%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B%E5%8D%8F%E7%A8%8B/">
             
             <i class="iconfont">
               <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
@@ -343,12 +353,12 @@
 </svg>
 
             </i>
-            <span class="prev-text nav-default">tcp</span>
+            <span class="prev-text nav-default">linux内核前言（六）进程,线程,协程</span>
             <span class="prev-text nav-mobile">Prev</span>
           </a>
         
-          <a class="next" href="/post/network/encryption/">
-            <span class="next-text nav-default">加密</span>
+          <a class="next" href="/post/leetcode/704/">
+            <span class="next-text nav-default">704-二分查找</span>
             <span class="prev-text nav-mobile">Next</span>
             
             <i class="iconfont">
