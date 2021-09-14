@@ -53,7 +53,7 @@
 
 
 
-<link rel="stylesheet" href="/sass/jane.min.ef473b2af189d1fe93d4f6eeccd9228f4374744d710128eb14d535fe0670ecfe.css" integrity="sha256-70c7KvGJ0f6T1PbuzNkij0N0dE1xASjrFNU1/gZw7P4=" media="screen" crossorigin="anonymous">
+<link rel="stylesheet" href="/sass/jane.min.13a8f28f8dcbc31f40b01b878bd54483a2ecf36760139a6dd53604a6b5a8c847.css" integrity="sha256-E6jyj43Lwx9AsBuHi9VEg6Ls82dgE5pt1TYEprWoyEc=" media="screen" crossorigin="anonymous">
 
 
 
@@ -69,7 +69,7 @@
 <meta itemprop="name" content="linux内核前言（五）Io与网络模型">
 <meta itemprop="description" content="常见的io模型介绍： 阻塞 在linux中，默认情况下所有的socket都是blocking，一个典型的读操作流程大概是这样： 当用户进程调用了r"><meta itemprop="datePublished" content="2021-09-06T20:44:10+08:00" />
 <meta itemprop="dateModified" content="2021-09-06T20:44:10+08:00" />
-<meta itemprop="wordCount" content="3153">
+<meta itemprop="wordCount" content="3186">
 <meta itemprop="keywords" content="网络模型,IO," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="linux内核前言（五）Io与网络模型"/>
 <meta name="twitter:description" content="常见的io模型介绍： 阻塞 在linux中，默认情况下所有的socket都是blocking，一个典型的读操作流程大概是这样： 当用户进程调用了r"/>
@@ -324,6 +324,7 @@
 <p>系统为每一个进程维护了一个文件描述符表，表示该进程打开文件的记录表，而<strong>文件描述符实际上就是这张表的索引</strong>。当进程打开（<code>open</code>）或者新建（<code>create</code>）文件时，内核会在该进程的文件列表中新增一个表项，同时返回一个文件描述符 —— 也就是新增表项的下标。</p>
 <p>一般来说，每个进程最多可以打开 64 个文件，<code>fd ∈ 0~63</code>。在不同系统上，最多允许打开的文件个数不同，Linux 2.4.22 强制规定最多不能超过 1,048,576。</p>
 <p>每个进程默认都有 3 个文件描述符：0 (stdin)、1 (stdout)、2 (stderr)。</p>
+<p><a href="https://github.com/labuladong/fucking-algorithm/blob/master/%E6%8A%80%E6%9C%AF/linux%E8%BF%9B%E7%A8%8B.md">fucking-algorithm/linux进程.md at master · labuladong/fucking-algorithm (github.com)</a></p>
 </blockquote>
 <p>两个问题：</p>
 <ol>

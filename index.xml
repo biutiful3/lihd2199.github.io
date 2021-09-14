@@ -162,6 +162,7 @@ lo        Link encap:Local Loopback
 &lt;p&gt;系统为每一个进程维护了一个文件描述符表，表示该进程打开文件的记录表，而&lt;strong&gt;文件描述符实际上就是这张表的索引&lt;/strong&gt;。当进程打开（&lt;code&gt;open&lt;/code&gt;）或者新建（&lt;code&gt;create&lt;/code&gt;）文件时，内核会在该进程的文件列表中新增一个表项，同时返回一个文件描述符 —— 也就是新增表项的下标。&lt;/p&gt;
 &lt;p&gt;一般来说，每个进程最多可以打开 64 个文件，&lt;code&gt;fd ∈ 0~63&lt;/code&gt;。在不同系统上，最多允许打开的文件个数不同，Linux 2.4.22 强制规定最多不能超过 1,048,576。&lt;/p&gt;
 &lt;p&gt;每个进程默认都有 3 个文件描述符：0 (stdin)、1 (stdout)、2 (stderr)。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/labuladong/fucking-algorithm/blob/master/%E6%8A%80%E6%9C%AF/linux%E8%BF%9B%E7%A8%8B.md&#34;&gt;fucking-algorithm/linux进程.md at master · labuladong/fucking-algorithm (github.com)&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;两个问题：&lt;/p&gt;
 &lt;ol&gt;
