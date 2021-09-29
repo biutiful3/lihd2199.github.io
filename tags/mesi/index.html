@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>linux内核前言（一）什么是linux内核 - 山河一统</title>
+  <title>MESI · 山河一统</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -23,8 +23,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="author" content="lihongda" />
-  <meta name="description" content="最近在工作中学习中总数听人说Linux内核，自己又总是听不懂；另外之前面试也经常被问到，synchronize的内核态和用户态切换，vola" />
-
+  <meta name="description" content="China Number One!" />
   <meta name="keywords" content="Hugo, theme, jane" />
 
 
@@ -35,8 +34,8 @@
 <meta name="generator" content="Hugo 0.87.0" />
 
 
-<link rel="canonical" href="https://lihd2199.github.io/post/linux/%E4%BB%80%E4%B9%88%E6%98%AFlinux%E5%86%85%E6%A0%B8/" />
-
+<link rel="canonical" href="https://lihd2199.github.io/tags/mesi/" />
+<link href="/tags/mesi/index.xml" rel="alternate" type="application/rss+xml" title="山河一统" />
 
 
 
@@ -59,20 +58,15 @@
 
 
 
-<meta property="og:title" content="linux内核前言（一）什么是linux内核" />
-<meta property="og:description" content="最近在工作中学习中总数听人说Linux内核，自己又总是听不懂；另外之前面试也经常被问到，synchronize的内核态和用户态切换，vola" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://lihd2199.github.io/post/linux/%E4%BB%80%E4%B9%88%E6%98%AFlinux%E5%86%85%E6%A0%B8/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2021-09-04T19:21:00+08:00" />
-<meta property="article:modified_time" content="2021-09-04T19:21:00+08:00" />
+<meta property="og:title" content="MESI" />
+<meta property="og:description" content="China Number One!" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://lihd2199.github.io/tags/mesi/" />
 
-<meta itemprop="name" content="linux内核前言（一）什么是linux内核">
-<meta itemprop="description" content="最近在工作中学习中总数听人说Linux内核，自己又总是听不懂；另外之前面试也经常被问到，synchronize的内核态和用户态切换，vola"><meta itemprop="datePublished" content="2021-09-04T19:21:00+08:00" />
-<meta itemprop="dateModified" content="2021-09-04T19:21:00+08:00" />
-<meta itemprop="wordCount" content="953">
-<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="linux内核前言（一）什么是linux内核"/>
-<meta name="twitter:description" content="最近在工作中学习中总数听人说Linux内核，自己又总是听不懂；另外之前面试也经常被问到，synchronize的内核态和用户态切换，vola"/>
+<meta itemprop="name" content="MESI">
+<meta itemprop="description" content="China Number One!"><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MESI"/>
+<meta name="twitter:description" content="China Number One!"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -253,109 +247,42 @@
     <main id="main" class="main bg-llight">
       <div class="content-wrapper">
         <div id="content" class="content container">
-          <article class="post bg-white">
+          
+
+<section id="archive" class="archive">
+  
     
-    <header class="post-header">
-      <h1 class="post-title">linux内核前言（一）什么是linux内核</h1>
-      
-      <div class="post-meta">
-        <time datetime="2021-09-04" class="post-time">
-          September 2021
-        </time>
-        <div class="post-category">
-            <a href="https://lihd2199.github.io/categories/linux%E5%86%85%E6%A0%B8/"> linux内核 </a>
-            
-          </div>
-        
-
-        
-        
-
-        
-        
+      <div class="archive-title tag">
+        <h2 class="archive-name">Tag: MESI</h2>
       </div>
-    </header>
-
     
-    
+  
 
-    
-    <div class="post-content">
-      <p>　　最近在工作中学习中总数听人说Linux内核，自己又总是听不懂；另外之前面试也经常被问到，synchronize的内核态和用户态切换，volatile的底层实现，redis的多路复用，这些也都和linux内核有关，所以打算自己学习学习；</p>
-<p>　　常见能搜到的书籍里面《Linux内核深度解析》，《Linux内核设计的艺术》，《操作系统导论》，大概都看过几眼，感觉书里的内容都很细，需要比较好的Linux基础，另外还有很多Linux的代码，对于目前的我不老合适，有点看不懂也有点看不下去。这个时候就需要我们的GitHub了，在GitHub上搜到了<a href="https://github.com/0voice/linux_kernel_wiki">linux内核学习资料</a>，看起来很不错，在一定的高度整体的去看Linux相关知识，高屋建瓴，大家喜欢的可以去给颗星星。这个目录下面的东西很多时候参照这个GitHub上的内容完成的，大家可以直接看这个GitHub。</p>
-<p>　　让我们看看维基百科对Linux内核的定义：<strong>Linux内核</strong>（英语：Linux kernel）是一种开源的类Unix<a href="https://zh.wikipedia.org/wiki/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F">操作系统</a><a href="https://zh.wikipedia.org/wiki/%E5%AE%8F%E5%86%85%E6%A0%B8">宏内核</a>。整个Linux操作系统家族基于该内核部署在传统计算机平台（如个人计算机和服务器，以Linux发行版的形式和各种嵌入式平台，如路由器、无线接入点、专用小交换机、机顶盒、FTA接收器、智能电视、数字视频录像机、网络附加存储（NAS）等。工作于平板电脑智能手机及智能手表的安卓操作系统同样通过Linux内核提供的服务完成自身功能。尽管于桌面电脑的占用率较低，基于Linux的操作系统统治了几乎从移动设备到主机的其他全部领域。截至2017年11月，世界前500台最强的超级计算机全部使用Linux。</p>
-<p>　　说实话，这个定义很不程序员，我是看不太懂，或者和我想象的定义不太一样。</p>
-<p>　　在网上看到了对内核的一个定义，感觉比较靠谱；<strong>内核是与计算机硬件接口的易替换软件的最低级别。它负责将所有以“用户模式”运行的应用程序连接到物理硬件，并允许服务器的进程使用进程间通信(IPC)彼此获取信息。</strong></p>
-<ul>
-<li>内核是与计算机硬件接口的易替换软件的最低级别；</li>
-<li>责将所有以“用户模式”运行的应用程序连接到物理硬件；</li>
-<li>允许服务器的进程使用进程间通信(IPC)彼此获取信息；</li>
-</ul>
-<p>　　根据这个大概有个印象，我们也知道了内核的一些基本功能：进程间的通信、连接硬件等等，还要一些别的功能，之后会有一些深入的研究。</p>
-
+  
+    <div class="archive-post">
+      <time datetime="2021-09-05" class="archive-post-time">
+        September 2021
+      </time>
+      <span class="archive-post-title">
+        <a href="/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%80%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/" class="archive-post-link">
+          操作系统（一）缓存相关
+        </a>
+      </span>
     </div>
-
-    
-    
-<div class="post-copyright">
-  <p class="copyright-item">
-    <span class="item-title">Author</span>
-    <span class="item-content">lihongda</span>
-  </p>
-  <p class="copyright-item">
-    <span class="item-title">LastMod</span>
-    <span class="item-content">
-      September 2021
-      
-    </span>
-  </p>
   
-  <p class="copyright-item">
-    <span class="item-title">License</span>
-    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
-  </p>
-</div>
+</section>
 
 
-    
-    
 
-    <footer class="post-footer">
-      
 
-      
-      <nav class="post-nav">
-        
-          <a class="prev" href="/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/">
-            
-            <i class="iconfont">
-              <svg  class="icon" viewBox="0 0 1024 1024" version="1.1"
-  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-  width="18" height="18">
-  <path d="M691.908486 949.511495l75.369571-89.491197c10.963703-12.998035 10.285251-32.864502-1.499144-44.378743L479.499795 515.267417 757.434875 204.940602c11.338233-12.190647 11.035334-32.285311-0.638543-44.850487l-80.46666-86.564541c-11.680017-12.583596-30.356378-12.893658-41.662889-0.716314L257.233596 494.235404c-11.332093 12.183484-11.041474 32.266891 0.657986 44.844348l80.46666 86.564541c1.772366 1.910513 3.706415 3.533476 5.750981 4.877077l306.620399 321.703933C662.505829 963.726242 680.945807 962.528973 691.908486 949.511495z"></path>
-</svg>
 
-            </i>
-            <span class="prev-text nav-default">linux内核前言（二）linux内核结构</span>
-            <span class="prev-text nav-mobile">Prev</span>
-          </a>
-        
-          <a class="next" href="/post/consistency/raft/">
-            <span class="next-text nav-default">Raft算法</span>
-            <span class="prev-text nav-mobile">Next</span>
-            
-            <i class="iconfont">
-              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
-  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-  width="18" height="18">
-  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
-</svg>
 
-            </i>
-          </a>
-      </nav>
-    </footer>
-  </article>
+  
+  
+  
+
+  
+  
 
   
   
@@ -364,19 +291,11 @@
   
 
   
-
-  
   
 
-  
 
-  
 
-  
 
-    
-
-  
 
         </div>
       </div>

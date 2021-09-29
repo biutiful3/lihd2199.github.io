@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>linux内核体系 on 山河一统</title>
+    <link>https://lihd2199.github.io/tags/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</link>
+    <description>Recent content in linux内核体系 on 山河一统</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>lihongda</copyright>
+    <lastBuildDate>Sat, 25 Sep 2021 20:38:19 +0800</lastBuildDate><atom:link href="https://lihd2199.github.io/tags/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>操作系统（四）linux内核体系</title>
+      <link>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9B%9Blinux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</link>
+      <pubDate>Sat, 25 Sep 2021 20:38:19 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9B%9Blinux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</guid>
+      <description>linux内核结构 承接上文，上文大概的介绍了什么是Linux内核，本节简单介绍一下linux内核的结构，对linux内核有个整体的印象，然后</description>
+    </item>
+    
+  </channel>
+</rss>

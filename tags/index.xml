@@ -7,7 +7,43 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>lihongda</copyright>
-    <lastBuildDate>Tue, 07 Sep 2021 10:26:41 +0800</lastBuildDate><atom:link href="https://lihd2199.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 26 Sep 2021 20:51:19 +0800</lastBuildDate><atom:link href="https://lihd2199.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>进程</title>
+      <link>https://lihd2199.github.io/tags/%E8%BF%9B%E7%A8%8B/</link>
+      <pubDate>Sun, 26 Sep 2021 20:51:19 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/tags/%E8%BF%9B%E7%A8%8B/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux内核体系</title>
+      <link>https://lihd2199.github.io/tags/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</link>
+      <pubDate>Sat, 25 Sep 2021 20:38:19 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/tags/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux内核</title>
+      <link>https://lihd2199.github.io/tags/linux%E5%86%85%E6%A0%B8/</link>
+      <pubDate>Fri, 24 Sep 2021 20:38:19 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/tags/linux%E5%86%85%E6%A0%B8/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>中断</title>
+      <link>https://lihd2199.github.io/tags/%E4%B8%AD%E6%96%AD/</link>
+      <pubDate>Mon, 20 Sep 2021 20:38:19 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/tags/%E4%B8%AD%E6%96%AD/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>二分查找</title>
       <link>https://lihd2199.github.io/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/</link>
@@ -36,20 +72,20 @@
     </item>
     
     <item>
-      <title>linux内核</title>
-      <link>https://lihd2199.github.io/tags/linux%E5%86%85%E6%A0%B8/</link>
-      <pubDate>Mon, 06 Sep 2021 20:33:30 +0800</pubDate>
-      
-      <guid>https://lihd2199.github.io/tags/linux%E5%86%85%E6%A0%B8/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>cpu</title>
       <link>https://lihd2199.github.io/tags/cpu/</link>
       <pubDate>Sun, 05 Sep 2021 21:21:00 +0800</pubDate>
       
       <guid>https://lihd2199.github.io/tags/cpu/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MESI</title>
+      <link>https://lihd2199.github.io/tags/mesi/</link>
+      <pubDate>Sun, 05 Sep 2021 21:21:00 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/tags/mesi/</guid>
       <description></description>
     </item>
     
@@ -90,18 +126,18 @@
     </item>
     
     <item>
-      <title>ACID</title>
-      <link>https://lihd2199.github.io/tags/acid/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      <title>对称加密</title>
+      <link>https://lihd2199.github.io/tags/%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/</link>
+      <pubDate>Mon, 30 Aug 2021 20:33:54 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/tags/acid/</guid>
+      <guid>https://lihd2199.github.io/tags/%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/</guid>
       <description></description>
     </item>
     
     <item>
       <title>http</title>
       <link>https://lihd2199.github.io/tags/http/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      <pubDate>Mon, 30 Aug 2021 20:32:54 +0800</pubDate>
       
       <guid>https://lihd2199.github.io/tags/http/</guid>
       <description></description>
@@ -110,7 +146,7 @@
     <item>
       <title>http2</title>
       <link>https://lihd2199.github.io/tags/http2/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      <pubDate>Mon, 30 Aug 2021 20:32:54 +0800</pubDate>
       
       <guid>https://lihd2199.github.io/tags/http2/</guid>
       <description></description>
@@ -119,72 +155,36 @@
     <item>
       <title>https</title>
       <link>https://lihd2199.github.io/tags/https/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      <pubDate>Mon, 30 Aug 2021 20:32:54 +0800</pubDate>
       
       <guid>https://lihd2199.github.io/tags/https/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>ip</title>
-      <link>https://lihd2199.github.io/tags/ip/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
-      
-      <guid>https://lihd2199.github.io/tags/ip/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>MVCC</title>
-      <link>https://lihd2199.github.io/tags/mvcc/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
-      
-      <guid>https://lihd2199.github.io/tags/mvcc/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>MySQL事务</title>
-      <link>https://lihd2199.github.io/tags/mysql%E4%BA%8B%E5%8A%A1/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
-      
-      <guid>https://lihd2199.github.io/tags/mysql%E4%BA%8B%E5%8A%A1/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>tcp</title>
-      <link>https://lihd2199.github.io/tags/tcp/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
-      
-      <guid>https://lihd2199.github.io/tags/tcp/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>udp</title>
       <link>https://lihd2199.github.io/tags/udp/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      <pubDate>Mon, 30 Aug 2021 20:31:54 +0800</pubDate>
       
       <guid>https://lihd2199.github.io/tags/udp/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>事务隔离级别</title>
-      <link>https://lihd2199.github.io/tags/%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      <title>运输层</title>
+      <link>https://lihd2199.github.io/tags/%E8%BF%90%E8%BE%93%E5%B1%82/</link>
+      <pubDate>Mon, 30 Aug 2021 20:31:54 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/tags/%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/</guid>
+      <guid>https://lihd2199.github.io/tags/%E8%BF%90%E8%BE%93%E5%B1%82/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>对称加密</title>
-      <link>https://lihd2199.github.io/tags/%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      <title>tcp</title>
+      <link>https://lihd2199.github.io/tags/tcp/</link>
+      <pubDate>Mon, 30 Aug 2021 20:30:54 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/tags/%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/</guid>
+      <guid>https://lihd2199.github.io/tags/tcp/</guid>
       <description></description>
     </item>
     

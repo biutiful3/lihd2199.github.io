@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>linux内核前言（三）cpu缓存相关 - 山河一统</title>
+  <title>操作系统（一）缓存相关 - 山河一统</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -23,7 +23,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <meta name="author" content="lihongda" />
-  <meta name="description" content="CPU缓存的意义 CPU往往需要重复处理相同的数据、重复执行相同的指令，如果这部分数据、指令CPU能在CPU缓存中找到，CPU就不需要从内存或" />
+  <meta name="description" content="缓存的意义 缓冲技术一般有3种用途。一种是用在处理机与内存之间的；另一种是用在处理机和其他外围设备之间的；还有一种是用在设备与设备之间的通信上" />
 
   <meta name="keywords" content="Hugo, theme, jane" />
 
@@ -35,7 +35,7 @@
 <meta name="generator" content="Hugo 0.87.0" />
 
 
-<link rel="canonical" href="https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/" />
+<link rel="canonical" href="https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%80%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/" />
 
 
 
@@ -59,20 +59,20 @@
 
 
 
-<meta property="og:title" content="linux内核前言（三）cpu缓存相关" />
-<meta property="og:description" content="CPU缓存的意义 CPU往往需要重复处理相同的数据、重复执行相同的指令，如果这部分数据、指令CPU能在CPU缓存中找到，CPU就不需要从内存或" />
+<meta property="og:title" content="操作系统（一）缓存相关" />
+<meta property="og:description" content="缓存的意义 缓冲技术一般有3种用途。一种是用在处理机与内存之间的；另一种是用在处理机和其他外围设备之间的；还有一种是用在设备与设备之间的通信上" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/" /><meta property="article:section" content="post" />
+<meta property="og:url" content="https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%80%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2021-09-05T21:21:00+08:00" />
 <meta property="article:modified_time" content="2021-09-05T21:21:00+08:00" />
 
-<meta itemprop="name" content="linux内核前言（三）cpu缓存相关">
-<meta itemprop="description" content="CPU缓存的意义 CPU往往需要重复处理相同的数据、重复执行相同的指令，如果这部分数据、指令CPU能在CPU缓存中找到，CPU就不需要从内存或"><meta itemprop="datePublished" content="2021-09-05T21:21:00+08:00" />
+<meta itemprop="name" content="操作系统（一）缓存相关">
+<meta itemprop="description" content="缓存的意义 缓冲技术一般有3种用途。一种是用在处理机与内存之间的；另一种是用在处理机和其他外围设备之间的；还有一种是用在设备与设备之间的通信上"><meta itemprop="datePublished" content="2021-09-05T21:21:00+08:00" />
 <meta itemprop="dateModified" content="2021-09-05T21:21:00+08:00" />
-<meta itemprop="wordCount" content="3102">
-<meta itemprop="keywords" content="cpu,内存屏障,指令重排," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="linux内核前言（三）cpu缓存相关"/>
-<meta name="twitter:description" content="CPU缓存的意义 CPU往往需要重复处理相同的数据、重复执行相同的指令，如果这部分数据、指令CPU能在CPU缓存中找到，CPU就不需要从内存或"/>
+<meta itemprop="wordCount" content="3466">
+<meta itemprop="keywords" content="cpu,内存屏障,指令重排,MESI," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="操作系统（一）缓存相关"/>
+<meta name="twitter:description" content="缓存的意义 缓冲技术一般有3种用途。一种是用在处理机与内存之间的；另一种是用在处理机和其他外围设备之间的；还有一种是用在设备与设备之间的通信上"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -256,14 +256,14 @@
           <article class="post bg-white">
     
     <header class="post-header">
-      <h1 class="post-title">linux内核前言（三）cpu缓存相关</h1>
+      <h1 class="post-title">操作系统（一）缓存相关</h1>
       
       <div class="post-meta">
         <time datetime="2021-09-05" class="post-time">
           September 2021
         </time>
         <div class="post-category">
-            <a href="https://lihd2199.github.io/categories/linux%E5%86%85%E6%A0%B8/"> linux内核 </a>
+            <a href="https://lihd2199.github.io/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"> 操作系统 </a>
             
           </div>
         
@@ -285,7 +285,7 @@
   <ul>
     <li>
       <ul>
-        <li><a href="#cpu缓存的意义">CPU缓存的意义</a></li>
+        <li><a href="#缓存的意义">缓存的意义</a></li>
         <li><a href="#cpu三级缓存结构">CPU三级缓存结构</a></li>
         <li><a href="#带有高速缓存cpu执行计算的流程">带有高速缓存CPU执行计算的流程</a></li>
         <li><a href="#cpu缓存一致性协议mesi">CPU缓存一致性协议(MESI)</a></li>
@@ -301,7 +301,9 @@
 
     
     <div class="post-content">
-      <h3 id="cpu缓存的意义">CPU缓存的意义</h3>
+      <h3 id="缓存的意义">缓存的意义</h3>
+<p>　　缓冲技术一般有3种用途。一种是用在处理机与内存之间的；另一种是用在处理机和其他外围设备之间的；还有一种是用在设备与设备之间的通信上的。无论哪一种，都是为了解决部件之间速度不匹配的问题。</p>
+<p>　　为什么不直接把数据送入用户工作区，而要设置缓冲来暂存呢？最根本的原因是处理机处理数据速度与设备传输数据速度不相匹配，用缓冲区可缓解其间的速度矛盾。如果把用户工作区直接作为缓冲区则有许多不便。首先，当从工作区向设备输出或从设备向工作区输入时，工作区被长期占用而使用户无法使用；其次，为了方便对缓冲区的管理，缓冲区往往是与设备相联系的，而不直接同用户联系；再者，也是为了减少输入与输出的次数，以减轻对通道和I/O设备的压力。缓冲区信息可供多个用户共同使用以及反复使用。每当用户要求输入数据时，先从这些缓冲区中去找，如果已在缓冲区，就可减少输入与输出次数。　　　　</p>
 <p>　　CPU往往需要重复处理相同的数据、重复执行相同的指令，如果这部分数据、指令CPU能在CPU缓存中找到，CPU就不需要从内存或硬盘中再读取数据、指令，从而减少了整机的响应时间。所以，缓存的意义满足以下两种局部性原理：</p>
 <ul>
 <li>时间局部性（Temporal Locality）：如果一个信息项正在被访问，那么在近期它很可能还会被再次访问。</li>
@@ -401,7 +403,7 @@
 </ol>
 </blockquote>
 <ul>
-<li>对于Load Barrier来说，在指令前插入Load Barrier，可以让高速缓存中的数据失效，强制从新从主内存加载数据；</li>
+<li>对于Load Barrier来说，在指令前插入Load Barrier，可以让高速缓存中的数据失效，强制重新从主内存加载数据；</li>
 <li>对于Store Barrier来说，在指令后插入Store Barrier，能让写入缓存中的最新数据更新写入主内存，让其他线程可见。</li>
 </ul>
 <p><a href="https://www.jianshu.com/p/2ab5e3d7e510">原文链接</a></p>
@@ -451,6 +453,7 @@
           <a href="https://lihd2199.github.io/tags/cpu/">cpu</a>
           <a href="https://lihd2199.github.io/tags/%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/">内存屏障</a>
           <a href="https://lihd2199.github.io/tags/%E6%8C%87%E4%BB%A4%E9%87%8D%E6%8E%92/">指令重排</a>
+          <a href="https://lihd2199.github.io/tags/mesi/">MESI</a>
           
         </div>
 
@@ -471,8 +474,8 @@
             <span class="prev-text nav-mobile">Prev</span>
           </a>
         
-          <a class="next" href="/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/">
-            <span class="next-text nav-default">linux内核前言（二）linux内核结构</span>
+          <a class="next" href="/post/consistency/raft/">
+            <span class="next-text nav-default">Raft算法</span>
             <span class="prev-text nav-mobile">Next</span>
             
             <i class="iconfont">

@@ -13,18 +13,140 @@
     
     
     <item>
-      <title>linux内核前言（六）进程,线程,协程</title>
-      <link>https://lihd2199.github.io/post/linux/%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B%E5%8D%8F%E7%A8%8B/</link>
-      <pubDate>Mon, 13 Sep 2021 11:25:40 +0800</pubDate>
+      <title>kafka(二)生产者</title>
+      <link>https://lihd2199.github.io/post/kafka/%E7%94%9F%E4%BA%A7%E8%80%85/</link>
+      <pubDate>Tue, 28 Sep 2021 20:54:18 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/post/linux/%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B%E5%8D%8F%E7%A8%8B/</guid>
+      <guid>https://lihd2199.github.io/post/kafka/%E7%94%9F%E4%BA%A7%E8%80%85/</guid>
       
-        <description></description>
+        <description>&lt;h2 id=&#34;整体架构&#34;&gt;整体架构&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&#34;https://lihd2199.github.io/img/kafka-producer.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;网上找的图片 原文地址：&lt;a href=&#34;https://blog.csdn.net/LINBE_blazers/article/details/104072886&#34;&gt;Kafka生产者架构原理分析_LINBE_blazers的博客-CSDN博客&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;　　整个生产者客户端由两个线程协调运行，这两个线程分别为主线程和Sender线程（发送线程）。在主线程中由KafkaProducer创建消息，然后通过可能的拦截器、序列化器和分区器的作用之后缓存到消息累加器（&lt;code&gt;RecordAccumulator&lt;/code&gt;，也称为消息收集器）中。Sender 线程负责从&lt;code&gt;RecordAccumulator&lt;/code&gt;中获取消息并将其发送到Kafka中。&lt;/p&gt;
+&lt;p&gt;　　&lt;code&gt;RecordAccumulator&lt;/code&gt; 主要用来缓存消息以便 Sender 线程可以批量发送，进而减少网络传输的资源消耗以提升性能。&lt;code&gt;RecordAccumulator&lt;/code&gt; 缓存的大小可以通过生产者客户端参数&lt;code&gt;buffer.memory&lt;/code&gt; 配置，默认值为 &lt;code&gt;33554432B&lt;/code&gt;，即 &lt;code&gt;32MB&lt;/code&gt;。如果生产者发送消息的速度超过发送到服务器的速度，则会导致生产者空间不足，这个时候&lt;code&gt;KafkaProducer&lt;/code&gt;的&lt;code&gt;send（）&lt;/code&gt;方法调用要么被阻塞，要么抛出异常，这个取决于参数max.block.ms的配置，此参数的默认值为60000，即60秒。&lt;/p&gt;
+&lt;p&gt;　　主线程中发送过来的消息都会被追加到&lt;code&gt;RecordAccumulator&lt;/code&gt;的某个双端队列（&lt;code&gt;Deque&lt;/code&gt;）中，在 &lt;code&gt;RecordAccumulator&lt;/code&gt; 的内部为每个分区都维护了一个双端队列，队列中的内容就是&lt;code&gt;ProducerBatch&lt;/code&gt;，即&lt;code&gt; Deque＜ProducerBatch＞&lt;/code&gt;。消息写入缓存时，追加到双端队列的尾部；Sender读取消息时，从双端队列的头部读取。注意ProducerBatch不是ProducerRecord，ProducerBatch中可以包含一至多个ProducerRecord。通俗地说，ProducerRecord 是生产者中创建的消息，而ProducerBatch是指一个消息批次，ProducerRecord会被包含在ProducerBatch中，这样可以使字节的使用更加紧凑。&lt;/p&gt;
+&lt;p&gt;　　ProducerBatch的大小和batch.size参数也有着密切的关系。当一条消息（ProducerRecord）流入RecordAccumulator时，会先寻找与消息分区所对应的双端队列（如果没有则新建），再从这个双端队列的尾部获取一个 ProducerBatch（如果没有则新建），查看 ProducerBatch 中是否还可以写入这个ProducerRecord，如果可以则写入，如果不可以则需要创建一个新的ProducerBatch。在新建ProducerBatch时评估这条消息的大小是否超过batch.size参数的大小，如果不超过，那么就以 batch.size 参数的大小来创建ProducerBatch，这样在使用完这段内存区域之后，可以通过BufferPool 的管理来进行复用；如果超过，那么就以评估的大小来创建ProducerBatch，这段内存区域不会被复用。&lt;/p&gt;
+&lt;p&gt;　　&lt;code&gt;Sender&lt;/code&gt; 从 &lt;code&gt;RecordAccumulator&lt;/code&gt; 中获取缓存的消息之后，会进一步将原本&lt;code&gt;＜分区，Deque＜ProducerBatch＞＞&lt;/code&gt;的保存形式转变成&lt;code&gt;＜Node，List＜ProducerBatch＞&lt;/code&gt;的形式，其中Node表示Kafka集群的broker节点。对于网络连接来说，生产者客户端是与具体的broker节点建立的连接，也就是向具体的 broker节点发送消息，而并不关心消息属于哪一个分区；而对于 KafkaProducer的应用逻辑而言，我们只关注向哪个分区中发送哪些消息，所以在这里需要做一个应用逻辑层面到网络I/O层面的转换。&lt;/p&gt;
+&lt;p&gt;　　在转换成&lt;code&gt;＜Node，List＜ProducerBatch＞＞&lt;/code&gt;的形式之后，&lt;code&gt;Sender&lt;/code&gt; 还会进一步封装成&lt;code&gt;＜Node，Request＞&lt;/code&gt;的形式，这样就可以将&lt;code&gt;Request&lt;/code&gt;请求发往各个&lt;code&gt;Node&lt;/code&gt;了，这里的Request是指Kafka的各种协议请求，对于消息发送而言就是指具体的ProduceRequest。&lt;/p&gt;
+&lt;p&gt;　　请求在从Sender线程发往Kafka之前还会保存到InFlightRequests中，InFlightRequests保存对象的具体形式为 Map＜NodeId，Deque＜Request＞＞，它的主要作用是缓存了已经发出去但还没有收到响应的请求（NodeId 是一个String 类型，表示节点的 id 编号）。与此同时，InFlightRequests还提供了许多管理类的方法，并且通过配置参数还可以限制每个连接（也就是客户端与Node之间的连接）最多缓存的请求数。这个配置参数为max.in.fight.requests.per.connection，默认值为 5，即每个连接最多只能缓存 5个未响应的请求，超过该数值之后就不能再向这个连接发送更多的请求了，除非有缓存的请求收到了响应（Response）。通过比较Deque＜Request＞的size与这个参数的大小来判断对应的Node中是否已经堆积了很多未响应的消息，如果真是如此，那么说明这个 Node 节点负载较大或网络连接有问题，再继续向其发送请求会增大请求超时的可能。&lt;/p&gt;
+&lt;h2 id=&#34;元数据更新&#34;&gt;元数据更新&lt;/h2&gt;
+&lt;p&gt;　　InFlightRequests还可以获得leastLoadedNode，即所有Node中负载最小的那一个。这里的负载最小是通过每个Node在InFlightRequests中还未确认的请求决定的，未确认的请求越多则认为负载越大。&lt;/p&gt;
+&lt;p&gt;　　选择leastLoadedNode发送请求可以使它能够尽快发出，避免因网络拥塞等异常而影响整体的进度。leastLoadedNode的概念可以用于多个应用场合，比如元数据请求、消费者组播协议的交互。&lt;/p&gt;
+&lt;p&gt;　　KafkaProducer要将此消息追加到指定主题的某个分区所对应的leader副本之前，首先需要知道主题的分区数量，然后经过计算得出（或者直接指定）目标分区，之后KafkaProducer需要知道目标分区的leader副本所在的broker 节点的地址、端口等信息才能建立连接，最终才能将消息发送到 Kafka，在这一过程中所需要的信息都属于元数据信息。&lt;/p&gt;
+&lt;p&gt;　　当客户端中没有需要使用的元数据信息时，比如没有指定的主题信息，或者超过metadata.max.age.ms 时间没有更新元数据都会引起元数据的更新操作。客户端参数metadata.max.age.ms的默认值为300000，即5分钟。元数据的更新操作是在客户端内部进行的，对客户端的外部使用者不可见。当需要更新元数据时，会先挑选出leastLoadedNode，然后向这个Node发送MetadataRequest请求来获取具体的元数据信息。这个更新操作是由Sender线程发起的，在创建完MetadataRequest之后同样会存入InFlightRequests，之后的步骤就和发送消息时的类似。元数据虽然由Sender线程负责更新，但是主线程也需要读取这些信息，这里的数据同步通过synchronized和final关键字来保障。&lt;/p&gt;
+</description>
       
     </item>
     
     <item>
-      <title>ifconfig 命令</title>
+      <title>kafka(一)基本概念</title>
+      <link>https://lihd2199.github.io/post/kafka/%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</link>
+      <pubDate>Tue, 28 Sep 2021 17:34:17 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/kafka/%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</guid>
+      
+        <description>&lt;h3 id=&#34;producer生产者&#34;&gt;Producer：生产者&lt;/h3&gt;
+&lt;p&gt;也就是发送消息的一方。生产者负责创建消息，然后将其投递到Kafka中。&lt;/p&gt;
+&lt;h3 id=&#34;consumer消费者&#34;&gt;Consumer：消费者&lt;/h3&gt;
+&lt;p&gt;也就是接收消息的一方。消费者连接到Kafka上并接收消息，进而进行相应的业务逻辑处理。&lt;/p&gt;
+&lt;h3 id=&#34;broker服务代理节点&#34;&gt;Broker：服务代理节点&lt;/h3&gt;
+&lt;p&gt;对于Kafka而言，Broker可以简单地看作一个独立的Kafka服务节点或Kafka服务实例。大多数情况下也可以将Broker看作一台Kafka服务器，前提是这台服务器上只部署了一个Kafka实例。&lt;/p&gt;
+&lt;h3 id=&#34;主题&#34;&gt;主题&lt;/h3&gt;
+&lt;p&gt;　　主题是一个逻辑上的概念，它还可以细分为多个分区，一个分区只属于单个主题。同一主题下的不同分区包含的消息是不同的，分区在存储层面可以看作一个可追加的日志（Log）文件，消息在被追加到分区日志文件的时候都会分配一个特定的偏移量（offset）。&lt;/p&gt;
+&lt;p&gt;　　Kafka 为分区引入了多副本（Replica）机制，通过增加副本数量可以提升容灾能力。同一分区的不同副本中保存的是相同的消息（在同一时刻，副本之间并非完全一样），副本之间是“一主多从”的关系，其中leader副本负责处理读写请求，follower副本只负责与leader副本的消息同步。副本处于不同的broker中，当leader副本出现故障时，从follower副本中重新选举新的leader副本对外提供服务。Kafka通过多副本机制实现了故障的自动转移，当Kafka集群中某个broker失效时仍然能保证服务可用。&lt;/p&gt;
+&lt;p&gt;　　分区中的所有副本统称为AR。所有与leader副本保持一定程度同步的副本（包括leader副本在内）组成ISR（In-Sync Replicas）。与leader副本同步滞后过多的副本（不包括leader副本）组成OSR（Out-of-Sync Replicas），AR=ISR+OSR。在正常情况下，所有的 follower 副本都应该与 leader 副本保持一定程度的同步，即AR=ISR，OSR集合为空。&lt;/p&gt;
+&lt;p&gt;　　leader副本负责维护和跟踪ISR集合中所有follower副本的滞后状态，当follower副本落后太多或失效时，leader副本会把它从ISR集合中剔除。如果OSR集合中有follower副本“追上”了leader副本，那么leader副本会把它从OSR集合转移至ISR集合。默认情况下，当leader副本发生故障时，只有在ISR集合中的副本才有资格被选举为新的leader，而在OSR集合中的副本则没有任何机会。&lt;/p&gt;
+&lt;p&gt;　　ISR与HW和LEO也有紧密的关系。HW是High Watermark的缩写，俗称高水位，它标识了一个特定的消息偏移量（offset），消费者只能拉取到这个offset之前的消息。日志文件的HW为6，表示消费者只能拉取到offset在0至5之间的消息，而offset为6的消息对消费者而言是不可见的。LEO是Log End Offset的缩写，它标识当前日志文件中下一条待写入消息的offset，LEO的大小相当于当前日志分区中最后一条消息的offset值加1。分区ISR集合中的每个副本都会维护自身的LEO，而ISR集合中最小的LEO即为分区的HW，对消费者而言只能消费HW之前的消息。&lt;/p&gt;
+&lt;p&gt;　　由此可见，Kafka 的复制机制既不是完全的同步复制，也不是单纯的异步复制。事实上，同步复制要求所有能工作的 follower 副本都复制完，这条消息才会被确认为已成功提交，这种复制方式极大地影响了性能。而在异步复制方式下，follower副本异步地从leader副本中复制数据，数据只要被leader副本写入就被认为已经成功提交。在这种情况下，如果follower副本都还没有复制完而落后于leader副本，突然leader副本宕机，则会造成数据丢失。Kafka使用的这种ISR的方式则有效地权衡了数据可靠性和性能之间的关系。&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>操作系统（五）进程</title>
+      <link>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BA%94%E8%BF%9B%E7%A8%8B/</link>
+      <pubDate>Sun, 26 Sep 2021 20:51:19 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BA%94%E8%BF%9B%E7%A8%8B/</guid>
+      
+        <description>&lt;h2 id=&#34;进程的定义&#34;&gt;进程的定义&lt;/h2&gt;
+&lt;p&gt;　　进程是操作系统中的一个最基本也是最重要的概念。&lt;/p&gt;
+&lt;p&gt;　　进程是具有独立功能的可并发执行的程序在一个数据集合上的运行过程，是系统进行资源分配和调度的独立单位”，或者说，“进程”是进程实体的运行过程。&lt;/p&gt;
+&lt;h2 id=&#34;进程的基本状态及其转换&#34;&gt;进程的基本状态及其转换&lt;/h2&gt;
+&lt;p&gt;　　进程在运行中不断地改变其运行状态。通常，一个进程必须具有以下3种基本状态。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;就绪状态。当进程已分配到除处理机以外的所有必要的资源后，只要能再获得处理机便可立即执行，这时的状态称为就绪状态。在一个系统中，可以有多个进程同时处于就绪状态，通常把这些进程排成一个或多个队列，称这些队列为就绪队列。&lt;/li&gt;
+&lt;li&gt;执行状态。执行状态指进程已获得处理机，其程序正在执行。在单处理机系统中，只能有一个进程处于执行状态。在多处理机系统中，则可能有多个进程处于执行状态。&lt;/li&gt;
+&lt;li&gt;阻塞状态。进程因发生某种事件（例如I/O请求、申请缓冲空间等）而暂停执行时的状态，亦即进程的执行受到阻塞，故称这种状态为阻塞状态，有时也称“等待”状态或“睡眠”状态。通常将处于阻塞状态的进程排成一个队列，称为阻塞队列。在有的系统中，按阻塞的原因不同而将处于阻塞状态的进程排成多个队列。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;　　进程在运行期间不断地从一个状态转换到另一个状态，进程的各种调度状态依据一定的条件而发生变化&lt;/p&gt;
+&lt;p&gt;（1）就绪→执行状态。当进程调度为处于就绪状态的进程分配了处理机后，该进程便由就绪状态变为执行状态。正在执行的进程也称当前进程。&lt;/p&gt;
+&lt;p&gt;（2）执行→阻塞状态。正在执行的进程因出现某种事件而无法执行，例如，进程请求访问临界资源，而该资源正被其他进程访问，则请求该资源的进程将由执行状态变为阻塞状态。&lt;/p&gt;
+&lt;p&gt;（3）执行→就绪状态。在分时系统中，正在执行的进程因时间片用完而被暂停执行，该进程便由执行状态变为就绪状态。又如，在抢占调度方式中，一个优先级高的进程到来后可以抢占一个正在执行的优先级低的进程的处理机，该低优先级进程也将由执行状态转换为就绪状态。&lt;/p&gt;
+&lt;p&gt;（4）阻塞→就绪状态。处于阻塞状态的进程，在其等待的事件已经发生，例如I/O请求完成，则进程由阻塞状态变为就绪状态。&lt;/p&gt;
+&lt;h2 id=&#34;进程控制块&#34;&gt;进程控制块&lt;/h2&gt;
+&lt;p&gt;　　进程控制块PCB是进程实体的一部分，是操作系统中最重要的数据结构。PCB记录了操作系统所需的、用于描述进程情况及控制进程运行所需的全部信息。&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>操作系统（四）linux内核体系</title>
+      <link>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9B%9Blinux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</link>
+      <pubDate>Sat, 25 Sep 2021 20:38:19 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9B%9Blinux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</guid>
+      
+        <description>&lt;h2 id=&#34;linux内核结构&#34;&gt;linux内核结构&lt;/h2&gt;
+&lt;p&gt;　　承接上文，上文大概的介绍了什么是Linux内核，本节简单介绍一下linux内核的结构，对linux内核有个整体的印象，然后在分模块学习。操作系统是所有应用程序生长的河床，它帮我们屏蔽各种硬件的细节，并且抽象出各种系统调用供应用开发人员来使用。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://lihd2199.github.io/img/linux%E7%BB%93%E6%9E%84.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;这个图比较清晰了，是书上的一张图，我们可以看到整个Linux内核可以分为4层：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;驱动管理层，驱动并管理外部一些硬件设备，例如磁盘、网卡等。&lt;/li&gt;
+&lt;li&gt;工具层，内核抽象出一些通用组件便于自己使用，例如并发管理中的一些锁、per-cpu变量等工具，另外还有中断机制，也给进程管理、信号处理等提供了基础功能。&lt;/li&gt;
+&lt;li&gt;系统能力层，操作系统的功能包括进程管理、内存管理、文件系统、I/O管理、网络等，这些功能都是基于工具层和驱动管理层提供的能力来构建的。&lt;/li&gt;
+&lt;li&gt;系统调用接口层（syscall），给应用程序开发人员提供相关接口。因为系统调用的使用成本较高，参数也比较多，需要对内核有较多了解，所以，又抽象出一些libc等库函数来封装系统调用，应用开发人员一般都是通过libc等库来与内核打交道的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;　　我们接下来会把重点放在工具层和系统能力层。&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>操作系统（三）linux内核</title>
+      <link>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%89linux%E5%86%85%E6%A0%B8/</link>
+      <pubDate>Fri, 24 Sep 2021 20:38:19 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%89linux%E5%86%85%E6%A0%B8/</guid>
+      
+        <description>&lt;p&gt;　　让我们看看维基百科对Linux内核的定义：&lt;strong&gt;Linux内核&lt;/strong&gt;（英语：Linux kernel）是一种开源的类Unix&lt;a href=&#34;https://zh.wikipedia.org/wiki/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F&#34;&gt;操作系统&lt;/a&gt;&lt;a href=&#34;https://zh.wikipedia.org/wiki/%E5%AE%8F%E5%86%85%E6%A0%B8&#34;&gt;宏内核&lt;/a&gt;。整个Linux操作系统家族基于该内核部署在传统计算机平台（如个人计算机和服务器，以Linux发行版的形式和各种嵌入式平台，如路由器、无线接入点、专用小交换机、机顶盒、FTA接收器、智能电视、数字视频录像机、网络附加存储（NAS）等。工作于平板电脑智能手机及智能手表的安卓操作系统同样通过Linux内核提供的服务完成自身功能。尽管于桌面电脑的占用率较低，基于Linux的操作系统统治了几乎从移动设备到主机的其他全部领域。截至2017年11月，世界前500台最强的超级计算机全部使用Linux。&lt;/p&gt;
+&lt;p&gt;　　说实话，这个定义很不程序员，我是看不太懂，或者和我想象的定义不太一样。&lt;/p&gt;
+&lt;p&gt;　　在网上看到了对内核的一个定义，感觉比较靠谱；&lt;strong&gt;内核是与计算机硬件接口的易替换软件的最低级别。它负责将所有以“用户模式”运行的应用程序连接到物理硬件，并允许服务器的进程使用进程间通信(IPC)彼此获取信息。&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;内核是与计算机硬件接口的易替换软件的最低级别；&lt;/li&gt;
+&lt;li&gt;责将所有以“用户模式”运行的应用程序连接到物理硬件；&lt;/li&gt;
+&lt;li&gt;允许服务器的进程使用进程间通信(IPC)彼此获取信息；&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>操作系统（二）中断</title>
+      <link>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BA%8C%E4%B8%AD%E6%96%AD/</link>
+      <pubDate>Mon, 20 Sep 2021 20:38:19 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BA%8C%E4%B8%AD%E6%96%AD/</guid>
+      
+        <description>&lt;h3 id=&#34;什么是中断&#34;&gt;什么是中断&lt;/h3&gt;
+&lt;p&gt;　　所谓中断，是指处理机对系统中或系统外发生的异步事件的响应。异步事件是指无一定时序关系的随机发生的事件，如外围设备完成数据传输，实时控制设备出现异常情况等。&lt;/p&gt;
+&lt;p&gt;　　“中断”这个名称来源于：当这些异步事件发生后，打断了处理机对当前程序的执行，而转去处理该异步事件（执行该事件的中断处理程序）。直到处理完成之后，再转回原程序的中断点继续执行。&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>计算机网络（九）ifconfig 命令</title>
       <link>https://lihd2199.github.io/post/network/ifconfig/</link>
       <pubDate>Wed, 08 Sep 2021 19:45:42 +0800</pubDate>
       
@@ -266,13 +388,15 @@ lo        Link encap:Local Loopback
     </item>
     
     <item>
-      <title>linux内核前言（三）cpu缓存相关</title>
-      <link>https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/</link>
+      <title>操作系统（一）缓存相关</title>
+      <link>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%80%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/</link>
       <pubDate>Sun, 05 Sep 2021 21:21:00 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/</guid>
+      <guid>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%80%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/</guid>
       
-        <description>&lt;h3 id=&#34;cpu缓存的意义&#34;&gt;CPU缓存的意义&lt;/h3&gt;
+        <description>&lt;h3 id=&#34;缓存的意义&#34;&gt;缓存的意义&lt;/h3&gt;
+&lt;p&gt;　　缓冲技术一般有3种用途。一种是用在处理机与内存之间的；另一种是用在处理机和其他外围设备之间的；还有一种是用在设备与设备之间的通信上的。无论哪一种，都是为了解决部件之间速度不匹配的问题。&lt;/p&gt;
+&lt;p&gt;　　为什么不直接把数据送入用户工作区，而要设置缓冲来暂存呢？最根本的原因是处理机处理数据速度与设备传输数据速度不相匹配，用缓冲区可缓解其间的速度矛盾。如果把用户工作区直接作为缓冲区则有许多不便。首先，当从工作区向设备输出或从设备向工作区输入时，工作区被长期占用而使用户无法使用；其次，为了方便对缓冲区的管理，缓冲区往往是与设备相联系的，而不直接同用户联系；再者，也是为了减少输入与输出的次数，以减轻对通道和I/O设备的压力。缓冲区信息可供多个用户共同使用以及反复使用。每当用户要求输入数据时，先从这些缓冲区中去找，如果已在缓冲区，就可减少输入与输出次数。　　　　&lt;/p&gt;
 &lt;p&gt;　　CPU往往需要重复处理相同的数据、重复执行相同的指令，如果这部分数据、指令CPU能在CPU缓存中找到，CPU就不需要从内存或硬盘中再读取数据、指令，从而减少了整机的响应时间。所以，缓存的意义满足以下两种局部性原理：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;时间局部性（Temporal Locality）：如果一个信息项正在被访问，那么在近期它很可能还会被再次访问。&lt;/li&gt;
@@ -372,7 +496,7 @@ lo        Link encap:Local Loopback
 &lt;/ol&gt;
 &lt;/blockquote&gt;
 &lt;ul&gt;
-&lt;li&gt;对于Load Barrier来说，在指令前插入Load Barrier，可以让高速缓存中的数据失效，强制从新从主内存加载数据；&lt;/li&gt;
+&lt;li&gt;对于Load Barrier来说，在指令前插入Load Barrier，可以让高速缓存中的数据失效，强制重新从主内存加载数据；&lt;/li&gt;
 &lt;li&gt;对于Store Barrier来说，在指令后插入Store Barrier，能让写入缓存中的最新数据更新写入主内存，让其他线程可见。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;a href=&#34;https://www.jianshu.com/p/2ab5e3d7e510&#34;&gt;原文链接&lt;/a&gt;&lt;/p&gt;
@@ -389,50 +513,6 @@ lo        Link encap:Local Loopback
 &lt;li&gt;&lt;strong&gt;读写乱序(load store)&lt;/strong&gt;：load(a);b=2; -&amp;gt; b=2;load(a);&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;总而言之，CPU的乱序执行优化指的是处理器为提高运算速度而做出违背代码原有顺序的优化。&lt;/p&gt;
-</description>
-      
-    </item>
-    
-    <item>
-      <title>linux内核前言（二）linux内核结构</title>
-      <link>https://lihd2199.github.io/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</link>
-      <pubDate>Sun, 05 Sep 2021 21:13:00 +0800</pubDate>
-      
-      <guid>https://lihd2199.github.io/post/linux/linux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</guid>
-      
-        <description>&lt;h2 id=&#34;linux内核结构&#34;&gt;linux内核结构&lt;/h2&gt;
-&lt;p&gt;　　承接上文，上文大概的介绍了什么是Linux内核，本节简单介绍一下linux内核的结构，对linux内核有个整体的印象，然后在分模块学习。操作系统是所有应用程序生长的河床，它帮我们屏蔽各种硬件的细节，并且抽象出各种系统调用供应用开发人员来使用。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://lihd2199.github.io/img/linux%E7%BB%93%E6%9E%84.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;这个图比较清晰了，是书上的一张图，我们可以看到整个Linux内核可以分为4层：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;驱动管理层，驱动并管理外部一些硬件设备，例如磁盘、网卡等。&lt;/li&gt;
-&lt;li&gt;工具层，内核抽象出一些通用组件便于自己使用，例如并发管理中的一些锁、per-cpu变量等工具，另外还有中断机制，也给进程管理、信号处理等提供了基础功能。&lt;/li&gt;
-&lt;li&gt;系统能力层，操作系统的功能包括进程管理、内存管理、文件系统、I/O管理、网络等，这些功能都是基于工具层和驱动管理层提供的能力来构建的。&lt;/li&gt;
-&lt;li&gt;系统调用接口层（syscall），给应用程序开发人员提供相关接口。因为系统调用的使用成本较高，参数也比较多，需要对内核有较多了解，所以，又抽象出一些libc等库函数来封装系统调用，应用开发人员一般都是通过libc等库来与内核打交道的。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;　　我们接下来会把重点放在工具层和系统能力层。&lt;/p&gt;
-</description>
-      
-    </item>
-    
-    <item>
-      <title>linux内核前言（一）什么是linux内核</title>
-      <link>https://lihd2199.github.io/post/linux/%E4%BB%80%E4%B9%88%E6%98%AFlinux%E5%86%85%E6%A0%B8/</link>
-      <pubDate>Sat, 04 Sep 2021 19:21:00 +0800</pubDate>
-      
-      <guid>https://lihd2199.github.io/post/linux/%E4%BB%80%E4%B9%88%E6%98%AFlinux%E5%86%85%E6%A0%B8/</guid>
-      
-        <description>&lt;p&gt;　　最近在工作中学习中总数听人说Linux内核，自己又总是听不懂；另外之前面试也经常被问到，synchronize的内核态和用户态切换，volatile的底层实现，redis的多路复用，这些也都和linux内核有关，所以打算自己学习学习；&lt;/p&gt;
-&lt;p&gt;　　常见能搜到的书籍里面《Linux内核深度解析》，《Linux内核设计的艺术》，《操作系统导论》，大概都看过几眼，感觉书里的内容都很细，需要比较好的Linux基础，另外还有很多Linux的代码，对于目前的我不老合适，有点看不懂也有点看不下去。这个时候就需要我们的GitHub了，在GitHub上搜到了&lt;a href=&#34;https://github.com/0voice/linux_kernel_wiki&#34;&gt;linux内核学习资料&lt;/a&gt;，看起来很不错，在一定的高度整体的去看Linux相关知识，高屋建瓴，大家喜欢的可以去给颗星星。这个目录下面的东西很多时候参照这个GitHub上的内容完成的，大家可以直接看这个GitHub。&lt;/p&gt;
-&lt;p&gt;　　让我们看看维基百科对Linux内核的定义：&lt;strong&gt;Linux内核&lt;/strong&gt;（英语：Linux kernel）是一种开源的类Unix&lt;a href=&#34;https://zh.wikipedia.org/wiki/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F&#34;&gt;操作系统&lt;/a&gt;&lt;a href=&#34;https://zh.wikipedia.org/wiki/%E5%AE%8F%E5%86%85%E6%A0%B8&#34;&gt;宏内核&lt;/a&gt;。整个Linux操作系统家族基于该内核部署在传统计算机平台（如个人计算机和服务器，以Linux发行版的形式和各种嵌入式平台，如路由器、无线接入点、专用小交换机、机顶盒、FTA接收器、智能电视、数字视频录像机、网络附加存储（NAS）等。工作于平板电脑智能手机及智能手表的安卓操作系统同样通过Linux内核提供的服务完成自身功能。尽管于桌面电脑的占用率较低，基于Linux的操作系统统治了几乎从移动设备到主机的其他全部领域。截至2017年11月，世界前500台最强的超级计算机全部使用Linux。&lt;/p&gt;
-&lt;p&gt;　　说实话，这个定义很不程序员，我是看不太懂，或者和我想象的定义不太一样。&lt;/p&gt;
-&lt;p&gt;　　在网上看到了对内核的一个定义，感觉比较靠谱；&lt;strong&gt;内核是与计算机硬件接口的易替换软件的最低级别。它负责将所有以“用户模式”运行的应用程序连接到物理硬件，并允许服务器的进程使用进程间通信(IPC)彼此获取信息。&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;内核是与计算机硬件接口的易替换软件的最低级别；&lt;/li&gt;
-&lt;li&gt;责将所有以“用户模式”运行的应用程序连接到物理硬件；&lt;/li&gt;
-&lt;li&gt;允许服务器的进程使用进程间通信(IPC)彼此获取信息；&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;　　根据这个大概有个印象，我们也知道了内核的一些基本功能：进程间的通信、连接硬件等等，还要一些别的功能，之后会有一些深入的研究。&lt;/p&gt;
 </description>
       
     </item>
@@ -764,9 +844,73 @@ lo        Link encap:Local Loopback
     </item>
     
     <item>
-      <title>http协议</title>
+      <title>计算机网络（七）网络中的加密</title>
+      <link>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E5%8A%A0%E5%AF%86/</link>
+      <pubDate>Mon, 30 Aug 2021 20:33:54 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E5%8A%A0%E5%AF%86/</guid>
+      
+        <description>&lt;h2 id=&#34;加密算法&#34;&gt;加密算法&lt;/h2&gt;
+&lt;h4 id=&#34;对称密钥密码体制&#34;&gt;对称密钥密码体制&lt;/h4&gt;
+&lt;p&gt;对称密钥密码体制，即加密密钥和解密密钥是使用相同的密码体制。对称密钥加密技术的缺点之一就是发送者和接收者在对话之前，一定要有一个共享的密钥，所以不太安全。&lt;/p&gt;
+&lt;h4 id=&#34;公钥密码体制&#34;&gt;公钥密码体制&lt;/h4&gt;
+&lt;p&gt;公钥密码体制使用不同的加密密钥与解密密钥。公钥密码体制的产生主要是因为两个方面的原因，一是由于对称密钥密码体制的密钥分配问题，二是由于对数字签名的需求。&lt;/p&gt;
+&lt;p&gt;在公钥密码体制中，加密密钥是公开的，解密密钥是需要保密的，加密算法和解密算法也是公开的。&lt;/p&gt;
+&lt;p&gt;公钥密码体制的加密和解密有如下特点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;密钥对产生器产生出接收者 B 的一对密钥，即加密密钥 PK 和解密密钥 SK。&lt;/li&gt;
+&lt;li&gt;发送者 A 用 B 的公钥 PK 作为加密密钥来加密信息，B 接收后用解密密钥 SK 解密。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;摘要算法&#34;&gt;摘要算法&lt;/h2&gt;
+&lt;p&gt;摘要算法的主要特征是加密过程不需要密钥，并且经过加密的数据无法被解密，目前可以被解密逆向的只有CRC32算法，只有输入相同的明文数据经过相同的消息摘要算法才能得到相同的密文。&lt;/p&gt;
+&lt;h2 id=&#34;数字签名&#34;&gt;数字签名&lt;/h2&gt;
+&lt;p&gt;用加密系统对报文进行签名，以说明是谁编写的报文，同时证明报文未被篡改过，这种技术称为&lt;strong&gt;数字签名&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;数字签名必须保证能够实现以下三点功能：&lt;/p&gt;
+&lt;p&gt;(1) 接收者能够核实发送者对报文的签名。也就是说，接收者能够确信该报文的确是发送者发送的。其他人无法伪造对报文的签名。这就叫做报文鉴别。&lt;/p&gt;
+&lt;p&gt;(2) 接收者确信所收到的数据和发送者发送的完全一样而没有被篡改过。这就叫做报文的完整性。&lt;/p&gt;
+&lt;p&gt;(3) 发送者事后不能抵赖对报文的签名。这就叫做不可否认。&lt;/p&gt;
+&lt;p&gt;为了进行签名，A用其私钥SKA对报文X进行D运算。D运算本来叫做解密运算。还没有加密怎么就进行解密呢？这并没有关系。因为 D 运算只是得到了某种不可读的密文。A把经过D运算得到的密文传送给B。B为了核实签名，用A的公钥进行E运算，还原出明文X。请注意，任何人用A的公钥PKA进行E运算后都可以得出A发送的明文。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://lihd2199.github.io/img/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;数字签名通常是用非对称公开密钥技术产生的。&lt;/p&gt;
+&lt;p&gt;数字签名为什么具有上述的三点功能。因为除A外没有别人持有A的私钥SKA，所以除A外没有别人能产生密文[插图]。这样，B就相信报文X是A签名发送的。这就是报文鉴别的功能。同理，其他人如果篡改过报文，但并无法得到A的私钥 SKA来对X进行加密。B对篡改过的报文进行解密后，将会得出不可读的明文，就知道收到的报文被篡改过。这样就保证报文完整性的功能。若A要抵赖曾发送报文给B，B可把X 及[插图]出示给进行公证的第三者。第三者很容易用PKA去证实A确实发送X给B。这就是不可否认的功能。这里的&lt;em&gt;&lt;strong&gt;关键都是没有其他人能够持有A的私钥SKA&lt;/strong&gt;&lt;/em&gt;。&lt;/p&gt;
+&lt;h2 id=&#34;数字证书&#34;&gt;数字证书&lt;/h2&gt;
+&lt;p&gt;假如你想访问一个网站，怎么确保对方给你的公钥是你想访问的网站的公钥，而不是被中间人篡改过的？&lt;/p&gt;
+&lt;p&gt;数字证书的出现就是为了解决这个问题，它是由数字证书认证机构颁发的，用来证明公钥拥有者的身份。换句话说，数字证书的作用就相当于人的身份证，身份证证明了张三就是张三，而不是别人。&lt;/p&gt;
+&lt;h2 id=&#34;ssltls&#34;&gt;SSL/TLS&lt;/h2&gt;
+&lt;p&gt;● 安全套接字层SSL (Secure Socket Layer)&lt;/p&gt;
+&lt;p&gt;● 运输层安全TLS (Transport Layer Security)&lt;/p&gt;
+&lt;h4 id=&#34;ssl提供的安全服务可归纳为以下三种&#34;&gt;SSL提供的安全服务可归纳为以下三种：&lt;/h4&gt;
+&lt;p&gt;(1) SSL服务器鉴别，允许用户证实服务器的身份。支持SSL的客户端通过验证来自服务器的证书，来鉴别服务器的真实身份并获得服务器的公钥。&lt;/p&gt;
+&lt;p&gt;(2) SSL客户鉴别，SSL的可选安全服务，允许服务器证实客户的身份。&lt;/p&gt;
+&lt;p&gt;(3) 加密的SSL会话，对客户和服务器间发送的所有报文进行加密，并检测报文是否被篡改。&lt;/p&gt;
+&lt;h4 id=&#34;ssl的工作过程&#34;&gt;SSL的工作过程&lt;/h4&gt;
+&lt;p&gt;(1) 协商加密算法。浏览器A向服务器B发送浏览器的SSL版本号和一些可选的加密算法，B从中选定自己所支持的算法，并告知A。&lt;/p&gt;
+&lt;p&gt;(2) 服务器鉴别。服务器B向浏览器A发送一个包含其RSA公钥的数字证书，A使用该证书的认证机构CA的公开发布的RSA公钥对该证书进行验证。&lt;/p&gt;
+&lt;p&gt;(3) 会话密钥计算。由浏览器A随机产生一个秘密数，用服务器B的RSA公钥进行加密后发送给B。双方根据协商的算法产生一个共享的对称会话密钥。&lt;/p&gt;
+&lt;p&gt;(4) 安全数据传输。双方用会话密钥加密和解密它们之间传送的数据并验证其完整性。&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>计算机网络（八）硬件的常识</title>
+      <link>https://lihd2199.github.io/post/network/%E7%A1%AC%E4%BB%B6/</link>
+      <pubDate>Mon, 30 Aug 2021 20:33:54 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/network/%E7%A1%AC%E4%BB%B6/</guid>
+      
+        <description>&lt;p&gt;(1) 物理层使用的中间设备叫做转发器(repeater)。&lt;/p&gt;
+&lt;p&gt;(2) 数据链路层使用的中间设备叫做网桥或桥接器(bridge)。&lt;/p&gt;
+&lt;p&gt;(3) 网络层使用的中间设备叫做路由器(router）。&lt;/p&gt;
+&lt;p&gt;(4) 在网络层以上使用的中间设备叫做网关(gateway)。用网关连接两个不兼容的系统需要在高层进行协议的转换。&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>计算机网络（六）http协议</title>
       <link>https://lihd2199.github.io/post/network/http%E5%8D%8F%E8%AE%AE/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      <pubDate>Mon, 30 Aug 2021 20:32:54 +0800</pubDate>
       
       <guid>https://lihd2199.github.io/post/network/http%E5%8D%8F%E8%AE%AE/</guid>
       
@@ -816,102 +960,34 @@ lo        Link encap:Local Loopback
     </item>
     
     <item>
-      <title>MySQL事务</title>
-      <link>https://lihd2199.github.io/post/datasource/mysql%E4%BA%8B%E5%8A%A1/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      <title>计算机网络（五）udp</title>
+      <link>https://lihd2199.github.io/post/network/udp%E5%8D%8F%E8%AE%AE/</link>
+      <pubDate>Mon, 30 Aug 2021 20:31:54 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/post/datasource/mysql%E4%BA%8B%E5%8A%A1/</guid>
+      <guid>https://lihd2199.github.io/post/network/udp%E5%8D%8F%E8%AE%AE/</guid>
       
-        <description>&lt;h3 id=&#34;一事务的基本要素acid&#34;&gt;一、事务的基本要素（ACID）&lt;/h3&gt;
-&lt;p&gt;1、原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。undo log 日志&lt;/p&gt;
-&lt;p&gt;2、一致性（Consistency）：事务开始前和结束后，数据库的完整性约束没有被破坏 。比如A向B转账，不可能A扣了钱，B却没收到。&lt;/p&gt;
-&lt;p&gt;3、隔离性（Isolation）：同一时间，只允许一个事务请求同一数据，不同的事务之间彼此没有任何干扰。MVCC和间隙锁&lt;/p&gt;
-&lt;p&gt;4、持久性（Durability）：事务完成后，事务对数据库的所有更新将被保存到数据库，不能回滚 redo log。&lt;/p&gt;
-&lt;h3 id=&#34;二事务隔离级别&#34;&gt;二、事务隔离级别&lt;/h3&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;事务隔离级别&lt;/th&gt;
-&lt;th&gt;脏读&lt;/th&gt;
-&lt;th&gt;不可重复读&lt;/th&gt;
-&lt;th&gt;幻读&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;读未提交 ru&lt;/td&gt;
-&lt;td&gt;是&lt;/td&gt;
-&lt;td&gt;是&lt;/td&gt;
-&lt;td&gt;是&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;不可重复读 rc&lt;/td&gt;
-&lt;td&gt;否&lt;/td&gt;
-&lt;td&gt;是&lt;/td&gt;
-&lt;td&gt;是&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;可重复读 rr&lt;/td&gt;
-&lt;td&gt;否&lt;/td&gt;
-&lt;td&gt;否&lt;/td&gt;
-&lt;td&gt;是&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;串行化&lt;/td&gt;
-&lt;td&gt;否&lt;/td&gt;
-&lt;td&gt;否&lt;/td&gt;
-&lt;td&gt;否&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h3 id=&#34;三事务的并发问题&#34;&gt;三、事务的并发问题&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;脏读：事务A读取了事务B更新的数据，然后B回滚操作，那么A读取到的数据是脏数据&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;不可重复读：事务 A 多次读取同一数据，事务 B 在事务A多次读取的过程中，对数据作了更新并提交，导致事务A多次读取同一数据时，结果不一致。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;幻读：系统管理员A将数据库中所有学生的成绩从具体分数改为ABCDE等级，但是系统管理员B就在这个时候插入了一条具体分数的记录，当系统管理员A改结束后发现还有一条记录没有改过来，就好像发生了幻觉一样，这就叫幻读。&lt;/p&gt;
-&lt;p&gt;小结：不可重复读的和幻读很容易混淆，不可重复读侧重于修改，幻读侧重于新增或删除。解决不可重复读的问题只需锁住满足条件的行，解决幻读需要锁表&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&#34;四当前读和快照读&#34;&gt;四、当前读和快照读&lt;/h3&gt;
-&lt;p&gt;快照读：
-一般的 select * from &amp;hellip;. where &amp;hellip; 语句都是快照读
-快照读通过mvcc实现
-当前读：
-当前读，会在搜索的时候加锁&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;select * from .... where  ... for update
-select * from .... where  ... lock in share mode
-update .... set .. where ...
-delete from. . where ..
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;当前读通过 next key lock 避免幻读
-如果事务中都使用快照读，那么就不会产生幻读现象，但是快照读和当前读混用就会产生幻读。&lt;/p&gt;
-&lt;h3 id=&#34;五mvcc版本控制&#34;&gt;五、MVCC版本控制&lt;/h3&gt;
-&lt;p&gt;1、MVCC：多版本并发控制，是针对快照读的一种不通过锁来保证事务可见性的实现方式，主要是通过Innodb的undo log和一致性试图（read view）实现的。&lt;/p&gt;
-&lt;p&gt;2、Mysql会在某一时刻，创建一致性视图（read view实现的），RR隔离级别是在事务开始时刻，确切地说是第一个读操作创建read view的；RC隔离级别是在语句开始时刻创建read view的。我理解这个一致性试图是当前活跃的事务的id数组。&lt;/p&gt;
-&lt;p&gt;3、undo log 主要是回滚用的，我们知道每次新增或者修改一条数据，都会产生一条undo log，我们可以理解为是历史数据的记录，或者是对当前操作的反向记录。在我们的每条记录中，数据库都会给我们增加三个字段，id、事务id、回滚指针，我们对一条数据的操作，通过回滚指针，会将数据的undo log形成一条数据链。&lt;/p&gt;
-&lt;p&gt;4、在我们在遍历undo log链的时候，比较这条undo log链数据的事务id，如果事务id小于记录的最小的事务id，那么这条数据对当前事务是可见的，如果大于记录的最大事务id，那么这条数据对当前事务是不可见的，如果事务id落在了两者之间，那么需要判断是不是被记录了。如果被记录了，说明不可见。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;通过high/low water mark快速判断：
-trx_id &amp;lt; view-&amp;gt;up_limit_id的记录对于当前read view是一定可见的；
-trx_id &amp;gt;= view-&amp;gt;low_limit_id的记录对于当前read view是一定不可见的；
-如果trx_id落在[up_limit_id, low_limit_id)，需要在活跃读写事务数组查找trx_id是否存在，如果存在，记录对于当前read view是不可见
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;六lbcc基于锁的控制&#34;&gt;六、LBCC基于锁的控制&lt;/h3&gt;
-&lt;p&gt;只使用唯一索引查询，并且只锁定一条记录时，innoDB会使用行锁。&lt;/p&gt;
-&lt;p&gt;只使用唯一索引查询，但是检索条件是范围检索，或者是唯一检索然而检索结果不存在时，会产生 Next-Key Lock。&lt;/p&gt;
-&lt;p&gt;使用普通索引检索时，不管是何种查询，只要加锁，都会产生间隙锁。&lt;/p&gt;
-&lt;p&gt;同时使用唯一索引和普通索引时，由于数据行是优先根据普通索引排序，再根据唯一索引排序，所以也会产生间隙锁。&lt;/p&gt;
-&lt;p&gt;锁住普通索引，会锁住对应的唯一索引的行。&lt;/p&gt;
+        <description>&lt;h4 id=&#34;一概述&#34;&gt;一、概述&lt;/h4&gt;
+&lt;p&gt;UDP是无连接的，即发送数据之前不需要建立连接，因此减少了开销和发送数据之前的时延。&lt;/p&gt;
+&lt;p&gt;UDP使用尽最大努力交付，即不保证可靠交付，因此主机不需要维持复杂的连接状态表。&lt;/p&gt;
+&lt;p&gt;UDP是面向报文的。发送方的UDP对应用程序交下来的报文，在添加首部后就向下交付IP层。UDP对应用层交下来的报文，既不合并，也不拆分，而是保留这些报文的边界。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://lihd2199.github.io/img/udp%E9%9D%A2%E5%90%91%E6%8A%A5%E6%96%87.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;UDP没有拥塞控制，因此网络出现的拥塞不会使源主机的发送速率降低&lt;/p&gt;
+&lt;p&gt;UDP支持一对一、一对多、多对一和多对多的交互通信&lt;/p&gt;
+&lt;h3 id=&#34;二udp的首部格式&#34;&gt;二、UDP的首部格式&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://lihd2199.github.io/img/udp%E9%A6%96%E9%83%A8.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;(1) 源端口 源端口号。在需要对方回信时选用。不需要时可用全0。&lt;/p&gt;
+&lt;p&gt;(2) 目的端口 目的端口号。这在终点交付报文时必须要使用到。&lt;/p&gt;
+&lt;p&gt;(3) 长度 UDP用户数据报的长度，其最小值是8（仅有首部）。&lt;/p&gt;
+&lt;p&gt;(4) 检验和 检测UDP用户数据报在传输中是否有错。有错就丢弃。&lt;/p&gt;
+&lt;p&gt;UDP用户数据报首部中检验和的计算方法有些特殊。在计算检验和时，要在UDP用户数据报之前增加12个字节的伪首部。所谓“伪首部”是因为这种伪首部并不是UDP用户数据报真正的首部。只是在计算检验和时，临时添加在UDP用户数据报前面，得到一个临时的UDP用户数据报。检验和就是按照这个临时的UDP用户数据报来计算的。伪首部既不向下传送也不向上递交，而仅仅是为了计算检验和。&lt;/p&gt;
 </description>
       
     </item>
     
     <item>
-      <title>tcp</title>
+      <title>计算机网络（四）tcp</title>
       <link>https://lihd2199.github.io/post/network/tcp%E5%8D%8F%E8%AE%AE/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      <pubDate>Mon, 30 Aug 2021 20:30:54 +0800</pubDate>
       
       <guid>https://lihd2199.github.io/post/network/tcp%E5%8D%8F%E8%AE%AE/</guid>
       
@@ -973,131 +1049,9 @@ trx_id &amp;gt;= view-&amp;gt;low_limit_id的记录对于当前read view是一�
     </item>
     
     <item>
-      <title>udp</title>
-      <link>https://lihd2199.github.io/post/network/udp%E5%8D%8F%E8%AE%AE/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
-      
-      <guid>https://lihd2199.github.io/post/network/udp%E5%8D%8F%E8%AE%AE/</guid>
-      
-        <description>&lt;h4 id=&#34;一概述&#34;&gt;一、概述&lt;/h4&gt;
-&lt;p&gt;UDP是无连接的，即发送数据之前不需要建立连接，因此减少了开销和发送数据之前的时延。&lt;/p&gt;
-&lt;p&gt;UDP使用尽最大努力交付，即不保证可靠交付，因此主机不需要维持复杂的连接状态表。&lt;/p&gt;
-&lt;p&gt;UDP是面向报文的。发送方的UDP对应用程序交下来的报文，在添加首部后就向下交付IP层。UDP对应用层交下来的报文，既不合并，也不拆分，而是保留这些报文的边界。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://lihd2199.github.io/img/udp%E9%9D%A2%E5%90%91%E6%8A%A5%E6%96%87.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;UDP没有拥塞控制，因此网络出现的拥塞不会使源主机的发送速率降低&lt;/p&gt;
-&lt;p&gt;UDP支持一对一、一对多、多对一和多对多的交互通信&lt;/p&gt;
-&lt;h3 id=&#34;二udp的首部格式&#34;&gt;二、UDP的首部格式&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&#34;https://lihd2199.github.io/img/udp%E9%A6%96%E9%83%A8.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;(1) 源端口 源端口号。在需要对方回信时选用。不需要时可用全0。&lt;/p&gt;
-&lt;p&gt;(2) 目的端口 目的端口号。这在终点交付报文时必须要使用到。&lt;/p&gt;
-&lt;p&gt;(3) 长度 UDP用户数据报的长度，其最小值是8（仅有首部）。&lt;/p&gt;
-&lt;p&gt;(4) 检验和 检测UDP用户数据报在传输中是否有错。有错就丢弃。&lt;/p&gt;
-&lt;p&gt;UDP用户数据报首部中检验和的计算方法有些特殊。在计算检验和时，要在UDP用户数据报之前增加12个字节的伪首部。所谓“伪首部”是因为这种伪首部并不是UDP用户数据报真正的首部。只是在计算检验和时，临时添加在UDP用户数据报前面，得到一个临时的UDP用户数据报。检验和就是按照这个临时的UDP用户数据报来计算的。伪首部既不向下传送也不向上递交，而仅仅是为了计算检验和。&lt;/p&gt;
-</description>
-      
-    </item>
-    
-    <item>
-      <title>硬件的常识</title>
-      <link>https://lihd2199.github.io/post/network/%E7%A1%AC%E4%BB%B6/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
-      
-      <guid>https://lihd2199.github.io/post/network/%E7%A1%AC%E4%BB%B6/</guid>
-      
-        <description>&lt;p&gt;(1) 物理层使用的中间设备叫做转发器(repeater)。&lt;/p&gt;
-&lt;p&gt;(2) 数据链路层使用的中间设备叫做网桥或桥接器(bridge)。&lt;/p&gt;
-&lt;p&gt;(3) 网络层使用的中间设备叫做路由器(router）。&lt;/p&gt;
-&lt;p&gt;(4) 在网络层以上使用的中间设备叫做网关(gateway)。用网关连接两个不兼容的系统需要在高层进行协议的转换。&lt;/p&gt;
-</description>
-      
-    </item>
-    
-    <item>
-      <title>网络中的加密</title>
-      <link>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E5%8A%A0%E5%AF%86/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
-      
-      <guid>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E5%8A%A0%E5%AF%86/</guid>
-      
-        <description>&lt;h2 id=&#34;加密算法&#34;&gt;加密算法&lt;/h2&gt;
-&lt;h4 id=&#34;对称密钥密码体制&#34;&gt;对称密钥密码体制&lt;/h4&gt;
-&lt;p&gt;对称密钥密码体制，即加密密钥和解密密钥是使用相同的密码体制。对称密钥加密技术的缺点之一就是发送者和接收者在对话之前，一定要有一个共享的密钥，所以不太安全。&lt;/p&gt;
-&lt;h4 id=&#34;公钥密码体制&#34;&gt;公钥密码体制&lt;/h4&gt;
-&lt;p&gt;公钥密码体制使用不同的加密密钥与解密密钥。公钥密码体制的产生主要是因为两个方面的原因，一是由于对称密钥密码体制的密钥分配问题，二是由于对数字签名的需求。&lt;/p&gt;
-&lt;p&gt;在公钥密码体制中，加密密钥是公开的，解密密钥是需要保密的，加密算法和解密算法也是公开的。&lt;/p&gt;
-&lt;p&gt;公钥密码体制的加密和解密有如下特点：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;密钥对产生器产生出接收者 B 的一对密钥，即加密密钥 PK 和解密密钥 SK。&lt;/li&gt;
-&lt;li&gt;发送者 A 用 B 的公钥 PK 作为加密密钥来加密信息，B 接收后用解密密钥 SK 解密。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;摘要算法&#34;&gt;摘要算法&lt;/h2&gt;
-&lt;p&gt;摘要算法的主要特征是加密过程不需要密钥，并且经过加密的数据无法被解密，目前可以被解密逆向的只有CRC32算法，只有输入相同的明文数据经过相同的消息摘要算法才能得到相同的密文。&lt;/p&gt;
-&lt;h2 id=&#34;数字签名&#34;&gt;数字签名&lt;/h2&gt;
-&lt;p&gt;用加密系统对报文进行签名，以说明是谁编写的报文，同时证明报文未被篡改过，这种技术称为&lt;strong&gt;数字签名&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;数字签名必须保证能够实现以下三点功能：&lt;/p&gt;
-&lt;p&gt;(1) 接收者能够核实发送者对报文的签名。也就是说，接收者能够确信该报文的确是发送者发送的。其他人无法伪造对报文的签名。这就叫做报文鉴别。&lt;/p&gt;
-&lt;p&gt;(2) 接收者确信所收到的数据和发送者发送的完全一样而没有被篡改过。这就叫做报文的完整性。&lt;/p&gt;
-&lt;p&gt;(3) 发送者事后不能抵赖对报文的签名。这就叫做不可否认。&lt;/p&gt;
-&lt;p&gt;为了进行签名，A用其私钥SKA对报文X进行D运算。D运算本来叫做解密运算。还没有加密怎么就进行解密呢？这并没有关系。因为 D 运算只是得到了某种不可读的密文。A把经过D运算得到的密文传送给B。B为了核实签名，用A的公钥进行E运算，还原出明文X。请注意，任何人用A的公钥PKA进行E运算后都可以得出A发送的明文。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://lihd2199.github.io/img/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;数字签名通常是用非对称公开密钥技术产生的。&lt;/p&gt;
-&lt;p&gt;数字签名为什么具有上述的三点功能。因为除A外没有别人持有A的私钥SKA，所以除A外没有别人能产生密文[插图]。这样，B就相信报文X是A签名发送的。这就是报文鉴别的功能。同理，其他人如果篡改过报文，但并无法得到A的私钥 SKA来对X进行加密。B对篡改过的报文进行解密后，将会得出不可读的明文，就知道收到的报文被篡改过。这样就保证报文完整性的功能。若A要抵赖曾发送报文给B，B可把X 及[插图]出示给进行公证的第三者。第三者很容易用PKA去证实A确实发送X给B。这就是不可否认的功能。这里的&lt;em&gt;&lt;strong&gt;关键都是没有其他人能够持有A的私钥SKA&lt;/strong&gt;&lt;/em&gt;。&lt;/p&gt;
-&lt;h2 id=&#34;数字证书&#34;&gt;数字证书&lt;/h2&gt;
-&lt;p&gt;假如你想访问一个网站，怎么确保对方给你的公钥是你想访问的网站的公钥，而不是被中间人篡改过的？&lt;/p&gt;
-&lt;p&gt;数字证书的出现就是为了解决这个问题，它是由数字证书认证机构颁发的，用来证明公钥拥有者的身份。换句话说，数字证书的作用就相当于人的身份证，身份证证明了张三就是张三，而不是别人。&lt;/p&gt;
-&lt;h2 id=&#34;ssltls&#34;&gt;SSL/TLS&lt;/h2&gt;
-&lt;p&gt;● 安全套接字层SSL (Secure Socket Layer)&lt;/p&gt;
-&lt;p&gt;● 运输层安全TLS (Transport Layer Security)&lt;/p&gt;
-&lt;h4 id=&#34;ssl提供的安全服务可归纳为以下三种&#34;&gt;SSL提供的安全服务可归纳为以下三种：&lt;/h4&gt;
-&lt;p&gt;(1) SSL服务器鉴别，允许用户证实服务器的身份。支持SSL的客户端通过验证来自服务器的证书，来鉴别服务器的真实身份并获得服务器的公钥。&lt;/p&gt;
-&lt;p&gt;(2) SSL客户鉴别，SSL的可选安全服务，允许服务器证实客户的身份。&lt;/p&gt;
-&lt;p&gt;(3) 加密的SSL会话，对客户和服务器间发送的所有报文进行加密，并检测报文是否被篡改。&lt;/p&gt;
-&lt;h4 id=&#34;ssl的工作过程&#34;&gt;SSL的工作过程&lt;/h4&gt;
-&lt;p&gt;(1) 协商加密算法。浏览器A向服务器B发送浏览器的SSL版本号和一些可选的加密算法，B从中选定自己所支持的算法，并告知A。&lt;/p&gt;
-&lt;p&gt;(2) 服务器鉴别。服务器B向浏览器A发送一个包含其RSA公钥的数字证书，A使用该证书的认证机构CA的公开发布的RSA公钥对该证书进行验证。&lt;/p&gt;
-&lt;p&gt;(3) 会话密钥计算。由浏览器A随机产生一个秘密数，用服务器B的RSA公钥进行加密后发送给B。双方根据协商的算法产生一个共享的对称会话密钥。&lt;/p&gt;
-&lt;p&gt;(4) 安全数据传输。双方用会话密钥加密和解密它们之间传送的数据并验证其完整性。&lt;/p&gt;
-</description>
-      
-    </item>
-    
-    <item>
-      <title>网络分层模型</title>
-      <link>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
-      
-      <guid>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B/</guid>
-      
-        <description>&lt;h2 id=&#34;五层结构&#34;&gt;&lt;strong&gt;五层结构&lt;/strong&gt;&lt;/h2&gt;
-&lt;h3 id=&#34;一物理层&#34;&gt;一、物理层&lt;/h3&gt;
-&lt;p&gt;在物理层上所传数据的单位是比特。&lt;strong&gt;发送方发送1（或0）时，接收方应当收到1（或0）而不是0（或1）。因此物理层要考虑用多大的电压代表“1”或“0”，以及接收方如何识别出发送方所发送的比特&lt;/strong&gt;。物理层还要确定连接电缆的插头应当有多少根引脚以及各条引脚应如何连接。请注意，传递信息所利用的一些物理媒体，如双绞线、同轴电缆、光缆、无线信道等，并不在物理层协议之内而是在物理层协议的下面。&lt;/p&gt;
-&lt;h3 id=&#34;二数据链路层&#34;&gt;二、数据链路层&lt;/h3&gt;
-&lt;p&gt;在两个相邻结点之间传送数据时，数据链路层将网络层交下来的IP数据报组装成帧，在两个相邻结点间的链路上传送帧。每一帧包括数据和必要的控制信息（如同步信息、地址信息、差错控制等）。&lt;/p&gt;
-&lt;h3 id=&#34;三网络层&#34;&gt;三、网络层&lt;/h3&gt;
-&lt;p&gt;网络层负责为分组交换网上的不同主机提供通信服务。在发送数据时，网络层把运输层产生的报文段或用户数据报封装成分组或包(packet)进行传送。&lt;strong&gt;在TCP/IP体系中，网络层使用IP协议，分组也叫作 IP数据报，或简称为数据报(datagram)&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;网络层的另一个任务就是要选择合适的路由，使源主机运输层所传下来的分组能够通过网络中的路由器找到目的主机。&lt;/p&gt;
-&lt;h3 id=&#34;四传输层&#34;&gt;四、传输层&lt;/h3&gt;
-&lt;p&gt;运输层的任务就是负责向两个主机中进程之间的通信提供通用的数据传输服务。应用进程利用该服务传送应用层报文。&lt;/p&gt;
-&lt;p&gt;运输层主要使用以下两种协议：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;传输控制协议TCP (Transmission Control Protocol)——提供面向连接的、可靠的数据传输服务，其数据传输的单位是报文段(segment)。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;用户数据报协议 UDP (User Datagram Protocol)——提供无连接的、尽最大努力(best-effort)的数据传输服务（不保证数据传输的可靠性），其数据传输的单位是用户数据报。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&#34;五-应用层&#34;&gt;五、 应用层&lt;/h3&gt;
-&lt;p&gt;应用层的任务是通过应用进程间的交互来完成特定网络应用。**应用层协议定义的是应用进程间通信和交互的规则。**这里的进程(process)就是指主机中正在运行的程序。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://lihd2199.github.io/img/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-</description>
-      
-    </item>
-    
-    <item>
-      <title>网络层</title>
+      <title>计算机网络（二）网络层</title>
       <link>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E5%B1%82/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      <pubDate>Mon, 30 Aug 2021 20:29:54 +0800</pubDate>
       
       <guid>https://lihd2199.github.io/post/network/%E7%BD%91%E7%BB%9C%E5%B1%82/</guid>
       
@@ -1248,9 +1202,9 @@ trx_id &amp;gt;= view-&amp;gt;low_limit_id的记录对于当前read view是一�
     </item>
     
     <item>
-      <title>运输层</title>
+      <title>计算机网络（三）运输层</title>
       <link>https://lihd2199.github.io/post/network/%E8%BF%90%E8%BE%93%E5%B1%82/</link>
-      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      <pubDate>Mon, 30 Aug 2021 20:28:54 +0800</pubDate>
       
       <guid>https://lihd2199.github.io/post/network/%E8%BF%90%E8%BE%93%E5%B1%82/</guid>
       
@@ -1264,6 +1218,99 @@ trx_id &amp;gt;= view-&amp;gt;low_limit_id的记录对于当前read view是一�
 &lt;h4 id=&#34;服务器端口分类&#34;&gt;服务器端口分类&lt;/h4&gt;
 &lt;p&gt;(1) 服务器端使用的端口号这里又分为两类，最重要的一类叫做熟知端口号(well-known port number)或系统端口号，数值为0～1023。另一类叫做登记端口号，数值为1024～49151。这类端口号是为没有熟知端口号的应用程序使用的。使用这类端口号必须在IANA按照规定的手续登记，以防止重复。&lt;/p&gt;
 &lt;p&gt;(2) 客户端使用的端口号 数值为49152～65535。由于这类端口号仅在客户进程运行时才动态选择，因此又叫做短暂端口号&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>MySQL事务</title>
+      <link>https://lihd2199.github.io/post/datasource/mysql%E4%BA%8B%E5%8A%A1/</link>
+      <pubDate>Mon, 30 Aug 2021 20:27:54 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/datasource/mysql%E4%BA%8B%E5%8A%A1/</guid>
+      
+        <description>&lt;h3 id=&#34;一事务的基本要素acid&#34;&gt;一、事务的基本要素（ACID）&lt;/h3&gt;
+&lt;p&gt;1、原子性（Atomicity）：事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。undo log 日志&lt;/p&gt;
+&lt;p&gt;2、一致性（Consistency）：事务开始前和结束后，数据库的完整性约束没有被破坏 。比如A向B转账，不可能A扣了钱，B却没收到。&lt;/p&gt;
+&lt;p&gt;3、隔离性（Isolation）：同一时间，只允许一个事务请求同一数据，不同的事务之间彼此没有任何干扰。MVCC和间隙锁&lt;/p&gt;
+&lt;p&gt;4、持久性（Durability）：事务完成后，事务对数据库的所有更新将被保存到数据库，不能回滚 redo log。&lt;/p&gt;
+&lt;h3 id=&#34;二事务隔离级别&#34;&gt;二、事务隔离级别&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;事务隔离级别&lt;/th&gt;
+&lt;th&gt;脏读&lt;/th&gt;
+&lt;th&gt;不可重复读&lt;/th&gt;
+&lt;th&gt;幻读&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;读未提交 ru&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;不可重复读 rc&lt;/td&gt;
+&lt;td&gt;否&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;可重复读 rr&lt;/td&gt;
+&lt;td&gt;否&lt;/td&gt;
+&lt;td&gt;否&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;串行化&lt;/td&gt;
+&lt;td&gt;否&lt;/td&gt;
+&lt;td&gt;否&lt;/td&gt;
+&lt;td&gt;否&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;三事务的并发问题&#34;&gt;三、事务的并发问题&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;脏读：事务A读取了事务B更新的数据，然后B回滚操作，那么A读取到的数据是脏数据&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;不可重复读：事务 A 多次读取同一数据，事务 B 在事务A多次读取的过程中，对数据作了更新并提交，导致事务A多次读取同一数据时，结果不一致。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;幻读：系统管理员A将数据库中所有学生的成绩从具体分数改为ABCDE等级，但是系统管理员B就在这个时候插入了一条具体分数的记录，当系统管理员A改结束后发现还有一条记录没有改过来，就好像发生了幻觉一样，这就叫幻读。&lt;/p&gt;
+&lt;p&gt;小结：不可重复读的和幻读很容易混淆，不可重复读侧重于修改，幻读侧重于新增或删除。解决不可重复读的问题只需锁住满足条件的行，解决幻读需要锁表&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;四当前读和快照读&#34;&gt;四、当前读和快照读&lt;/h3&gt;
+&lt;p&gt;快照读：
+一般的 select * from &amp;hellip;. where &amp;hellip; 语句都是快照读
+快照读通过mvcc实现
+当前读：
+当前读，会在搜索的时候加锁&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;select * from .... where  ... for update
+select * from .... where  ... lock in share mode
+update .... set .. where ...
+delete from. . where ..
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;当前读通过 next key lock 避免幻读
+如果事务中都使用快照读，那么就不会产生幻读现象，但是快照读和当前读混用就会产生幻读。&lt;/p&gt;
+&lt;h3 id=&#34;五mvcc版本控制&#34;&gt;五、MVCC版本控制&lt;/h3&gt;
+&lt;p&gt;1、MVCC：多版本并发控制，是针对快照读的一种不通过锁来保证事务可见性的实现方式，主要是通过Innodb的undo log和一致性试图（read view）实现的。&lt;/p&gt;
+&lt;p&gt;2、Mysql会在某一时刻，创建一致性视图（read view实现的），RR隔离级别是在事务开始时刻，确切地说是第一个读操作创建read view的；RC隔离级别是在语句开始时刻创建read view的。我理解这个一致性试图是当前活跃的事务的id数组。&lt;/p&gt;
+&lt;p&gt;3、undo log 主要是回滚用的，我们知道每次新增或者修改一条数据，都会产生一条undo log，我们可以理解为是历史数据的记录，或者是对当前操作的反向记录。在我们的每条记录中，数据库都会给我们增加三个字段，id、事务id、回滚指针，我们对一条数据的操作，通过回滚指针，会将数据的undo log形成一条数据链。&lt;/p&gt;
+&lt;p&gt;4、在我们在遍历undo log链的时候，比较这条undo log链数据的事务id，如果事务id小于记录的最小的事务id，那么这条数据对当前事务是可见的，如果大于记录的最大事务id，那么这条数据对当前事务是不可见的，如果事务id落在了两者之间，那么需要判断是不是被记录了。如果被记录了，说明不可见。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;通过high/low water mark快速判断：
+trx_id &amp;lt; view-&amp;gt;up_limit_id的记录对于当前read view是一定可见的；
+trx_id &amp;gt;= view-&amp;gt;low_limit_id的记录对于当前read view是一定不可见的；
+如果trx_id落在[up_limit_id, low_limit_id)，需要在活跃读写事务数组查找trx_id是否存在，如果存在，记录对于当前read view是不可见
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;六lbcc基于锁的控制&#34;&gt;六、LBCC基于锁的控制&lt;/h3&gt;
+&lt;p&gt;只使用唯一索引查询，并且只锁定一条记录时，innoDB会使用行锁。&lt;/p&gt;
+&lt;p&gt;只使用唯一索引查询，但是检索条件是范围检索，或者是唯一检索然而检索结果不存在时，会产生 Next-Key Lock。&lt;/p&gt;
+&lt;p&gt;使用普通索引检索时，不管是何种查询，只要加锁，都会产生间隙锁。&lt;/p&gt;
+&lt;p&gt;同时使用唯一索引和普通索引时，由于数据行是优先根据普通索引排序，再根据唯一索引排序，所以也会产生间隙锁。&lt;/p&gt;
+&lt;p&gt;锁住普通索引，会锁住对应的唯一索引的行。&lt;/p&gt;
 </description>
       
     </item>

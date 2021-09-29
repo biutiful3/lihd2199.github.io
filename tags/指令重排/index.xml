@@ -9,12 +9,12 @@
     <copyright>lihongda</copyright>
     <lastBuildDate>Sun, 05 Sep 2021 21:21:00 +0800</lastBuildDate><atom:link href="https://lihd2199.github.io/tags/%E6%8C%87%E4%BB%A4%E9%87%8D%E6%8E%92/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>linux内核前言（三）cpu缓存相关</title>
-      <link>https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/</link>
+      <title>操作系统（一）缓存相关</title>
+      <link>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%80%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/</link>
       <pubDate>Sun, 05 Sep 2021 21:21:00 +0800</pubDate>
       
-      <guid>https://lihd2199.github.io/post/linux/cpu%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/</guid>
-      <description>CPU缓存的意义 CPU往往需要重复处理相同的数据、重复执行相同的指令，如果这部分数据、指令CPU能在CPU缓存中找到，CPU就不需要从内存或</description>
+      <guid>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%80%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/</guid>
+      <description>缓存的意义 缓冲技术一般有3种用途。一种是用在处理机与内存之间的；另一种是用在处理机和其他外围设备之间的；还有一种是用在设备与设备之间的通信上</description>
     </item>
     
   </channel>

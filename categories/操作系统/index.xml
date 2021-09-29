@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>操作系统 on 山河一统</title>
+    <link>https://lihd2199.github.io/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/</link>
+    <description>Recent content in 操作系统 on 山河一统</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>lihongda</copyright>
+    <lastBuildDate>Sun, 26 Sep 2021 20:51:19 +0800</lastBuildDate><atom:link href="https://lihd2199.github.io/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>操作系统（五）进程</title>
+      <link>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BA%94%E8%BF%9B%E7%A8%8B/</link>
+      <pubDate>Sun, 26 Sep 2021 20:51:19 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BA%94%E8%BF%9B%E7%A8%8B/</guid>
+      <description>进程的定义 进程是操作系统中的一个最基本也是最重要的概念。 进程是具有独立功能的可并发执行的程序在一个数据集合上的运行过程，是系统进行资源分配和</description>
+    </item>
+    
+    <item>
+      <title>操作系统（四）linux内核体系</title>
+      <link>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9B%9Blinux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</link>
+      <pubDate>Sat, 25 Sep 2021 20:38:19 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9B%9Blinux%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB/</guid>
+      <description>linux内核结构 承接上文，上文大概的介绍了什么是Linux内核，本节简单介绍一下linux内核的结构，对linux内核有个整体的印象，然后</description>
+    </item>
+    
+    <item>
+      <title>操作系统（三）linux内核</title>
+      <link>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%89linux%E5%86%85%E6%A0%B8/</link>
+      <pubDate>Fri, 24 Sep 2021 20:38:19 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%89linux%E5%86%85%E6%A0%B8/</guid>
+      <description>让我们看看维基百科对Linux内核的定义：Linux内核（英语：Linux kernel）是一种开源的类Unix操作系统宏内核。整个Linux</description>
+    </item>
+    
+    <item>
+      <title>操作系统（二）中断</title>
+      <link>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BA%8C%E4%B8%AD%E6%96%AD/</link>
+      <pubDate>Mon, 20 Sep 2021 20:38:19 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BA%8C%E4%B8%AD%E6%96%AD/</guid>
+      <description>什么是中断 所谓中断，是指处理机对系统中或系统外发生的异步事件的响应。异步事件是指无一定时序关系的随机发生的事件，如外围设备完成数据传输，实时</description>
+    </item>
+    
+    <item>
+      <title>操作系统（一）缓存相关</title>
+      <link>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%80%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/</link>
+      <pubDate>Sun, 05 Sep 2021 21:21:00 +0800</pubDate>
+      
+      <guid>https://lihd2199.github.io/post/linux/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%80%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/</guid>
+      <description>缓存的意义 缓冲技术一般有3种用途。一种是用在处理机与内存之间的；另一种是用在处理机和其他外围设备之间的；还有一种是用在设备与设备之间的通信上</description>
+    </item>
+    
+  </channel>
+</rss>
