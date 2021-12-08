@@ -1,2 +1,0 @@
-User-agent: *
-Sitemap: https://lihd2199.github.io/sitemap.xml
