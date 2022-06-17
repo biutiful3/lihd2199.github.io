@@ -2,7 +2,7 @@
 
 ------
 
-![](img/producer架构图.jpeg)
+![](./img/producer架构图.jpeg)
 
 ​		整个生产者客户端由两个线程协调运行，这两个线程分别为主线程和Sender线程（发送线程）。在主线程中由KafkaProducer创建消息，然后通过可能的拦截器、序列化器和分区器的作用之后缓存到消息收集器（RecordAccumulator）中。Sender 线程负责从RecordAccumulator中获取消息并将其发送到Kafka中。
 

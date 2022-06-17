@@ -2,13 +2,17 @@
 
 ------
 
-bootstrap.servers：服务器地址
-
 buffer.memory：生产者可以用来缓冲等待发送到服务器的记录的总内存字节
 
 > 如果记录被发送的速度超过了它们可以被发送到服务器的速度，那么生产者将阻塞max.block。然后它会抛出一个异常。
 
 batch.size：指定ProducerBatch可以复用的内存区域大小
+
+> 当有多个消息需要被发送到同一个分区时，生产者会把它们放在同一个批次里。该参数指定了一个批次可以使用的内存大小，按照字节数计算（而不是消息个数）。当批次被填满，批次里的所有消息会被发送出去。不过生产者并不一定都会等到批次被填满才发送。所以就算把批次大小设置得很大，也不会造成延迟，只是会占用更多的内存而已。但如果设置得太小，因为生产者需要更频繁地发送消息，会增加一些额外的开销。
+
+linger.ms：生产者发送 ProducerBatch 之前等待更多消息（ProducerRecord）加入ProducerBatch 的时间
+
+> 该参数指定了生产者在发送批次之前等待更多消息加入批次的时间。KafkaProducer会在批次填满或linger.ms达到上限时把批次发送出去。默认情况下，只要有可用的线程，生产者就会把消息发送出去，就算批次里只有一个消息。把linger.ms设置成比0大的数，让生产者在发送批次之前等待一会儿，使更多的消息加入到这个批次。虽然这样会增加延迟，但也会提升吞吐量（因为一次性发送更多的消息，每个消息的开销就变小了）。
 
 ack：指定分区中必须要有多少个副本收到这条消息，之后生产者才会认为这条消息是成功写入的
 
@@ -32,7 +36,7 @@ retry.backoff.ms：默认值为100，它用来设定两次重试之间的时间�
 >
 > 配置 retries 和 retry.backoff.ms之前，最好先估算一下可能的异常恢复时间，这样可以设定总的重试时间大于这个异常恢复时间，以此来避免生产者过早地放弃重试
 
-max.in.fight.requests.per.connection：限制客户端在单个连接上能够发送的未响应请求的个数，可以避免消息乱序
+max.in.flight.requests.per.connection：限制客户端在单个连接上能够发送的未响应请求的个数，可以避免消息乱序
 
 > 如果将acks参数配置为非零值，并且max.in.fight.requests.per.connection参数配置为大于1的值，那么就会出现错序的现象：如果第一批次消息写入失败，而第二批次消息写入成功，那么生产者会重试发送第一批次的消息，此时如果第一批次的消息写入成功，那么这两个批次的消息就出现了错序。一般而言，在需要保证消息顺序的场合建议把参数max.in.fight.requests.per.connection配置为1，而不是把acks配置为0，不过这样也会影响整体的吞吐。
 
@@ -40,11 +44,9 @@ compression.type：指定消息的压缩方式，默认值为“none”，即默
 
 connections.max.idle.ms：指定在多久之后关闭限制的连接，默认值是540000（ms），即9分钟。
 
-linger.ms：生产者发送 ProducerBatch 之前等待更多消息（ProducerRecord）加入ProducerBatch 的时间
-
 request.timeout.ms：Producer等待请求响应的最长时间，默认值为30000（ms）。
 
 > 请求超时之后可以选择进行重试。注意这个参数需要比broker端参数replica.lag.time.max.ms的值要大，这样可以减少因客户端重试而引起的消息重复的概率。
 
-max.block.ms：控制prodecer中的 send()方法可以阻塞时间
+max.block.ms：控制prodecer中的 send()方法可以阻塞的时间
 
