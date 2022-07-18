@@ -1,16 +1,16 @@
 **HBase并不快，只是当数据量很大的时候它慢的不明显**
 
-hbase的架构：
+###### hbase的架构
 
 ![img](./img/hbase架构.png)
 
-Master
+###### Master
 
 Master只负责各种协调工作（其实就是打杂），比如建表、删表、移动Region、合并等操作。它们的共性就是需要跨RegionServer，这些操作由哪个RegionServer来执行都不合适，所以HBase就将这些操作放到了Master上了。而Master节点一般只有一个到两个，在HBase中，即使Master宕机了，集群依然可以正常地运行，依然可以存储和删除数据。
 
 
 
-RegionServer
+###### RegionServer
 
 RegionServer 直接对接用户的读写请求，是真正的干活的节点。它的功能概括如下：
 
@@ -22,7 +22,7 @@ RegionServer 直接对接用户的读写请求，是真正的干活的节点。�
 
 
 
-ZooKeeper
+###### ZooKeeper
 
 - 通过Zoopkeeper来保证集群中只有1个Master 在运行，如果Master 发生异常会通过竞争机制产生新的Master 来提供服务。
 - 通过 Zoopkeeper 来监控 RegionServer 的状态
@@ -30,19 +30,19 @@ ZooKeeper
 
 
 
-RegionServer失效
+###### RegionServer失效
 
 ZooKeeper会监控 RegionServer 的上下线情况，当 ZK 发现某个 HRegionServer 宕机之后会通知 Master 进行失效备援。下线的 RegionServer 所负责的 Region 暂时停止对外提供服务，Master 会将该 RegionServer 所负责的 Region 转移到其他 RegionServer 上，并且会对 下线RegionServer 上存在 MemStore 中还未持久化到磁盘中的数据由 WAL重播进行恢复。
 
 
 
-Region
+###### Region
 
 就是一段数据的集合。HBase中的表一般拥有一个到多个Region。Region有以下特性：Region不能跨服务器，一个RegionServer上有一个或者多个Region。数据量小的时候，一个Region足以存储所有数据；但是，当数据量大的时候，HBase会拆分Region。当HBase在进行负载均衡的时候，也有可能会从一台RegionServer上把Region移动到另一台RegionServer上。Region是基于HDFS的，它的所有数据存取操作都是调用了HDFS的客户端接口来实现的。
 
 
 
-WAL
+###### WAL
 
 WAL (Write-Ahead-Log) 预写日志是 HBase 的 RegionServer 在处理数据插入和删除的过程中用来记录操作内容的一种日志。每次Put、Delete等一条记录时，首先将其数据写入到 RegionServer 对应的HLog文件中去。只有当WAL日志写入成功的时候，客户端才会被告诉提交数据成功。如果写WAL失败会告知客户端提交失败，这其实就是数据落地的过程。
 
@@ -54,25 +54,25 @@ WAL是保存在HDFS上的持久化文件。数据到达 Region 时先写入WAL�
 
 
 
-Store 
+###### Store 
 
 Store由 MemStore 跟 HFile 两个重要的部分。一个列族对应一个store，如果表只有一个列族，那么一个Region就一个store
 
 
 
-MemStore
+###### MemStore
 
-每个 Store 都有一个 MemStore 实例，数据写入到 WAL 之后就会被放入 MemStore 中。MemStore是内存的存储对象，当 MemStore 的大小达到一个阀值（默认64MB）时，MemStore 会被 flush到文件，即生成一个快照。目前HBase 会有一个线程来负责MemStore 的flush操作。
+每个 Store 都有一个 MemStore 实例，数据写入到 WAL 之后就会被放入 MemStore 中。MemStore是内存的存储对象，当 MemStore 的大小达到一个阀值（默认64MB?128M?）时，MemStore 会被 flush到文件，即生成一个快照。目前HBase 会有一个线程来负责MemStore 的flush操作。
 
 
 
-StoreFile
+###### StoreFile
 
 MemStore 内存中的数据写到文件后就是StoreFile，StoreFile底层是以 HFile 的格式保存。HBase以Store的大小来判断是否需要切分Region。
 
 
 
-HFile
+###### HFile
 
 在Store中有多个HFile，每次刷写都会形成一个HFile文件落盘在HDFS上。HFile文件也会动态合并，它是数据存储的实体。
 
