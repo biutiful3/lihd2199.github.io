@@ -1,12 +1,3 @@
----
-title: "计算机网络（六）http协议"
-date: 2021-08-30T20:32:54+08:00
-draft: false
-audthor: lihongda
-categories: ["计算机网络"]
-tags: ["http","https","http2"]
----
-
 HTTP 超文本传输协议是位于 TCP/IP 体系结构中的应用层协议，它是万维网数据通信的基础。
 
 HTTP/1.1 是目前使用最广泛的版本，一般没有特别标明版本都是指 HTTP/1.1。

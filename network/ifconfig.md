@@ -1,13 +1,6 @@
----
-title: "计算机网络（九）ifconfig 命令"
-date: 2021-09-08T19:45:42+08:00
-draft: false
-categories: ["计算机网络"]
----
 
 
-
-　　这篇是linux很常用的一个命令，之前只知道它可以查询ip信息，也没有认真的研究过，近期看redis超时的问题，看到了一些相关东西，在网上找了些资料；
+　　ifconfig这是linux很常用的一个命令，之前只知道它可以查询ip信息，也没有认真的研究过，近期看redis超时的问题，看到了一些相关东西，在网上找了些资料；
 
 　　[Linux的ifconfig看到的信息详解 - 一颗桃子t - 博客园 (cnblogs.com)](https://www.cnblogs.com/taosiyu/p/11431758.html)
 
